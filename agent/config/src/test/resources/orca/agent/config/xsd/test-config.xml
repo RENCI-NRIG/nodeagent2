@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agentConfig xmlns="http://geni-orca.renci.org/xml/node-agent2/AgentConfig"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://geni-orca.renci.org/xml/node-agent2/AgentConfig http://geni-orca.renci.org/xml/node-agent2/AgentConfig.xsd"
+	password="pass">
+
+	<plugins>
+		<plugin name="Null Plugin">
+			<jar>orca.some.class</jar>
+			<config>/etc/orca/am+broker/node-config</config>
+			<endpoint>null</endpoint>
+			<properties>
+				<property name="pr" value="val" />
+				<property name="pr1" value="val1" />
+			</properties>
+		</plugin>
+		<plugin name="Null1 Plugin">
+			<jar>orca.some.class</jar>
+			<config>/etc/orca/am+broker/node-config</config>
+			<endpoint>null1</endpoint>
+			<properties>
+				<property name="pr" value="val" />
+				<property name="pr1" value="val1" />
+			</properties>
+		</plugin>
+	</plugins>
+
+</agentConfig>
