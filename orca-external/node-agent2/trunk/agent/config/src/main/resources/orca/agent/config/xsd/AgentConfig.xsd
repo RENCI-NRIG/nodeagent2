@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://geni-orca.renci.org/xml/node-agent2/AgentConfig" xmlns:tns="http://geni-orca.renci.org/xml/node-agent2/AgentConfig" elementFormDefault="qualified">
+
+
+    <complexType name="propertyType">
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="value" type="string"></attribute>
+    </complexType>
+
+    <complexType name="propertiesType">
+    	<sequence>
+    		<element name="property" type="tns:propertyType" maxOccurs="unbounded" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="pluginType">
+    	<all>
+    		<element name="jar" type="string"></element>
+    		<element name="config" type="string"></element>
+    		<element name="endpoint" type="string"></element>
+    		<element name="properties" type="tns:propertiesType" minOccurs="0"></element>
+    		<element name="description" type="string" minOccurs="0"></element>
+    	</all>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+
+    <complexType name="pluginsType">
+    	<sequence>
+    		<element name="plugin" type="tns:pluginType" maxOccurs="unbounded" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="agentConfigType">
+    	<all>
+    		<element name="plugins" type="tns:pluginsType" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    	</all>
+    	<attribute name="password" type="string"></attribute>
+    </complexType>
+
+    <element name="agentConfig" type="tns:agentConfigType"></element>
+</schema>
