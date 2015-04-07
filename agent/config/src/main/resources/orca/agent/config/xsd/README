@@ -1,0 +1,1 @@
+Changing the XSD will automatically change the Java beans built on it if you are in an IDE. The pom file uses Jaxb to generate those.
