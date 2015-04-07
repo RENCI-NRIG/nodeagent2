@@ -1,4 +1,4 @@
-package orca.agent;
+package orca.agent.server;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
