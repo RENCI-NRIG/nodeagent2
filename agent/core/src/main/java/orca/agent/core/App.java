@@ -1,4 +1,4 @@
-package orca.agent;
+package orca.agent.core;
 
 /**
  * Hello world!

@@ -1,8 +1,7 @@
 package orca.agent.config;
 
 import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,11 +9,11 @@ import orca.agent.config.xsd.AgentConfigType;
 import orca.agent.config.xsd.PluginType;
 import orca.agent.config.xsd.PluginsType;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ConfigParser extends ParserHelper {
-	Logger l;
+	Log l;
 	String from;
 
 	AgentConfigType root = null;
@@ -23,9 +22,9 @@ public class ConfigParser extends ParserHelper {
 	protected static final String PKG_LIST = "orca.agent.config.xsd";
 	protected static final String[] SCHEMA_LIST = { "AgentConfig.xsd" };
 
-	public ConfigParser(Logger log, String fname) {
-		l = log;
-		l.debug("Initializing " + this.getClass().getCanonicalName());
+	public ConfigParser(String fname) {
+		l = LogFactory.getLog("config");
+		l.debug("Initializing " + this.getClass().getCanonicalName() + " with " + fname);
 		File f = null;
 		Scanner s = null;
 		try {
@@ -33,13 +32,13 @@ public class ConfigParser extends ParserHelper {
 			s = new Scanner(f);
 			String text = s.useDelimiter("\\A").next();
 			
-			root = (AgentConfigType)validateXSDAndParse(text, PKG_LIST, AgentConfigType.class, SCHEMA_LIST, true, log);
+			root = (AgentConfigType)validateXSDAndParse(text, PKG_LIST, AgentConfigType.class, SCHEMA_LIST, true, l);
 			
 			PluginsType pts = root.getPlugins();
 			plugins = pts.getPlugin();
 			
 		} catch(Exception e) {
-			
+			l.error("Unable to parse configuration file: " + e);
 		} finally {
 			if (s != null)
 				s.close();
@@ -55,38 +54,16 @@ public class ConfigParser extends ParserHelper {
 	}
 	
 	/**
-	 * Return a copy
+	 * Return an unmodifiable copy
 	 * @return
 	 */
 	public List<PluginType> getPlugins() {
-		return new ArrayList<PluginType>(plugins);
+		return Collections.unmodifiableList(plugins);
 	}
 	
 	public static void main(String argv[]) {
-		try {
-			org.apache.log4j.BasicConfigurator.configure();
-			Logger log = LoggerFactory.getLogger(ConfigParser.class);
-			ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-			InputStream is = classloader.getResourceAsStream("orca/agent/config/xsd/test-config.xml");
-			Scanner s = new Scanner(is);
-			String text = s.useDelimiter("\\A").next();
-			s.close();
-			is.close();
-
-			AgentConfigType agent = (AgentConfigType)validateXSDAndParse(text, PKG_LIST, AgentConfigType.class, SCHEMA_LIST, true, log);
-
-			System.out.println("Password: " + agent.getPassword());
-			PluginsType pts = agent.getPlugins();
-
-			List<PluginType> lugins = pts.getPlugin();
-
-			for (PluginType p: lugins) {
-				System.out.println(p.getName() + ": " + p.getJar());
-			}
-		} catch (Exception e) {
-			System.err.println(e);
-		}
-
+		ConfigParser cp = new ConfigParser("/Users/ibaldin/workspace-nodeagent2/node-agent2/agent/config/src/main/resources/orca/agent/config/xsd/test-config.xml");
+		System.out.println(cp.getPassword());
 		// list inside jar
 		//		try {
 		//			// Load the directory as a resource

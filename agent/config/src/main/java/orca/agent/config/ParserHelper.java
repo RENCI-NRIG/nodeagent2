@@ -17,7 +17,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.slf4j.Logger;
+import org.apache.commons.logging.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -32,7 +32,7 @@ public class ParserHelper {
 	 * @return unmarshalled JAXB object
 	 * @throws Exception
 	 */
-	protected static Object validateXSDAndParse(String from, String startPkg, Class<?> startClass, String[] schemas, boolean strict, Logger l)
+	protected static Object validateXSDAndParse(String from, String startPkg, Class<?> startClass, String[] schemas, boolean strict, Log l)
 			throws Exception {
 
 		// stronger alternative validation
@@ -85,11 +85,11 @@ public class ParserHelper {
 		return ret;
 	}
 
-	public static void validateXSD(String from, String startPkg, Class<?> startClass, String[] schemas, Logger l) {
+	public static void validateXSD(String from, String startPkg, Class<?> startClass, String[] schemas, Log l) {
 		// parse an XML document into a DOM tree
 
 		for(int i = 0; i < schemas.length; i++)
-			l.debug("Using " + schemas[i]);
+			l.debug("Using schema " + schemas[i]);
 
 		DocumentBuilderFactory parserFactory = DocumentBuilderFactory.newInstance();
 		parserFactory.setNamespaceAware(true);

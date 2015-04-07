@@ -1,6 +1,6 @@
 package orca.agent.config;
 
-import org.slf4j.Logger;
+import org.apache.commons.logging.Log;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSInput;
@@ -16,7 +16,7 @@ public class SchemaFileResolver implements LSResourceResolver {
         private DOMImplementationLS dls;
         private ClassLoader cll;
         private String pkgPath;
-        private Logger l;
+        private Log l;
 
         /***
          * Needs a class loader of the class to which the resource belongs
@@ -25,7 +25,7 @@ public class SchemaFileResolver implements LSResourceResolver {
          * @throws ClassNotFoundException
          * @throws InstantiationException
          */
-        SchemaFileResolver(ClassLoader cll, String pkgPath, Logger log) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+        SchemaFileResolver(ClassLoader cll, String pkgPath, Log log) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
                 this.cll = cll;
                 this.pkgPath = pkgPath;
                 this.l = log;
