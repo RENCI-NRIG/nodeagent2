@@ -15,9 +15,10 @@
 
     <complexType name="pluginType">
     	<all>
-    		<element name="jar" type="string"></element>
-    		<element name="config" type="string"></element>
-    		<element name="endpoint" type="string"></element>
+    		<element name="jar" type="string" minOccurs="1"></element>
+    		<element name="mainClass" type="string" minOccurs="1"></element>
+    		<element name="config" type="string" minOccurs="0"></element>
+    		<element name="endpoint" type="string" minOccurs="1"></element>
     		<element name="properties" type="tns:propertiesType" minOccurs="0"></element>
     		<element name="description" type="string" minOccurs="0"></element>
     	</all>

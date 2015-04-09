@@ -6,6 +6,7 @@
     <artifactId>node-agent2</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
+  <groupId>orca.node-agent2</groupId>
   <artifactId>agent</artifactId>
   <name>agent</name>
   <url>http://maven.apache.org</url>

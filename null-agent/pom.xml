@@ -7,6 +7,7 @@
     <artifactId>node-agent2</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
+  <groupId>orca.node-agent</groupId>
   <artifactId>null-agent</artifactId>
   <name>null-agent</name>
   <url>http://maven.apache.org</url>
@@ -17,8 +18,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>orca.node-agent2</groupId>
+    	<artifactId>agentlib</artifactId>
+    	<version>${project.version}</version>
     </dependency>
   </dependencies>
 </project>
