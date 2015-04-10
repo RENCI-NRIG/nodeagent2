@@ -6,7 +6,9 @@
 
 	<plugins>
 		<plugin name="Null Plugin">
-			<jar>orca.some.class</jar>
+			<jar>/some/file/name.jar</jar>
+			<mainClass>some.class.name</mainClass>
+			<schedulePeriod length="0"><minute/></schedulePeriod>
 			<config>/etc/orca/am+broker/node-config</config>
 			<endpoint>null</endpoint>
 			<properties>
@@ -15,7 +17,9 @@
 			</properties>
 		</plugin>
 		<plugin name="Null1 Plugin">
-			<jar>orca.some.class</jar>
+			<jar>/other/file/name.jar</jar>
+			<mainClass>other.class.name</mainClass>
+			<schedulePeriod length="1"><week/></schedulePeriod>
 			<config>/etc/orca/am+broker/node-config</config>
 			<endpoint>null1</endpoint>
 			<properties>

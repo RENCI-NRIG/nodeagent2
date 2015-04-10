@@ -5,19 +5,11 @@
 	password="pass">
 
 	<plugins>
-		<plugin name="Null Plugin">
-			<jar>orca.some.class</jar>
-			<config>/etc/orca/am+broker/node-config</config>
+		<plugin name="Null Test Plugin">
+			<jar>/Users/ibaldin/workspace-nodeagent2/node-agent2/null-agent/target/null-agent-0.1-SNAPSHOT.jar</jar>
+			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
 			<endpoint>null</endpoint>
-			<properties>
-				<property name="pr" value="val" />
-				<property name="pr1" value="val1" />
-			</properties>
-		</plugin>
-		<plugin name="Null1 Plugin">
-			<jar>orca.some.class</jar>
-			<config>/etc/orca/am+broker/node-config</config>
-			<endpoint>null1</endpoint>
+			<schedulePeriod length="1"><minute/></schedulePeriod>
 			<properties>
 				<property name="pr" value="val" />
 				<property name="pr1" value="val1" />
