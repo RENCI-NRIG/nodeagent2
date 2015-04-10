@@ -8,6 +8,7 @@ import java.util.Scanner;
 import orca.nodeagent2.agent.config.xsd.AgentConfigType;
 import orca.nodeagent2.agent.config.xsd.PluginType;
 import orca.nodeagent2.agent.config.xsd.PluginsType;
+import orca.nodeagent2.agent.config.xsd.UnitChoice;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,23 +71,8 @@ public class ConfigParser extends ParserHelper {
 		return t.getSchedulePeriod().getLength();
 	}
 	
-	public timeUnit getDurationUnit(PluginType t) {
-		if (t.getSchedulePeriod().getWeek() != null)
-			return timeUnit.WEEK;
-		
-		if (t.getSchedulePeriod().getDay() != null)
-			return timeUnit.DAY;
-		
-		if (t.getSchedulePeriod().getHour() != null) 
-			return timeUnit.HOUR;
-			
-		if (t.getSchedulePeriod().getMinute() != null)
-			return timeUnit.MINUTE;
-		
-		if (t.getSchedulePeriod().getSecond() != null)
-			return timeUnit.SECOND;
-		
-		return timeUnit.SECOND;
+	public UnitChoice getDurationUnit(PluginType t) {
+		return t.getSchedulePeriod().getUnit();
 	}
 	
 	/**

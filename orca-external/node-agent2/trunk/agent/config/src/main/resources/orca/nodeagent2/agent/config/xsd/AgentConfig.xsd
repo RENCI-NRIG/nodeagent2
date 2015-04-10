@@ -34,7 +34,7 @@
     			maxOccurs="1">
     		</element>
     	</all>
-    	<attribute name="name" type="string"></attribute>
+    	<attribute name="name" type="tns:pluginNamePattern"></attribute>
     </complexType>
 
     <complexType name="pluginsType">
@@ -54,25 +54,26 @@
 
     <element name="agentConfig" type="tns:agentConfigType"></element>
 
-    <complexType name="week"></complexType>
+	<simpleType name="unitChoice">
+	  <restriction base="string">
+	    <enumeration value="week"/>
+	    <enumeration value="day"/>
+	    <enumeration value="hour"/>
+	    <enumeration value="minute"/>
+	    <enumeration value="second"/>
+	  </restriction>
+	</simpleType>
+	
+	<simpleType name="pluginNamePattern">
+		<restriction base="string">
+			<pattern value="[a-zA-Z0-9-]+"/>
+			<minLength value="5"/>
+      		<maxLength value="20"/>
+		</restriction>
+	</simpleType>
 
-    <complexType name="day"></complexType>
-
-    <complexType name="hour"></complexType>
-
-    <complexType name="minute"></complexType>
-
-    <complexType name="second"></complexType>
-
-
-    <complexType name="timeUnit">
-    	<choice maxOccurs="1" minOccurs="1">
-    		<element name="week" type="tns:week"></element>
-    		<element name="day" type="tns:day"></element>
-    		<element name="hour" type="tns:hour"></element>
-    		<element name="minute" type="tns:minute"></element>
-    		<element name="second" type="tns:second"></element>
-    	</choice>
-    	<attribute name="length" type="int"></attribute>
-    </complexType>
+	<complexType name="timeUnit">
+		<attribute name="length" type="int"></attribute>
+		<attribute name="unit" type="tns:unitChoice"></attribute>
+	</complexType>
 </schema>

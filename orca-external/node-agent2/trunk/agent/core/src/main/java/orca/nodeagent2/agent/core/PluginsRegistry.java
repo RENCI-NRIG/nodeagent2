@@ -43,7 +43,7 @@ public class PluginsRegistry {
 	public void initialize() throws Exception {
 		// initialize plugins
 		for(PluginType pt: Config.getInstance().getPlugins()) {
-			l.info("Initializing plugin " + pt.getName());
+			l.info("Initializing plugin " + pt.getName() + " with period " + Config.getInstance().getDuration(pt) + " " + Config.getInstance().getDurationUnit(pt).value());
 			PluginsRegistry.getInstance().addPlugin(pt);
 		}
 	}
