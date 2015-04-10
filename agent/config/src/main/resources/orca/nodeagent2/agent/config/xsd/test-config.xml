@@ -5,7 +5,7 @@
 	password="pass">
 
 	<plugins>
-		<plugin name="Null Plugin">
+		<plugin name="Null-Plugin">
 			<jar>/some/file/name.jar</jar>
 			<mainClass>some.class.name</mainClass>
 			<<schedulePeriod length="0" unit="day"/>
@@ -15,7 +15,7 @@
 				<property name="pr1" value="val1" />
 			</properties>
 		</plugin>
-		<plugin name="Null1 Plugin">
+		<plugin name="Null1-Plugin">
 			<jar>/other/file/name.jar</jar>
 			<mainClass>other.class.name</mainClass>
 			<schedulePeriod length="1" unit="week"/>
