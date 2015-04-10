@@ -3,6 +3,7 @@ package orca.nodeagent2.agent.config;
 import java.util.List;
 
 import orca.nodeagent2.agent.config.xsd.PluginType;
+import orca.nodeagent2.agent.config.xsd.UnitChoice;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,7 +50,7 @@ public class Config {
 		return cp.getDuration(t) ;
 	}
 	
-	public ConfigParser.timeUnit getDurationUnit(PluginType t) {
+	public UnitChoice getDurationUnit(PluginType t) {
 		return cp.getDurationUnit(t);
 	}
 
