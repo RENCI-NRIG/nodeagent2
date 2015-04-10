@@ -44,4 +44,13 @@ public class Config {
 	public List<PluginType> getPlugins() {
 		return cp.getPlugins();
 	}
+	
+	public int getDuration(PluginType t) {
+		return cp.getDuration(t) ;
+	}
+	
+	public ConfigParser.timeUnit getDurationUnit(PluginType t) {
+		return cp.getDurationUnit(t);
+	}
+
 }

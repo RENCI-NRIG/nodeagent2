@@ -1,6 +1,5 @@
 package orca.nodeagent2.agentlib;
 
-import java.util.Map;
 
 /**
  * This is the interface all plugins must conform to. The dynamic loader does its best to check
@@ -20,7 +19,7 @@ public interface Plugin {
 	 * @param cl
 	 * @return properties, status and reservation id 
 	 */
-	public PluginReturn join(Map<String, Object> inPropeties, ClassLoader cl);
+	public PluginReturn join(Properties inPropeties, ClassLoader cl) throws PluginException;
 	
 	/**
 	 * Close the reservation. The core provides storage for properties for recovery
@@ -28,7 +27,7 @@ public interface Plugin {
 	 * @param cl
 	 * @return
 	 */
-	public PluginReturn leave(ReservationId resId, Map<String, Object> inProperties, ClassLoader cl);
+	public PluginReturn leave(ReservationId resId, Properties inProperties, ClassLoader cl) throws PluginException;
 	
 	/**
 	 * Modify the reservation
@@ -37,7 +36,7 @@ public interface Plugin {
 	 * @param cl
 	 * @return
 	 */
-	public PluginReturn modify(ReservationId resId, Map<String, Object> inProperties, ClassLoader cl);
+	public PluginReturn modify(ReservationId resId, Properties inProperties, ClassLoader cl) throws PluginException;
 	
 	/**
 	 * Renew the reservation
@@ -46,12 +45,12 @@ public interface Plugin {
 	 * @param cl
 	 * @return
 	 */
-	public PluginReturn renew(ReservationId resId, Map<String, Object> inProperties, ClassLoader cl);
+	public PluginReturn renew(ReservationId resId, Properties inProperties, ClassLoader cl) throws PluginException;
 
 	/**
 	 * Return a status message for this plugin - free format
 	 * @param cl
 	 * @return
 	 */
-	public String status(ClassLoader cl);
+	public String status(ClassLoader cl) throws PluginException;
 }

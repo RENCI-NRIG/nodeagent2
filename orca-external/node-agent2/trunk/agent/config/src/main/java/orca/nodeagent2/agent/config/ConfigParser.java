@@ -20,8 +20,9 @@ public class ConfigParser extends ParserHelper {
 	AgentConfigType root = null;
 	List<PluginType> plugins = null;
 
-	protected static final String PKG_LIST = "orca.agent.config.xsd";
+	protected static final String PKG_LIST = "orca.nodeagent2.agent.config.xsd";
 	protected static final String[] SCHEMA_LIST = { "AgentConfig.xsd" };
+	protected enum timeUnit{WEEK, DAY, HOUR, MINUTE, SECOND};
 
 	public ConfigParser(String fname) throws Exception {
 		l = LogFactory.getLog("config");
@@ -64,6 +65,30 @@ public class ConfigParser extends ParserHelper {
 		return root.getPassword();
 	}
 
+	
+	public int getDuration(PluginType t) {
+		return t.getSchedulePeriod().getLength();
+	}
+	
+	public timeUnit getDurationUnit(PluginType t) {
+		if (t.getSchedulePeriod().getWeek() != null)
+			return timeUnit.WEEK;
+		
+		if (t.getSchedulePeriod().getDay() != null)
+			return timeUnit.DAY;
+		
+		if (t.getSchedulePeriod().getHour() != null) 
+			return timeUnit.HOUR;
+			
+		if (t.getSchedulePeriod().getMinute() != null)
+			return timeUnit.MINUTE;
+		
+		if (t.getSchedulePeriod().getSecond() != null)
+			return timeUnit.SECOND;
+		
+		return timeUnit.SECOND;
+	}
+	
 	/**
 	 * Return an unmodifiable copy
 	 * @return
@@ -74,10 +99,15 @@ public class ConfigParser extends ParserHelper {
 
 	public static void main(String argv[]) {
 		try {
-			ConfigParser cp = new ConfigParser("/Users/ibaldin/workspace-nodeagent2/node-agent2/agent/config/src/main/resources/orca/agent/config/xsd/test-config.xml");
+			ConfigParser cp = new ConfigParser("/Users/ibaldin/workspace-nodeagent2/node-agent2/agent/config/src/main/resources/orca/nodeagent2/agent/config/xsd/test-config.xml");
 			System.out.println(cp.getPassword());
+			
+			for(PluginType t: cp.getPlugins()) {
+				System.out.println("Plugin " + t.getName() + ": " + cp.getDuration(t) + " " + cp.getDurationUnit(t));
+			}
 		} catch (Exception e) {
 			System.err.println(e);
+			e.printStackTrace();
 		}
 		// list inside jar
 		//		try {

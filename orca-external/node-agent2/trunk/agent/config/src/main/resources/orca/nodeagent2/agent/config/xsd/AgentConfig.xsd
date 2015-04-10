@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://geni-orca.renci.org/xml/node-agent2/AgentConfig" xmlns:tns="http://geni-orca.renci.org/xml/node-agent2/AgentConfig" elementFormDefault="qualified">
+
+
+    <complexType name="propertyType">
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="value" type="string"></attribute>
+    </complexType>
+
+    <complexType name="propertiesType">
+    	<sequence>
+    		<element name="property" type="tns:propertyType" maxOccurs="unbounded" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="pluginType">
+    	<all>
+    		<element name="jar" type="string" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="mainClass" type="string" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="schedulePeriod" type="tns:timeUnit"
+    			minOccurs="1" maxOccurs="1">
+    		</element>
+    		<element name="config" type="string" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    		<element name="endpoint" type="string" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="properties" type="tns:propertiesType"
+    			minOccurs="0" maxOccurs="1">
+    		</element>
+    		<element name="description" type="string" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    	</all>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+
+    <complexType name="pluginsType">
+    	<sequence>
+    		<element name="plugin" type="tns:pluginType" maxOccurs="unbounded" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="agentConfigType">
+    	<all>
+    		<element name="plugins" type="tns:pluginsType" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    	</all>
+    	<attribute name="password" type="string"></attribute>
+    </complexType>
+
+    <element name="agentConfig" type="tns:agentConfigType"></element>
+
+    <complexType name="week"></complexType>
+
+    <complexType name="day"></complexType>
+
+    <complexType name="hour"></complexType>
+
+    <complexType name="minute"></complexType>
+
+    <complexType name="second"></complexType>
+
+
+    <complexType name="timeUnit">
+    	<choice maxOccurs="1" minOccurs="1">
+    		<element name="week" type="tns:week"></element>
+    		<element name="day" type="tns:day"></element>
+    		<element name="hour" type="tns:hour"></element>
+    		<element name="minute" type="tns:minute"></element>
+    		<element name="second" type="tns:second"></element>
+    	</choice>
+    	<attribute name="length" type="int"></attribute>
+    </complexType>
+</schema>

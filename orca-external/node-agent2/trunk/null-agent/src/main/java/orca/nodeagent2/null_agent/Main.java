@@ -7,6 +7,7 @@ import java.util.Map;
 
 import orca.nodeagent2.agentlib.Plugin;
 import orca.nodeagent2.agentlib.PluginReturn;
+import orca.nodeagent2.agentlib.Properties;
 import orca.nodeagent2.agentlib.ReservationId;
 import orca.nodeagent2.agentlib.Util;
 
@@ -30,7 +31,7 @@ public class Main implements Plugin {
 		}
 	}
 	
-	public PluginReturn join(Map<String, Object> inPropeties, ClassLoader cl) {
+	public PluginReturn join(Properties inPropeties, ClassLoader cl) {
 		log.info("JOIN");
 		Map<String, Object> retProps = new HashMap<String, Object>();
 		retProps.put("key1", "val1");
@@ -43,7 +44,7 @@ public class Main implements Plugin {
 	}
 
 	public PluginReturn leave(ReservationId resId,
-			Map<String, Object> inProperties, ClassLoader cl) {
+			Properties inProperties, ClassLoader cl) {
 		log.info("LEAVE");
 		Map<String, Object> retProps = new HashMap<String, Object>();
 		retProps.put("key11", "val11");
@@ -56,7 +57,7 @@ public class Main implements Plugin {
 	}
 
 	public PluginReturn modify(ReservationId resId,
-			Map<String, Object> inProperties, ClassLoader cl) {
+			Properties inProperties, ClassLoader cl) {
 		log.info("MODIFY");
 		Map<String, Object> retProps = new HashMap<String, Object>();
 		retProps.put("key12", "val12");
@@ -69,7 +70,7 @@ public class Main implements Plugin {
 	}
 
 	public PluginReturn renew(ReservationId resId,
-			Map<String, Object> inProperties, ClassLoader cl) {
+			Properties inProperties, ClassLoader cl) {
 		log.info("RENEW");
 		Map<String, Object> retProps = new HashMap<String, Object>();
 		retProps.put("key13", "val13");

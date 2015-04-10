@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import orca.nodeagent2.agent.config.Config;
+import orca.nodeagent2.agent.core.PluginsRegistry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,11 +56,16 @@ public class ServerMain {
 					l.info("Initializing config parser");
 					Config.initialize(argv[0]);
 					
+					l.info("Initializing plugins");
+					PluginsRegistry.getInstance().initialize();
+					
 				} catch (Exception e) {
 					l.error("Unable to initialize NA2: " + e);
+					e.printStackTrace();
 					System.exit(1);
 				}
 			}
+
 		}
 	}
 
