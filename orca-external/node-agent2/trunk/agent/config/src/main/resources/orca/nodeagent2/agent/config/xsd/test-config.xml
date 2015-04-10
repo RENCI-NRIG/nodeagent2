@@ -10,7 +10,6 @@
 			<mainClass>some.class.name</mainClass>
 			<schedulePeriod length="0"><minute/></schedulePeriod>
 			<config>/etc/orca/am+broker/node-config</config>
-			<endpoint>null</endpoint>
 			<properties>
 				<property name="pr" value="val" />
 				<property name="pr1" value="val1" />
@@ -21,7 +20,6 @@
 			<mainClass>other.class.name</mainClass>
 			<schedulePeriod length="1"><week/></schedulePeriod>
 			<config>/etc/orca/am+broker/node-config</config>
-			<endpoint>null1</endpoint>
 			<properties>
 				<property name="pr" value="val" />
 				<property name="pr1" value="val1" />

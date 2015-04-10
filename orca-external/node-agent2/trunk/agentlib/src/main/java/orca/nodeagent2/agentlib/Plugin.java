@@ -14,43 +14,48 @@ package orca.nodeagent2.agentlib;
 public interface Plugin {
 	
 	/**
+	 * Initialize the behavior of the plugin based on a combination of config file and configuration properties
+	 * (either can be null)
+	 * @parm config - config file name
+	 * @param inProperties - config properties
+	 * @param cl - main class loader
+	 * @throws PluginException
+	 */
+	public void initialize(String config, Properties inProperties, ClassLoader cl) throws PluginException;
+	
+	/**
 	 * Provision a new resource with properties specified in the map. 
 	 * @param inPropeties
-	 * @param cl
 	 * @return properties, status and reservation id 
 	 */
-	public PluginReturn join(Properties inPropeties, ClassLoader cl) throws PluginException;
+	public PluginReturn join(Properties inPropeties) throws PluginException;
 	
 	/**
 	 * Close the reservation. The core provides storage for properties for recovery
 	 * @param resId
-	 * @param cl
 	 * @return
 	 */
-	public PluginReturn leave(ReservationId resId, Properties inProperties, ClassLoader cl) throws PluginException;
+	public PluginReturn leave(ReservationId resId, Properties inProperties) throws PluginException;
 	
 	/**
 	 * Modify the reservation
 	 * @param resId
 	 * @param inProperties
-	 * @param cl
 	 * @return
 	 */
-	public PluginReturn modify(ReservationId resId, Properties inProperties, ClassLoader cl) throws PluginException;
+	public PluginReturn modify(ReservationId resId, Properties inProperties) throws PluginException;
 	
 	/**
 	 * Renew the reservation
 	 * @param resId
 	 * @param inProperties
-	 * @param cl
 	 * @return
 	 */
-	public PluginReturn renew(ReservationId resId, Properties inProperties, ClassLoader cl) throws PluginException;
+	public PluginReturn renew(ReservationId resId, Properties inProperties) throws PluginException;
 
 	/**
 	 * Return a status message for this plugin - free format
-	 * @param cl
 	 * @return
 	 */
-	public String status(ClassLoader cl) throws PluginException;
+	public String status() throws PluginException;
 }

@@ -40,7 +40,7 @@ public class ConfigParser extends ParserHelper {
 			plugins = pts.getPlugin();
 
 			for(PluginType pt: plugins) {
-				l.info("Detected plugin " + pt.getName() + " on " + pt.getEndpoint() + " with jar " + pt.getJar());
+				l.info("Detected plugin " + pt.getName() + " with jar " + pt.getJar());
 			}
 
 			initialized = true;
