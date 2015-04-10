@@ -27,9 +27,6 @@
     		<element name="config" type="string" minOccurs="0"
     			maxOccurs="1">
     		</element>
-    		<element name="endpoint" type="string" minOccurs="1"
-    			maxOccurs="1">
-    		</element>
     		<element name="properties" type="tns:propertiesType"
     			minOccurs="0" maxOccurs="1">
     		</element>

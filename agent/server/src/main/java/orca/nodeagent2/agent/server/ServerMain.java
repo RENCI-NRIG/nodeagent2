@@ -65,7 +65,6 @@ public class ServerMain {
 					System.exit(1);
 				}
 			}
-
 		}
 	}
 

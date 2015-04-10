@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import orca.nodeagent2.agentlib.Plugin;
+import orca.nodeagent2.agentlib.PluginException;
 import orca.nodeagent2.agentlib.PluginReturn;
 import orca.nodeagent2.agentlib.Properties;
 import orca.nodeagent2.agentlib.ReservationId;
@@ -22,16 +23,7 @@ public class Main implements Plugin {
 	ClassLoader coreLoader;
 	Log log;
 	
-	public Main(ClassLoader cl) {
-		coreLoader = cl;
-		try {
-			log = Util.getLog(cl, "null-plugin");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public PluginReturn join(Properties inPropeties, ClassLoader cl) {
+	public PluginReturn join(Properties inPropeties) {
 		log.info("JOIN");
 		Map<String, Object> retProps = new HashMap<String, Object>();
 		retProps.put("key1", "val1");
@@ -44,7 +36,7 @@ public class Main implements Plugin {
 	}
 
 	public PluginReturn leave(ReservationId resId,
-			Properties inProperties, ClassLoader cl) {
+			Properties inProperties) {
 		log.info("LEAVE");
 		Map<String, Object> retProps = new HashMap<String, Object>();
 		retProps.put("key11", "val11");
@@ -57,7 +49,7 @@ public class Main implements Plugin {
 	}
 
 	public PluginReturn modify(ReservationId resId,
-			Properties inProperties, ClassLoader cl) {
+			Properties inProperties) {
 		log.info("MODIFY");
 		Map<String, Object> retProps = new HashMap<String, Object>();
 		retProps.put("key12", "val12");
@@ -70,7 +62,7 @@ public class Main implements Plugin {
 	}
 
 	public PluginReturn renew(ReservationId resId,
-			Properties inProperties, ClassLoader cl) {
+			Properties inProperties) {
 		log.info("RENEW");
 		Map<String, Object> retProps = new HashMap<String, Object>();
 		retProps.put("key13", "val13");
@@ -82,9 +74,19 @@ public class Main implements Plugin {
 		return new PluginReturn(new ReservationId("null-reservation-001"), retProps);
 	}
 
-	public String status(ClassLoader cl) {
+	public String status() {
 		log.info("STATUS");
 		return "This is the status of the Null plugin";
+	}
+
+	public void initialize(String config, Properties inProperties, ClassLoader cl) throws PluginException {
+		coreLoader = cl;
+		try {
+			log = Util.getLog(cl, "null-plugin");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		log.info("Initializing plugin " + inProperties);
 	}
 
 }

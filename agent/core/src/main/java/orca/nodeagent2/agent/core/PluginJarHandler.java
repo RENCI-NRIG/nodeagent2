@@ -19,7 +19,7 @@ public class PluginJarHandler extends JarHandler {
 
 	// Each plugin defines these methods
 	public enum PluginMethod {
-		JOIN("join"), LEAVE("leave"), MODIFY("modify"), RENEW("renew"), STATUS("status");
+		JOIN("join"), LEAVE("leave"), MODIFY("modify"), RENEW("renew"), STATUS("status"), INITIALIZE("initialize");
 
 		String name;
 
@@ -59,16 +59,16 @@ public class PluginJarHandler extends JarHandler {
 		}
 
 		try {
-			Constructor<Plugin> ctor = pluginClass.getDeclaredConstructor(ClassLoader.class);
-			instance = ctor.newInstance(JarHandler.class.getClassLoader());
+			Constructor<Plugin> ctor = pluginClass.getDeclaredConstructor();
+			instance = ctor.newInstance();
 		} catch (NoSuchMethodException nsme) {
-			throw new Exception("Class " + className + " does not implement the proper constructor Plugin(ClassLoader cl)");
+			throw new Exception("Class " + className + " does not implement the proper constructor Plugin()");
 		}
 	}
 
 	public PluginReturn join(Properties inProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.JOIN.getName()).invoke(instance, inProperties, PluginJarHandler.class.getClassLoader());
+			return (PluginReturn)pluginMethod.get(PluginMethod.JOIN.getName()).invoke(instance, inProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke join method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -80,7 +80,7 @@ public class PluginJarHandler extends JarHandler {
 
 	public PluginReturn leave(ReservationId resId, Properties inProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.LEAVE.getName()).invoke(instance, resId, inProperties, PluginJarHandler.class.getClassLoader());
+			return (PluginReturn)pluginMethod.get(PluginMethod.LEAVE.getName()).invoke(instance, resId, inProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke leave method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -92,7 +92,7 @@ public class PluginJarHandler extends JarHandler {
 
 	public PluginReturn modify(ReservationId resId, Properties inProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.MODIFY.getName()).invoke(instance, resId, inProperties, PluginJarHandler.class.getClassLoader());
+			return (PluginReturn)pluginMethod.get(PluginMethod.MODIFY.getName()).invoke(instance, resId, inProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke modify method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -104,7 +104,7 @@ public class PluginJarHandler extends JarHandler {
 
 	public PluginReturn renew(ReservationId resId, Properties inProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.RENEW.getName()).invoke(instance, resId, inProperties, PluginJarHandler.class.getClassLoader());
+			return (PluginReturn)pluginMethod.get(PluginMethod.RENEW.getName()).invoke(instance, resId, inProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke renew method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -116,7 +116,7 @@ public class PluginJarHandler extends JarHandler {
 
 	public String status() throws PluginException {
 		try {
-			return (String)pluginMethod.get(PluginMethod.RENEW.getName()).invoke(instance, PluginJarHandler.class.getClassLoader());
+			return (String)pluginMethod.get(PluginMethod.RENEW.getName()).invoke(instance);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke status method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -126,6 +126,19 @@ public class PluginJarHandler extends JarHandler {
 		}
 	}
 
+	public void initialize(String fName, Properties inProperties) throws PluginException {
+		try {
+			pluginMethod.get(PluginMethod.INITIALIZE.getName()).invoke(instance, fName, inProperties, PluginJarHandler.class.getClassLoader());
+			return;
+		} catch (IllegalAccessException e) {
+			throw new PluginException("Unable to invoke status method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
+		} catch (IllegalArgumentException e) {
+			throw new PluginException("Unable to invoke status method in " + pluginClass.getName() + " due to IllegalArgumentException: " + e);
+		} catch (InvocationTargetException e) {
+			throw new PluginException("Unable to invoke status method in " + pluginClass.getName() + " due to InvocationTargetException: " + e);
+		}
+	}
+	
 	public static void main(String argv[]) {
 
 		try {

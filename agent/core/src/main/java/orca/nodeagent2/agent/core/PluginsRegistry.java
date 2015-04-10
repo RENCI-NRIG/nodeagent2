@@ -5,6 +5,8 @@ import java.util.Map;
 
 import orca.nodeagent2.agent.config.Config;
 import orca.nodeagent2.agent.config.xsd.PluginType;
+import orca.nodeagent2.agent.config.xsd.PropertiesType;
+import orca.nodeagent2.agent.config.xsd.PropertyType;
 import orca.nodeagent2.agentlib.PluginException;
 import orca.nodeagent2.agentlib.PluginReturn;
 import orca.nodeagent2.agentlib.Properties;
@@ -41,7 +43,7 @@ public class PluginsRegistry {
 	public void initialize() throws Exception {
 		// initialize plugins
 		for(PluginType pt: Config.getInstance().getPlugins()) {
-			l.info("Initializing plugin " + pt.getName() + " on endpoint " + pt.getEndpoint());
+			l.info("Initializing plugin " + pt.getName());
 			PluginsRegistry.getInstance().addPlugin(pt);
 		}
 	}
@@ -53,6 +55,13 @@ public class PluginsRegistry {
 	 */
 	public void addPlugin(PluginType pt) throws Exception {
 		PluginJarHandler pjh = new PluginJarHandler(pt.getJar(), pt.getMainClass());
+		// collect config properties
+		PropertiesType pts = pt.getProperties();
+		Properties pluginConfigProps = new Properties();
+		for(PropertyType prop: pts.getProperty()) {
+			pluginConfigProps.put(prop.getName(), prop.getValue());
+		}
+		pjh.initialize(pt.getConfig(), pluginConfigProps);
 		plugins.put(pt.getName(), pjh);
 		pluginConfigs.put(pt.getName(), pt);
 	}
@@ -90,12 +99,6 @@ public class PluginsRegistry {
 			throw new Exception("Error in status call to plugin " + pluginName + ": plugin not found");
 		
 		return plugins.get(pluginName).status();
-	}
-	
-	public String getEndpoint(String pluginName) throws Exception {
-		if (!pluginConfigs.containsKey(pluginName))
-			throw new Exception("Cannot get endpoint for plugin " + pluginName + ": plugin not found");
-		return pluginConfigs.get(pluginName).getEndpoint();
 	}
 	
 	public String getDescription(String pluginName) throws Exception {
