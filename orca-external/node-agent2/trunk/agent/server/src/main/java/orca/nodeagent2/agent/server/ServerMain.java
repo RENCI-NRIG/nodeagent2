@@ -45,7 +45,7 @@ public class ServerMain {
 						;
 					}
 				}
-				
+
 				if (defaultConfig) 
 					PropertyConfigurator.configure(ServerMain.class.getClassLoader().getResourceAsStream(DEFAULT_LOG4J));
 
@@ -55,10 +55,10 @@ public class ServerMain {
 				try {
 					l.info("Initializing config parser");
 					Config.initialize(argv[0]);
-					
+
 					l.info("Initializing plugins");
 					PluginsRegistry.getInstance().initialize();
-					
+
 				} catch (Exception e) {
 					l.error("Unable to initialize NA2: " + e);
 					e.printStackTrace();

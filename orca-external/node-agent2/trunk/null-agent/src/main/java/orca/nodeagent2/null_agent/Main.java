@@ -82,6 +82,7 @@ public class Main implements Plugin {
 	public void initialize(String config, Properties inProperties, ClassLoader cl) throws PluginException {
 		coreLoader = cl;
 		try {
+			// this is how you get hold of the logger
 			log = Util.getLog(cl, "null-plugin");
 		} catch (Exception e) {
 			e.printStackTrace();
