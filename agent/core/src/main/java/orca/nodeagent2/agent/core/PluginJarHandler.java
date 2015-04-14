@@ -19,7 +19,9 @@ public class PluginJarHandler extends JarHandler {
 
 	// Each plugin defines these methods
 	public enum PluginMethod {
-		JOIN("join"), LEAVE("leave"), MODIFY("modify"), RENEW("renew"), STATUS("status"), INITIALIZE("initialize");
+		JOIN("join"), LEAVE("leave"), 
+		MODIFY("modify"), RENEW("renew"), 
+		STATUS("status"), INITIALIZE("initialize");
 
 		String name;
 
