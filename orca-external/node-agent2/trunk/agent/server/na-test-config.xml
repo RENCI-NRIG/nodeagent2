@@ -6,9 +6,19 @@
 
 	<plugins>
 		<plugin name="Null-Test-Plugin">
+			<jar>/Users/ibaldin/workspace-nodeagent2/node-agent2/null-agent/target/null-agent-0.1-SNAPSHOT-jar-with-dependencies.jar</jar>
+			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
+			<schedulePeriod length="1" unit="minute" />
+			<description>Null plugin for testing</description>
+			<properties>
+				<property name="pr" value="val" />
+				<property name="pr1" value="val1" />
+			</properties>
+		</plugin>
+		<plugin name="Some-Test-Plugin">
 			<jar>/Users/ibaldin/workspace-nodeagent2/node-agent2/null-agent/target/null-agent-0.1-SNAPSHOT.jar</jar>
 			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
-			<schedulePeriod length="1" unit="minute"/>
+			<schedulePeriod length="5" unit="minute" />
 			<properties>
 				<property name="pr" value="val" />
 				<property name="pr1" value="val1" />

@@ -1,9 +1,7 @@
 package orca.nodeagent2.null_agent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import orca.nodeagent2.agentlib.Plugin;
 import orca.nodeagent2.agentlib.PluginException;
@@ -14,8 +12,12 @@ import orca.nodeagent2.agentlib.Util;
 
 import org.apache.commons.logging.Log;
 
+import com.google.gson.Gson;
+
 /**
- * Null plugin as an example for other plugins. 
+ * Null plugin as an example for other plugins. It shows that other dependencies can also be 
+ * brought in as long as the resulting jar is built as 'jar-with-dependencies'. See the pom.xml
+ * file for more.
  * @author ibaldin
  *
  */
@@ -23,9 +25,19 @@ public class Main implements Plugin {
 	ClassLoader coreLoader;
 	Log log;
 	
-	public PluginReturn join(Properties inPropeties) {
-		log.info("JOIN");
-		Map<String, Object> retProps = new HashMap<String, Object>();
+	public PluginReturn join(Properties inProperties) {
+		
+		log.info("JOIN " + inProperties);
+
+		Gson gson = new Gson();
+		gson.toJson(1);           
+		gson.toJson("abcd");      
+		gson.toJson(new Long(10)); 
+		int[] values = { 1 };
+		gson.toJson(values);   
+		log.info("GSON " + gson.toJson(values));
+		
+		Properties retProps = new Properties();
 		retProps.put("key1", "val1");
 		retProps.put("key2", "val2");
 		List<String> val3 = new ArrayList<String>();
@@ -35,10 +47,9 @@ public class Main implements Plugin {
 		return new PluginReturn(new ReservationId("null-reservation-001"), retProps);
 	}
 
-	public PluginReturn leave(ReservationId resId,
-			Properties inProperties) {
-		log.info("LEAVE");
-		Map<String, Object> retProps = new HashMap<String, Object>();
+	public PluginReturn leave(ReservationId resId, Properties inProperties) {
+		log.info("LEAVE for " + resId + " with " + inProperties);
+		Properties retProps = new Properties();
 		retProps.put("key11", "val11");
 		retProps.put("key21", "val21");
 		List<String> val3 = new ArrayList<String>();
@@ -48,10 +59,9 @@ public class Main implements Plugin {
 		return new PluginReturn(new ReservationId("null-reservation-001"), retProps);
 	}
 
-	public PluginReturn modify(ReservationId resId,
-			Properties inProperties) {
-		log.info("MODIFY");
-		Map<String, Object> retProps = new HashMap<String, Object>();
+	public PluginReturn modify(ReservationId resId, Properties inProperties) {
+		log.info("MODIFY for " + resId + " with " + inProperties);
+		Properties retProps = new Properties();
 		retProps.put("key12", "val12");
 		retProps.put("key22", "val22");
 		List<String> val3 = new ArrayList<String>();
@@ -61,10 +71,9 @@ public class Main implements Plugin {
 		return new PluginReturn(new ReservationId("null-reservation-001"), retProps);
 	}
 
-	public PluginReturn renew(ReservationId resId,
-			Properties inProperties) {
-		log.info("RENEW");
-		Map<String, Object> retProps = new HashMap<String, Object>();
+	public PluginReturn renew(ReservationId resId, Properties inProperties) {
+		log.info("RENEW  for " + resId + " with " + inProperties);
+		Properties retProps = new Properties();
 		retProps.put("key13", "val13");
 		retProps.put("key23", "val23");
 		List<String> val3 = new ArrayList<String>();

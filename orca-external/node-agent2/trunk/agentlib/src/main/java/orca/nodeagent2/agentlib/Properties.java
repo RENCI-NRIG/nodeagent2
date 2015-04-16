@@ -1,5 +1,6 @@
 package orca.nodeagent2.agentlib;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,11 @@ import java.util.Set;
  * @author ibaldin
  *
  */
-public class Properties implements Map<String, Object> {
+public class Properties implements Map<String, Object>, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Map<String, Object> map = new HashMap<String, Object>();
 	
 	
@@ -19,9 +24,8 @@ public class Properties implements Map<String, Object> {
 		StringBuilder sb = new StringBuilder();
 		
 		for (Map.Entry<String,Object> e: map.entrySet()) {
-			sb.append("  " + e.getKey() + ": " + e.getValue() + "\n");
+			sb.append("  " + e.getKey() + ": " + e.getValue() + ", ");
 		}
-		
 		return sb.toString();
 	}
 

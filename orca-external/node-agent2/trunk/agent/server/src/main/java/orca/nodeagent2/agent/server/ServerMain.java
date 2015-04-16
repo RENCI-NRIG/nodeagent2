@@ -23,16 +23,13 @@ public class ServerMain {
 	// it's a yaml file and in it there is a 'logging.config' variable that specified the log4j config file that is used by
 	// NA2 as well.
 	private static class NA2Initializer implements ApplicationContextInitializer<GenericApplicationContext> {
-		String[] argv;
-
-		public NA2Initializer(String[] a) {
-			argv = a;
-		}
+		private static final String CONFIG_NA2 = "na2.config";
+		private static final String CONFIG_LOGGING = "logging.config";
 
 		public void initialize(GenericApplicationContext ac) {
 
 			// init logging
-			String loggingConfig = ac.getEnvironment().getProperty("logging.config");
+			String loggingConfig = ac.getEnvironment().getProperty(CONFIG_LOGGING);
 			boolean defaultConfig = true;
 
 			if (loggingConfig != null) {
@@ -52,9 +49,16 @@ public class ServerMain {
 				Log l = LogFactory.getLog("serverMain");
 				l.info("NA2 using " + (defaultConfig ? "built-in log4j configuration" : "user-specified configuration in " + loggingConfig));
 
+				String na2Config = ac.getEnvironment().getProperty(CONFIG_NA2);
+				
+				if (na2Config == null) {
+					l.error("Property na2.config pointing to NA2 plugin configuration is not specified, exiting");
+					System.exit(1);
+				}
+				
 				try {
-					l.info("Initializing config parser");
-					Config.initialize(argv[0]);
+					l.info("Initializing Node Agent with " + na2Config);
+					Config.initialize(na2Config);
 
 					l.info("Initializing plugins");
 					PluginsRegistry.getInstance().initialize();
@@ -64,18 +68,19 @@ public class ServerMain {
 					e.printStackTrace();
 					System.exit(1);
 				}
+				
 			}
 		}
 	}
-
+	
 	public static void main(String[] argv) {
 		// start up spring
 		SpringApplication spring = new SpringApplication(ServerMain.class);
 
-		NA2Initializer na2 = new NA2Initializer(argv);
+		NA2Initializer na2 = new NA2Initializer();
 
 		spring.addInitializers(na2);
-
+		
 		spring.run(argv);
 
 	}

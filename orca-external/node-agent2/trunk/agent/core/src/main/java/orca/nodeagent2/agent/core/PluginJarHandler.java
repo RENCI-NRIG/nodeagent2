@@ -118,7 +118,7 @@ public class PluginJarHandler extends JarHandler {
 
 	public String status() throws PluginException {
 		try {
-			return (String)pluginMethod.get(PluginMethod.RENEW.getName()).invoke(instance);
+			return (String)pluginMethod.get(PluginMethod.STATUS.getName()).invoke(instance);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke status method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {

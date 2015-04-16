@@ -11,6 +11,8 @@ public class ReservationId {
 
 	
 	public ReservationId(String i) {
+		if (i == null)
+			id = "NIL";
 		id = i;
 	}
 	

@@ -1,6 +1,8 @@
 package orca.nodeagent2.agent.config;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import orca.nodeagent2.agent.config.xsd.PluginType;
 import orca.nodeagent2.agent.config.xsd.UnitChoice;
@@ -42,16 +44,27 @@ public class Config {
 		return cp.getPassword();
 	}
 	
-	public List<PluginType> getPlugins() {
+	public Map<String, PluginType> getPlugins() {
 		return cp.getPlugins();
 	}
 	
-	public int getDuration(PluginType t) {
-		return cp.getDuration(t) ;
+	public List<PluginType> getPluginsAsList() {
+		List<PluginType> ret = new ArrayList<PluginType>();
+		ret.addAll(cp.getPlugins().values());
+		
+		return ret;
 	}
 	
-	public UnitChoice getDurationUnit(PluginType t) {
-		return cp.getDurationUnit(t);
+	public int getDuration(String name) {
+		return cp.getDuration(name) ;
+	}
+	
+	public UnitChoice getDurationUnit(String name) {
+		return cp.getDurationUnit(name);
 	}
 
+	public PluginType getPlugin(String name) {
+		return cp.getPlugins().get(name);
+	}
+	
 }

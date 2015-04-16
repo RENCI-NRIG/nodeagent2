@@ -2,7 +2,9 @@ package orca.nodeagent2.agent.config;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import orca.nodeagent2.agent.config.xsd.AgentConfigType;
@@ -19,7 +21,7 @@ public class ConfigParser extends ParserHelper {
 	boolean initialized = false;
 
 	AgentConfigType root = null;
-	List<PluginType> plugins = null;
+	Map<String, PluginType> plugins = new HashMap<String, PluginType>();
 
 	protected static final String PKG_LIST = "orca.nodeagent2.agent.config.xsd";
 	protected static final String[] SCHEMA_LIST = { "AgentConfig.xsd" };
@@ -38,10 +40,11 @@ public class ConfigParser extends ParserHelper {
 			root = (AgentConfigType)validateXSDAndParse(text, PKG_LIST, AgentConfigType.class, SCHEMA_LIST, true, l);
 
 			PluginsType pts = root.getPlugins();
-			plugins = pts.getPlugin();
+			List<PluginType> cPlugins = pts.getPlugin();
 
-			for(PluginType pt: plugins) {
+			for(PluginType pt: cPlugins) {
 				l.info("Detected plugin " + pt.getName() + " with jar " + pt.getJar());
+				plugins.put(pt.getName(), pt);
 			}
 
 			initialized = true;
@@ -66,21 +69,24 @@ public class ConfigParser extends ParserHelper {
 		return root.getPassword();
 	}
 
-	
-	public int getDuration(PluginType t) {
-		return t.getSchedulePeriod().getLength();
+	public Integer getDuration(String name) {
+		if (!plugins.containsKey(name))
+			return null;
+		return plugins.get(name).getSchedulePeriod().getLength();
 	}
 	
-	public UnitChoice getDurationUnit(PluginType t) {
-		return t.getSchedulePeriod().getUnit();
+	public UnitChoice getDurationUnit(String name) {
+		if (!plugins.containsKey(name))
+			return null;
+		return plugins.get(name).getSchedulePeriod().getUnit();
 	}
 	
 	/**
 	 * Return an unmodifiable copy
 	 * @return
 	 */
-	public List<PluginType> getPlugins() {
-		return Collections.unmodifiableList(plugins);
+	public Map<String, PluginType> getPlugins() {
+		return Collections.unmodifiableMap(plugins);
 	}
 
 	public static void main(String argv[]) {
@@ -88,8 +94,10 @@ public class ConfigParser extends ParserHelper {
 			ConfigParser cp = new ConfigParser("/Users/ibaldin/workspace-nodeagent2/node-agent2/agent/config/src/main/resources/orca/nodeagent2/agent/config/xsd/test-config.xml");
 			System.out.println(cp.getPassword());
 			
-			for(PluginType t: cp.getPlugins()) {
-				System.out.println("Plugin " + t.getName() + ": " + cp.getDuration(t) + " " + cp.getDurationUnit(t));
+			for(Map.Entry<String, PluginType> te: cp.getPlugins().entrySet()) {
+				System.out.println("Plugin " + te.getValue().getName() + ": " + 
+						cp.getDuration(te.getValue().getName()) + " " + 
+						cp.getDurationUnit(te.getValue().getName()));
 			}
 		} catch (Exception e) {
 			System.err.println(e);
