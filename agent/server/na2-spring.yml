@@ -1,7 +1,20 @@
-# an example configuration file for NA2
+# NA2 example configuration (DO NOT USE TABS)
+# These properties get translated into e.g. na2.config=/some/path
+
+# NA2-specific properties
+na2:
+  config: /Users/ibaldin/workspace-nodeagent2/node-agent2/agent/server/na-test-config.xml
+
+# point to log4j configuration
 logging:
   config: /Users/ibaldin/workspace-nodeagent2/node-agent2/agent/server/log4j-na2.properties
 
-#security:
-#  basic:
-#    enabled: false
+# set the file name pattern of the database (notice it creates multiple files with common name root)
+spring:
+  datasource:
+    url: jdbc:hsqldb:file:/Users/ibaldin/workspace-nodeagent2/node-agent2/agent/server/db/testdb
+    username: sa
+  jpa:
+    hibernate:
+      ddl-auto: update
+

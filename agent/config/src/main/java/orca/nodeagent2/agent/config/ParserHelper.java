@@ -61,7 +61,6 @@ public class ParserHelper {
 				// which SchemaFactory is used (xerces or SUNs). Java 5's SchemaFactory is faulty.
 				// Also requires maven dependency update (to include xerces)
 				//
-				System.out.println("GETTING " + rootPkg.replace('.', File.separatorChar) + File.separator + schemaName);
 				schemaSources[i++] = new StreamSource(
 						startClass.getClassLoader().getResourceAsStream(
 								rootPkg.replace('.', File.separatorChar) + File.separator + schemaName));
