@@ -24,6 +24,9 @@
     		<element name="schedulePeriod" type="tns:timeUnit"
     			minOccurs="1" maxOccurs="1">
     		</element>
+    		<element name="renewAdvanceTicks" type="int"
+    		    minOccurs="0" maxOccurs="1">
+    		</element>
     		<element name="config" type="string" minOccurs="0"
     			maxOccurs="1">
     		</element>
@@ -45,6 +48,9 @@
 
     <complexType name="agentConfigType">
     	<all>
+    	   	<element name="tick" type="tns:timeUnit" 
+    			minOccurs="1" maxOccurs="1">
+    		</element>
     		<element name="plugins" type="tns:pluginsType" maxOccurs="1"
     			minOccurs="1">
     		</element>

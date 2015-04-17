@@ -12,18 +12,18 @@ import java.util.Set;
  * @author ibaldin
  *
  */
-public class Properties implements Map<String, Object>, Serializable {
+public class Properties implements Map<String, String>, Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Map<String, Object> map = new HashMap<String, Object>();
+	Map<String, String> map = new HashMap<String, String>();
 	
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		for (Map.Entry<String,Object> e: map.entrySet()) {
+		for (Map.Entry<String,String> e: map.entrySet()) {
 			sb.append("  " + e.getKey() + ": " + e.getValue() + ", ");
 		}
 		return sb.toString();
@@ -49,22 +49,22 @@ public class Properties implements Map<String, Object>, Serializable {
 	}
 
 
-	public Object get(Object key) {
+	public String get(Object key) {
 		return map.get(key);
 	}
 
 
-	public Object put(String key, Object value) {
+	public String put(String key, String value) {
 		return map.put(key, value);
 	}
 
 
-	public Object remove(Object key) {
+	public String remove(Object key) {
 		return map.remove(key);
 	}
 
 
-	public void putAll(Map<? extends String, ? extends Object> m) {
+	public void putAll(Map<? extends String, ? extends String> m) {
 		map.putAll(m);
 	}
 
@@ -79,12 +79,12 @@ public class Properties implements Map<String, Object>, Serializable {
 	}
 
 
-	public Collection<Object> values() {
+	public Collection<String> values() {
 		return map.values();
 	}
 
 
-	public Set<java.util.Map.Entry<String, Object>> entrySet() {
+	public Set<java.util.Map.Entry<String, String>> entrySet() {
 		return map.entrySet();
 	}
 }

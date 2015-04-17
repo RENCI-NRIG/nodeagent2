@@ -1,0 +1,11 @@
+#!/bin/bash 
+
+url="http://localhost:8080/join/Null-Test-Plugin"
+
+
+curl -g -H 'Content-Type: application/json' --digest --user admin:pass -X POST $url -d '{
+   "initial-property-one" : "some value one",
+   "initial-property-two" : "some value two"
+}'
+
+echo 

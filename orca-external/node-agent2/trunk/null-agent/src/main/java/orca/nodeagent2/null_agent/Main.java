@@ -1,7 +1,7 @@
 package orca.nodeagent2.null_agent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+import java.util.Random;
 
 import orca.nodeagent2.agentlib.Plugin;
 import orca.nodeagent2.agentlib.PluginException;
@@ -23,11 +23,43 @@ import com.google.gson.Gson;
  */
 public class Main implements Plugin {
 	ClassLoader coreLoader;
+	RandomString rstr;
 	Log log;
 	
-	public PluginReturn join(Properties inProperties) {
+	
+	public static class RandomString {
+
+		private static final char[] symbols;
+
+		static {
+			StringBuilder tmp = new StringBuilder();
+			for (char ch = '0'; ch <= '9'; ++ch)
+				tmp.append(ch);
+			for (char ch = 'a'; ch <= 'z'; ++ch)
+				tmp.append(ch);
+			symbols = tmp.toString().toCharArray();
+		}   
+
+		private final Random random = new Random();
+
+		private final char[] buf;
+
+		public RandomString(int length) {
+			if (length < 1)
+				throw new IllegalArgumentException("length < 1: " + length);
+			buf = new char[length];
+		}
+
+		public String nextString() {
+			for (int idx = 0; idx < buf.length; ++idx) 
+				buf[idx] = symbols[random.nextInt(symbols.length)];
+			return new String(buf);
+		}
+	}
+	
+	public PluginReturn join(Date until, Properties inProperties) {
 		
-		log.info("JOIN " + inProperties);
+		log.info("JOIN until " + until + " with " + inProperties);
 
 		Gson gson = new Gson();
 		gson.toJson(1);           
@@ -40,11 +72,8 @@ public class Main implements Plugin {
 		Properties retProps = new Properties();
 		retProps.put("key1", "val1");
 		retProps.put("key2", "val2");
-		List<String> val3 = new ArrayList<String>();
-		val3.add("string1");
-		val3.add("string2");
-		retProps.put("key3", val3);
-		return new PluginReturn(new ReservationId("null-reservation-001"), retProps);
+		retProps.put("key3", "string35");
+		return new PluginReturn(new ReservationId(rstr.nextString()), retProps);
 	}
 
 	public PluginReturn leave(ReservationId resId, Properties inProperties) {
@@ -52,11 +81,8 @@ public class Main implements Plugin {
 		Properties retProps = new Properties();
 		retProps.put("key11", "val11");
 		retProps.put("key21", "val21");
-		List<String> val3 = new ArrayList<String>();
-		val3.add("string11");
-		val3.add("string21");
-		retProps.put("key31", val3);
-		return new PluginReturn(new ReservationId("null-reservation-001"), retProps);
+		retProps.put("key31", "stgring46");
+		return new PluginReturn(resId, retProps);
 	}
 
 	public PluginReturn modify(ReservationId resId, Properties inProperties) {
@@ -64,23 +90,17 @@ public class Main implements Plugin {
 		Properties retProps = new Properties();
 		retProps.put("key12", "val12");
 		retProps.put("key22", "val22");
-		List<String> val3 = new ArrayList<String>();
-		val3.add("string12");
-		val3.add("string22");
-		retProps.put("key32", val3);
-		return new PluginReturn(new ReservationId("null-reservation-001"), retProps);
+		retProps.put("key32", "String67");
+		return new PluginReturn(resId, retProps);
 	}
 
-	public PluginReturn renew(ReservationId resId, Properties inProperties) {
-		log.info("RENEW  for " + resId + " with " + inProperties);
+	public PluginReturn renew(ReservationId resId, Date until, Properties inProperties, Properties joinProperties) {
+		log.info("RENEW  for " + resId + " until " + until + " with " + inProperties + " and " + joinProperties);
 		Properties retProps = new Properties();
 		retProps.put("key13", "val13");
 		retProps.put("key23", "val23");
-		List<String> val3 = new ArrayList<String>();
-		val3.add("string13");
-		val3.add("string23");
-		retProps.put("key33", val3);
-		return new PluginReturn(new ReservationId("null-reservation-001"), retProps);
+		retProps.put("key33", "string78");
+		return new PluginReturn(resId, retProps);
 	}
 
 	public String status() {
@@ -93,6 +113,7 @@ public class Main implements Plugin {
 		try {
 			// this is how you get hold of the logger
 			log = Util.getLog(cl, "null-plugin");
+			rstr = new RandomString(10);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

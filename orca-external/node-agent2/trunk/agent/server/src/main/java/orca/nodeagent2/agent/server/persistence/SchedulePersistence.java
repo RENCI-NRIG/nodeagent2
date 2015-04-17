@@ -1,11 +1,19 @@
 package orca.nodeagent2.agent.server.persistence;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
+import javax.persistence.PersistenceException;
+
+import orca.nodeagent2.agent.config.Config;
 import orca.nodeagent2.agentlib.Properties;
+import orca.nodeagent2.agentlib.ReservationId;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,48 +28,93 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class SchedulePersistence {
 
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private ScheduledFuture<?> tickHandle = null;
+	
 	@Autowired
 	IScheduleRepository repository;
 	
 	Log l = LogFactory.getLog("schedulePersistence");
 	
-	/**
-	 * Save the renew deadline for a plugin with properties
-	 * @param name
-	 * @param deadline
-	 * @param props
-	 */
-	public synchronized void saveDeadline(String name, Date deadline, Properties props) {
-		l.debug("Saving plugin " + name + " deadline " + deadline);
-		repository.save(new ScheduleEntry(name, deadline, props));
+	public SchedulePersistence() {
+		// start periodic thread
+		try {
+			l.info("Starting periodic tick thread every " + Config.getInstance().getTickLength() + " " + Config.getInstance().getTickTimeUnit());
+			tickHandle = scheduler.scheduleAtFixedRate(new RenewExpiringThread(this), 10, 
+					Config.getInstance().getTickLength(), 
+					Config.getInstance().getTickTimeUnit());
+		} catch (Exception e) {
+			l.error("Unable to start periodic expiry check thread! : " + e);
+		}
 	}
 	
 	/**
-	 * Find a deadline for a plugin
+	 * Save the renew deadline for a plugin with properties. Subtract the advance tick
+	 * prior to saving
+	 * @param name
+	 * @param what the deadline is set to 
+	 * @param deadline
+	 * @param props
+	 */
+	public synchronized void saveRenewDeadline(String name, Date future, ReservationId r, Properties inProps, Properties joinProps) throws Exception {
+		
+		// see if this plugin has a schedule period
+		if (Config.getInstance().getSchedulePeriod(name) <= 0) {
+			l.info("Plugin " + name + " has schedule period of 0, skipping saving deadline for " + r);
+			return;
+		}
+		
+		// get now time
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(future);
+		// subtract the number of ticks
+		cal.add(Config.getInstance().getTickCalendarUnit(), -1 * Config.getInstance().getTickLength() * Config.getInstance().getAdvanceTicks(name));
+		l.info("Saving  renew deadline for reservation " + r + " plugin " + name + " at " + cal.getTime());
+		l.debug("inProperties: " + inProps);
+		l.debug("joinProperties: " + joinProps);
+
+		repository.save(new ScheduleEntry(name, r.getId(), cal.getTime(), inProps, joinProps));
+	}
+	
+	/**
+	 * Find all expired entries in db
+	 * @return
+	 */
+	public synchronized List<ScheduleEntry> findExpiredEntries() {
+		l.info("Searching for expired entries in db");
+		return repository.findByDeadlineBefore(new Date());
+	}
+	
+	/**
+	 * Return all entries for a particular plugin
 	 * @param name
 	 * @return
 	 * @throws PersistenceException
 	 */
-	public synchronized Date findDeadline(String name) throws PersistenceException {
-		l.debug("Searching for deadline for plugin " + name);
+	public synchronized List<ScheduleEntry> findEntries(String name) throws PersistenceException {
+		l.info("Searching for entries for plugin " + name);
 		List<ScheduleEntry> matches = repository.findByName(name);
-		if (matches.size() == 0) {
-			l.warn("No matches found for plugin " + name);
-			throw new PersistenceException("No matches found for plugin " + name);
-		}
-		if (matches.size() > 1)
-			l.warn("Schedule repository returned more than one result for " + name);
-		return matches.get(0).getDeadline();
-
+		return matches;
+	}
+	
+	public synchronized List<ScheduleEntry> findEntries(String name, String resId) {
+		l.info("Searching for entries for " + name + " and reservation " + resId);
+		List<ScheduleEntry> matches = repository.findByNameAndReservationId(name, resId);
+		return matches;
+	}
+	
+	public synchronized void removeEntry(String name, ReservationId resId) {
+		List<ScheduleEntry> matches = repository.findByNameAndReservationId(name, resId.getId());
+		removeEntries(matches);
 	}
 	
 	/**
-	 * Removes the currently stored deadline for a plugin (if present)
+	 * Removes the currently stored deadlines for all reservations for a  plugin (if present)
 	 * @param name
 	 * @throws PersistenceException
 	 */
-	public synchronized void removeDeadline(String name) throws PersistenceException {
-		l.debug("Removing deadline(s) for plugin " + name);
+	public synchronized void removeEntries(String name) throws PersistenceException {
+		l.info("Removing deadline(s) for plugin " + name);
 		List<ScheduleEntry> matches = repository.findByName(name);
 		for(ScheduleEntry e: matches) {
 			l.debug("Removing entry " + e);
@@ -69,8 +122,19 @@ public class SchedulePersistence {
 		}
 	}
 	
+	/**
+	 * Remove specified entries
+	 * @param ee
+	 */
+	public synchronized void removeEntries(List<ScheduleEntry> ee) {
+		for(ScheduleEntry e: ee) {
+			l.debug("Removing entry " + e);
+			repository.delete(e);
+		}
+	}
+	
 	public synchronized List<ScheduleEntry> getAll() throws PersistenceException {
-		l.debug("Getting a list from DB");
+		l.info("Getting a list from DB");
 		Iterable<ScheduleEntry> e = repository.findAll();
 		Iterator<ScheduleEntry> ei = e.iterator();
 		List<ScheduleEntry> entries = new ArrayList<ScheduleEntry>();
@@ -79,4 +143,5 @@ public class SchedulePersistence {
 		}
 		return entries;
 	}
+	
 }

@@ -1,5 +1,7 @@
 package orca.nodeagent2.agentlib;
 
+import java.util.Date;
+
 
 /**
  * This is the interface all plugins must conform to. The dynamic loader does its best to check
@@ -24,11 +26,12 @@ public interface Plugin {
 	public void initialize(String config, Properties inProperties, ClassLoader cl) throws PluginException;
 	
 	/**
-	 * Provision a new resource with properties specified in the map. 
+	 * Provision a new resource with properties specified in the map.
+	 * @param until - until when, configured in the plugin 
 	 * @param inPropeties
 	 * @return properties, status and reservation id 
 	 */
-	public PluginReturn join(Properties inPropeties) throws PluginException;
+	public PluginReturn join(Date until, Properties inPropeties) throws PluginException;
 	
 	/**
 	 * Close the reservation. The core provides storage for properties for recovery
@@ -48,10 +51,12 @@ public interface Plugin {
 	/**
 	 * Renew the reservation
 	 * @param resId
-	 * @param inProperties
+	 * @param until - the date
+	 * @param inProperties - properties passed in originally
+	 * @param joinProperties - properties returned by join operation
 	 * @return
 	 */
-	public PluginReturn renew(ReservationId resId, Properties inProperties) throws PluginException;
+	public PluginReturn renew(ReservationId resId, Date until, Properties inProperties, Properties joinProperties) throws PluginException;
 
 	/**
 	 * Return a status message for this plugin - free format

@@ -1,0 +1,8 @@
+#!/bin/bash 
+
+url="http://localhost:8080/status/Null-Test-Plugin"
+
+
+curl -g -H 'Content-Type: application/json' --digest --user user:password $url
+
+echo 

@@ -4,11 +4,12 @@
 	xsi:schemaLocation="http://geni-orca.renci.org/xml/node-agent2/AgentConfig http://geni-orca.renci.org/xml/node-agent2/AgentConfig.xsd"
 	password="pass">
 
+	<tick length="10" unit="second"/>
 	<plugins>
 		<plugin name="Null-Test-Plugin">
 			<jar>/Users/ibaldin/workspace-nodeagent2/node-agent2/null-agent/target/null-agent-0.1-SNAPSHOT-jar-with-dependencies.jar</jar>
 			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
-			<schedulePeriod length="1" unit="minute" />
+			<schedulePeriod length="3" unit="minute" />
 			<description>Null plugin for testing</description>
 			<properties>
 				<property name="pr" value="val" />
@@ -18,7 +19,7 @@
 		<plugin name="Some-Test-Plugin">
 			<jar>/Users/ibaldin/workspace-nodeagent2/node-agent2/null-agent/target/null-agent-0.1-SNAPSHOT.jar</jar>
 			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
-			<schedulePeriod length="5" unit="minute" />
+			<schedulePeriod length="60" unit="second" />
 			<properties>
 				<property name="pr" value="val" />
 				<property name="pr1" value="val1" />
