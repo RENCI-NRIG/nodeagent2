@@ -1,11 +1,13 @@
 package orca.nodeagent2.agent.config;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import orca.nodeagent2.agent.config.xsd.AgentConfigType;
 import orca.nodeagent2.agent.config.xsd.PluginType;
@@ -25,7 +27,6 @@ public class ConfigParser extends ParserHelper {
 
 	protected static final String PKG_LIST = "orca.nodeagent2.agent.config.xsd";
 	protected static final String[] SCHEMA_LIST = { "AgentConfig.xsd" };
-	protected enum timeUnit{WEEK, DAY, HOUR, MINUTE, SECOND};
 
 	public ConfigParser(String fname) throws Exception {
 		l = LogFactory.getLog("config");
@@ -45,6 +46,17 @@ public class ConfigParser extends ParserHelper {
 			for(PluginType pt: cPlugins) {
 				l.info("Detected plugin " + pt.getName() + " with jar " + pt.getJar());
 				plugins.put(pt.getName(), pt);
+				// check plugin periods against tick length
+				if (pt.getSchedulePeriod().getUnit().equals(root.getTick().getUnit())) {
+					if (pt.getSchedulePeriod().getLength() % root.getTick().getLength() != 0)
+						throw new Exception("NodeAgent tick does not divide plugin " + pt.getName() + " period evenly");
+				}
+				Calendar plugin = Calendar.getInstance();
+				Calendar tick = (Calendar)plugin.clone();
+				plugin.add(convertToCalendarUnits(pt.getSchedulePeriod().getUnit()), pt.getSchedulePeriod().getLength());
+				tick.add(convertToCalendarUnits(root.getTick().getUnit()), root.getTick().getLength());
+				if (tick.after(plugin))
+					throw new Exception("NodeAgent tick too long for plugin " + pt.getName());
 			}
 
 			initialized = true;
@@ -57,38 +69,121 @@ public class ConfigParser extends ParserHelper {
 		}
 	}
 
+	/**
+	 * Convert XML Config Unit Choice into Calendar time units
+	 * @param uc
+	 * @return
+	 */
+	private static int convertToCalendarUnits(UnitChoice uc) throws Exception {
+		if (uc == null)
+			throw new Exception("Unable to convert time unit null");
+		switch(uc) {
+		case WEEK: return Calendar.WEEK_OF_YEAR;
+		case DAY: return Calendar.DAY_OF_YEAR;
+		case HOUR: return Calendar.HOUR;
+		case MINUTE: return Calendar.MINUTE;
+		case SECOND: return Calendar.SECOND;
+		default: return 0;
+		}
+	}
+	
+	private static TimeUnit convertToTimeUnits(UnitChoice uc) throws Exception {
+		if (uc == null)
+			throw new Exception ("Unable to convert time unit null");
+		switch(uc) {
+		case WEEK: 
+			throw new Exception("Unable to convert unit Week to Java, please use days or smaller");
+		case DAY: return TimeUnit.DAYS;
+		case HOUR: return TimeUnit.HOURS;
+		case MINUTE: return TimeUnit.MINUTES;
+		case SECOND: return TimeUnit.SECONDS;
+		default: return TimeUnit.SECONDS;
+		}
+	}
+	
 	public boolean isInitialized() {
 		return initialized;
 	}
 
 	/**
-	 * Get the password in configuration file
+	 * Get the node-agent password in configuration file
 	 * @return
 	 */
 	public String getPassword() {
 		return root.getPassword();
 	}
-
-	public Integer getDuration(String name) {
-		if (!plugins.containsKey(name))
-			return null;
-		return plugins.get(name).getSchedulePeriod().getLength();
-	}
 	
-	public UnitChoice getDurationUnit(String name) {
-		if (!plugins.containsKey(name))
-			return null;
-		return plugins.get(name).getSchedulePeriod().getUnit();
+	/**
+	 * What is the tick
+	 * @return
+	 */
+	public Integer getTickLength() {
+		return root.getTick().getLength();
+	}
+
+	public UnitChoice getTickUnit() {
+		return root.getTick().getUnit();
 	}
 	
 	/**
-	 * Return an unmodifiable copy
+	 * Conver to calendar unit measurements
+	 * @return
+	 * @throws Exception
+	 */
+	public int getTickCalendarUnit() throws Exception {
+		return convertToCalendarUnits(getTickUnit());
+	}
+	
+	/**
+	 * Convert to java concurrency unit measurements
+	 * @return
+	 * @throws Exception
+	 */
+	public TimeUnit getTickTimeUnit() throws Exception {
+		return convertToTimeUnits(getTickUnit());
+	}
+	
+	/**
+	 * What is the schedule length for the plugin
+	 * @param name
+	 * @return
+	 */
+	public Integer getSchedulePeriod(String name) throws Exception {
+		if (!plugins.containsKey(name))
+			throw new Exception("Unable to find plugin " + name);
+		return plugins.get(name).getSchedulePeriod().getLength();
+	}
+	
+	public UnitChoice getSchedulePeriodUnit(String name) throws Exception {
+		if (!plugins.containsKey(name))
+			throw new Exception("Unable to find plugin " + name);
+		return plugins.get(name).getSchedulePeriod().getUnit();
+	}
+	
+	public int getSchedulePeriodCalendarUnit(String name) throws Exception {
+		return convertToCalendarUnits(getSchedulePeriodUnit(name));
+	}
+	
+	/**
+	 * Return an unmodifiable copy of plugins map
 	 * @return
 	 */
 	public Map<String, PluginType> getPlugins() {
 		return Collections.unmodifiableMap(plugins);
 	}
-
+	
+	/**
+	 * Return advance ticks specified in the configuration (or 1 if none is specified)
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	public int getRenewAdvanceTicks(String name) throws Exception {
+		if (plugins.containsKey(name) && (plugins.get(name).getRenewAdvanceTicks() != null))
+			return plugins.get(name).getRenewAdvanceTicks();
+		else return 1;
+	}
+	
 	public static void main(String argv[]) {
 		try {
 			ConfigParser cp = new ConfigParser("/Users/ibaldin/workspace-nodeagent2/node-agent2/agent/config/src/main/resources/orca/nodeagent2/agent/config/xsd/test-config.xml");
@@ -96,8 +191,8 @@ public class ConfigParser extends ParserHelper {
 			
 			for(Map.Entry<String, PluginType> te: cp.getPlugins().entrySet()) {
 				System.out.println("Plugin " + te.getValue().getName() + ": " + 
-						cp.getDuration(te.getValue().getName()) + " " + 
-						cp.getDurationUnit(te.getValue().getName()));
+						cp.getSchedulePeriod(te.getValue().getName()) + " " + 
+						cp.getSchedulePeriodUnit(te.getValue().getName()));
 			}
 		} catch (Exception e) {
 			System.err.println(e);

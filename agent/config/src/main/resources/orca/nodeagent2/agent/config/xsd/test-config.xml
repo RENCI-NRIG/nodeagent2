@@ -4,11 +4,12 @@
 	xsi:schemaLocation="http://geni-orca.renci.org/xml/node-agent2/AgentConfig http://geni-orca.renci.org/xml/node-agent2/AgentConfig.xsd"
 	password="pass">
 
+	<tick length="1" unit="minute"/>
 	<plugins>
 		<plugin name="Null-Plugin">
 			<jar>/some/file/name.jar</jar>
 			<mainClass>some.class.name</mainClass>
-			<<schedulePeriod length="0" unit="day"/>
+			<schedulePeriod length="0" unit="day"/>
 			<config>/etc/orca/am+broker/node-config</config>
 			<properties>
 				<property name="pr" value="val" />
@@ -19,6 +20,7 @@
 			<jar>/other/file/name.jar</jar>
 			<mainClass>other.class.name</mainClass>
 			<schedulePeriod length="1" unit="week"/>
+			<renewAdvanceTicks>1</renewAdvanceTicks>
 			<config>/etc/orca/am+broker/node-config</config>
 			<properties>
 				<property name="pr" value="val" />

@@ -208,7 +208,11 @@ public class RestClient {
 	public static void main(String[] args) throws  Exception {
 		RestClient rc = new RestClient();
 
-		//rc.testPostLeave();
+		System.out.println("JOIN");
+		rc.testPostJoin();
+		System.out.println("LEAVE");
+		rc.testPostLeave();
+		System.out.println("PLUGINS");
 		rc.testPlugins();
 	}
 }

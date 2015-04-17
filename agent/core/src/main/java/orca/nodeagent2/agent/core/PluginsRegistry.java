@@ -1,5 +1,6 @@
 package orca.nodeagent2.agent.core;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +45,8 @@ public class PluginsRegistry {
 		// initialize plugins
 		for(PluginType pt: Config.getInstance().getPluginsAsList()) {
 			l.info("Initializing plugin " + pt.getName() + " with period " + 
-		Config.getInstance().getDuration(pt.getName()) + " " + 
-		Config.getInstance().getDurationUnit(pt.getName()).value());
+		Config.getInstance().getSchedulePeriod(pt.getName()) + " " + 
+		Config.getInstance().getSchedulePeriodUnit(pt.getName()).value());
 			PluginsRegistry.getInstance().addPlugin(pt);
 		}
 	}
@@ -68,11 +69,11 @@ public class PluginsRegistry {
 		pluginConfigs.put(pt.getName(), pt);
 	}
 	
-	public PluginReturn join(String pluginName, Properties inProperties) throws Exception, PluginException {
+	public PluginReturn join(String pluginName, Date until, Properties inProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in join call to plugin " + pluginName + ": plugin not found");
 		
-		return plugins.get(pluginName).join(inProperties);
+		return plugins.get(pluginName).join(until, inProperties);
 	}
 	
 	public PluginReturn leave(String pluginName, ReservationId resId, Properties inProperties) throws Exception, PluginException {
@@ -89,11 +90,11 @@ public class PluginsRegistry {
 		return plugins.get(pluginName).modify(resId, inProperties);
 	}
 	
-	public PluginReturn renew(String pluginName, ReservationId resId, Properties inProperties) throws Exception, PluginException {
+	public PluginReturn renew(String pluginName, ReservationId resId, Date until, Properties inProperties, Properties joinProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in renew call to plugin " + pluginName + ": plugin not found");
 		
-		return plugins.get(pluginName).renew(resId, inProperties);
+		return plugins.get(pluginName).renew(resId, until, inProperties, joinProperties);
 	}
 	
 	public String status(String pluginName) throws Exception, PluginException {

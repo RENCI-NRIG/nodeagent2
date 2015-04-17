@@ -68,7 +68,6 @@ public class ServerMain {
 					e.printStackTrace();
 					System.exit(1);
 				}
-				
 			}
 		}
 	}

@@ -1,0 +1,12 @@
+#!/bin/bash 
+
+url="http://localhost:8080/leave/Null-Test-Plugin"
+
+curl -g -H 'Content-Type: application/json' --digest --user admin:pass -X POST $url -d '{
+    "id":"'$1'",
+    "props":{
+        "property one":"some value one",
+        "property two":"some value two"
+}
+}'
+echo 

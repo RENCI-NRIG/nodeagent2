@@ -3,6 +3,7 @@ package orca.nodeagent2.agent.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,9 +69,9 @@ public class PluginJarHandler extends JarHandler {
 		}
 	}
 
-	public PluginReturn join(Properties inProperties) throws PluginException {
+	public PluginReturn join(Date until, Properties inProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.JOIN.getName()).invoke(instance, inProperties);
+			return (PluginReturn)pluginMethod.get(PluginMethod.JOIN.getName()).invoke(instance, until, inProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke join method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -104,9 +105,9 @@ public class PluginJarHandler extends JarHandler {
 		}
 	}
 
-	public PluginReturn renew(ReservationId resId, Properties inProperties) throws PluginException {
+	public PluginReturn renew(ReservationId resId, Date until, Properties inProperties, Properties joinProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.RENEW.getName()).invoke(instance, resId, inProperties);
+			return (PluginReturn)pluginMethod.get(PluginMethod.RENEW.getName()).invoke(instance, resId, until, inProperties, joinProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke renew method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -146,7 +147,7 @@ public class PluginJarHandler extends JarHandler {
 		try {
 			PluginJarHandler pjh = new PluginJarHandler("/Users/ibaldin/workspace-nodeagent2/node-agent2/null-agent/target/null-agent-0.1-SNAPSHOT.jar", 
 					"orca.nodeagent2.null_agent.Main");
-			pjh.join(null);
+			pjh.join(new Date(), null);
 		} catch (PluginException e) {
 			System.err.println("PLUGIN EXCEPTION: " + e);
 		} catch (Exception e) {

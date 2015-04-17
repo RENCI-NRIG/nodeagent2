@@ -1,5 +1,7 @@
 package orca.nodeagent2.agent.server;
 
+import orca.nodeagent2.agent.config.Config;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +27,7 @@ public class RestDigestSecurityConfig extends WebSecurityConfigurerAdapter
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception
 	{
-		auth.inMemoryAuthentication().withUser("user").password("password").roles("USER");
+		auth.inMemoryAuthentication().withUser("admin").password(Config.getInstance().getPassword()).roles("USER");
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class RestDigestSecurityConfig extends WebSecurityConfigurerAdapter
 	}
 
 	/**
-	 * The only kind of overrid that is allowed here
+	 * The only kind of override that is allowed here
 	 */
 	@Override
 	@Bean

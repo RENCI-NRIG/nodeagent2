@@ -1,6 +1,11 @@
 package orca.nodeagent2.agent.server;
 
+import java.util.Calendar;
+import java.util.List;
+
+import orca.nodeagent2.agent.config.Config;
 import orca.nodeagent2.agent.core.PluginsRegistry;
+import orca.nodeagent2.agent.server.persistence.ScheduleEntry;
 import orca.nodeagent2.agent.server.persistence.SchedulePersistence;
 import orca.nodeagent2.agentlib.LMParams;
 import orca.nodeagent2.agentlib.PluginErrorCodes;
@@ -15,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,9 +47,18 @@ public class PluginController {
 	@ResponseBody
 	public PluginReturn join(@PathVariable("pName") String name, @RequestBody Properties props) {
 		try {
-			l.info("JOIN call to " + name);
+			Calendar future = Calendar.getInstance();
+			future.add(Config.getInstance().getSchedulePeriodCalendarUnit(name), Config.getInstance().getSchedulePeriod(name));
+			l.info("JOIN call to " + name + ", setting deadline to " + future.getTime());
 			l.debug("  with properties " + props);
-			PluginReturn pr = PluginsRegistry.getInstance().join(name, props);
+			
+			PluginReturn pr = PluginsRegistry.getInstance().join(name, future.getTime(), props);
+			
+			// insert the renew event into the database with initial and returned properties
+			// the deadline is set to the execution deadline (schedule period - tick advance)
+			l.info("Updating the database for " + name + " new reservation " + pr.getResId());
+			sp.saveRenewDeadline(name, future.getTime(), pr.getResId(), props, pr.getProperties());
+			
 			return pr;
 		} catch (PluginException pe) {
 			l.error("Error invoking join on " + name + ": " + pe);
@@ -62,6 +75,10 @@ public class PluginController {
 		try {
 			l.info("LEAVE call to " + name + " for " + params.getId());
 			l.debug("  with properties " + params.getProperties());
+			
+			l.info("Removing from the database");
+			sp.removeEntry(name, params.getId());
+			
 			PluginReturn pr = PluginsRegistry.getInstance().leave(name, params.getId(), params.getProperties());
 			return pr;
 		} catch (PluginException pe) {

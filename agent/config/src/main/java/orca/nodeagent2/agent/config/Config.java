@@ -3,6 +3,7 @@ package orca.nodeagent2.agent.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import orca.nodeagent2.agent.config.xsd.PluginType;
 import orca.nodeagent2.agent.config.xsd.UnitChoice;
@@ -55,16 +56,40 @@ public class Config {
 		return ret;
 	}
 	
-	public int getDuration(String name) {
-		return cp.getDuration(name) ;
+	public int getSchedulePeriod(String name) throws Exception {
+		return cp.getSchedulePeriod(name) ;
 	}
 	
-	public UnitChoice getDurationUnit(String name) {
-		return cp.getDurationUnit(name);
+	public UnitChoice getSchedulePeriodUnit(String name) throws Exception {
+		return cp.getSchedulePeriodUnit(name);
 	}
 
+	public int getSchedulePeriodCalendarUnit(String name) throws Exception {
+		return cp.getSchedulePeriodCalendarUnit(name);
+	}
+	
+	public int getTickLength() {
+		return cp.getTickLength();
+	}
+	
+	public UnitChoice getTickUnit() {
+		return cp.getTickUnit();
+	}
+	
+	public int getTickCalendarUnit() throws Exception {
+		return cp.getTickCalendarUnit();
+	}
+	
+	public TimeUnit getTickTimeUnit() throws Exception {
+		return cp.getTickTimeUnit();
+	}
+	
 	public PluginType getPlugin(String name) {
 		return cp.getPlugins().get(name);
+	}
+	
+	public int getAdvanceTicks(String name) throws Exception {
+		return cp.getRenewAdvanceTicks(name);
 	}
 	
 }
