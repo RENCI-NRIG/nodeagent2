@@ -1,11 +1,9 @@
 package orca.nodeagent2.agent.server;
 
 import java.util.Calendar;
-import java.util.List;
 
 import orca.nodeagent2.agent.config.Config;
 import orca.nodeagent2.agent.core.PluginsRegistry;
-import orca.nodeagent2.agent.server.persistence.ScheduleEntry;
 import orca.nodeagent2.agent.server.persistence.SchedulePersistence;
 import orca.nodeagent2.agentlib.LMParams;
 import orca.nodeagent2.agentlib.PluginErrorCodes;

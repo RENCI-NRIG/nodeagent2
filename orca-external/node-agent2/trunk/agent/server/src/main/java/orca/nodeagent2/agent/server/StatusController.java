@@ -35,7 +35,7 @@ public class StatusController {
 	 */
 	@RequestMapping(value="/plugins/{pName}", method=RequestMethod.GET)
 	@ResponseBody
-	public StatusBean status(@PathVariable(value="pName") String name) {
+	public StatusBean plugins(@PathVariable(value="pName") String name) {
 		try {
 			l.info("Status request for " + name);
 			if ((name == null) || "all".equalsIgnoreCase(name)) 
@@ -54,7 +54,7 @@ public class StatusController {
 	
 	@RequestMapping(value="/plugins", method=RequestMethod.GET)
 	@ResponseBody
-	public StatusBean status() {
+	public StatusBean plugins() {
 		try {
 			l.info("Status request for all plugins");
 			return new StatusBean(null, Config.getInstance().getPluginsAsList());
