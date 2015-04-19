@@ -12,6 +12,7 @@ import java.util.concurrent.ScheduledFuture;
 import javax.persistence.PersistenceException;
 
 import orca.nodeagent2.agent.config.Config;
+import orca.nodeagent2.agent.server.renew.RenewExpiringThread;
 import orca.nodeagent2.agentlib.Properties;
 import orca.nodeagent2.agentlib.ReservationId;
 
