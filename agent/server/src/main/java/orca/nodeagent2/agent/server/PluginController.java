@@ -5,11 +5,11 @@ import java.util.Calendar;
 import orca.nodeagent2.agent.config.Config;
 import orca.nodeagent2.agent.core.PluginsRegistry;
 import orca.nodeagent2.agent.server.persistence.SchedulePersistence;
-import orca.nodeagent2.agentlib.LMParams;
 import orca.nodeagent2.agentlib.PluginErrorCodes;
 import orca.nodeagent2.agentlib.PluginException;
 import orca.nodeagent2.agentlib.PluginReturn;
 import orca.nodeagent2.agentlib.Properties;
+import orca.nodeagent2.agentlib.ReservationId;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,10 +52,14 @@ public class PluginController {
 			
 			PluginReturn pr = PluginsRegistry.getInstance().join(name, future.getTime(), props);
 			
-			// insert the renew event into the database with initial and returned properties
-			// the deadline is set to the execution deadline (schedule period - tick advance)
-			l.info("Updating the database for " + name + " new reservation " + pr.getResId());
-			sp.saveRenewDeadline(name, future.getTime(), pr.getResId(), props, pr.getProperties());
+			if (pr.getStatus() == PluginErrorCodes.OK.code) {
+				// insert the renew event into the database with initial and returned properties 
+				// the deadline is set to the execution deadline (schedule period - tick advance)
+				l.info("Updating the database for " + name + " new reservation " + pr.getResId());
+				sp.saveRenewDeadline(name, future.getTime(), pr.getResId(), props, pr.getProperties(), 0, null);
+			} else {
+				l.error("JOIN returned an error " + pr.getStatus() + " " + pr.getErrorMsg());
+			}
 			
 			return pr;
 		} catch (PluginException pe) {
@@ -67,55 +71,62 @@ public class PluginController {
 		}	
 	}
 
-	@RequestMapping(value="/leave/{pName}", method=RequestMethod.POST, consumes = { "application/json" })
+	@RequestMapping(value="/leave/{pName}/{resId}", method=RequestMethod.POST, consumes = { "application/json" })
 	@ResponseBody 
-	public PluginReturn leave(@PathVariable(value="pName") String name, @RequestBody LMParams params) {
+	public PluginReturn leave(@PathVariable(value="pName") String name, @PathVariable(value="resId") String resId, @RequestBody Properties props) {
+		ReservationId rid = new ReservationId(resId);
 		try {
-			l.info("LEAVE call to " + name + " for " + params.getId());
-			l.debug("  with properties " + params.getProperties());
+			l.info("LEAVE call to " + name + " for " + rid);
+			l.debug("  with properties " + props);
 			
 			l.info("Removing from the database");
-			sp.removeEntry(name, params.getId());
+			sp.removeEntry(name, rid);
 			
-			PluginReturn pr = PluginsRegistry.getInstance().leave(name, params.getId(), params.getProperties());
+			PluginReturn pr = PluginsRegistry.getInstance().leave(name, rid, props);
+			l.info("LEAVE call to " + name + " for " + rid + " returned " + pr.getStatus() + " " + pr.getErrorMsg());
 			return pr;
 		} catch (PluginException pe) {
 			l.error("Error invoking leave on " + name + ": " + pe);
-			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "leave error: " + pe.getMessage(), params.getId(), null);
+			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "leave error: " + pe.getMessage(), rid, null);
 		} catch (Exception e) {
 			l.error("Error invoking leave on " + name + ": " + e);
-			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "leave error: " + e.getMessage(), params.getId(), null);
+			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "leave error: " + e.getMessage(), rid, null);
 		}	
 	}
 
-	@RequestMapping(value="/modify/{pName}", method=RequestMethod.POST, consumes = { "application/json" })
+	@RequestMapping(value="/modify/{pName}/{resId}", method=RequestMethod.POST, consumes = { "application/json" })
 	@ResponseBody
-	public PluginReturn modify(@PathVariable(value="pName") String name, @RequestBody LMParams params) {
+	public PluginReturn modify(@PathVariable(value="pName") String name, @PathVariable(value="resId") String resId, @RequestBody Properties props) {
+		ReservationId rid = new ReservationId(resId);
 		try {
-			l.info("MODIFY call to " + name + " for " + params.getId());
-			l.debug("  with properties " + params.getProperties());
-			PluginReturn pr = PluginsRegistry.getInstance().modify(name, params.getId(), params.getProperties());
+			l.info("MODIFY call to " + name + " for " + rid);
+			l.debug("  with properties " + props);
+			PluginReturn pr = PluginsRegistry.getInstance().modify(name, rid, props);
+			l.info("MODIFY call to " + name + " for " + rid + " returned " + pr.getStatus() + " " + pr.getErrorMsg());
 			return pr;
 		} catch (PluginException pe) {
 			l.error("Error invoking modify on " + name + ": " + pe);
-			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "modify error: " + pe.getMessage(), params.getId(), null);
+			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "modify error: " + pe.getMessage(), rid, null);
 		} catch (Exception e) {
 			l.error("Error invoking modify on " + name + ": " + e);
-			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "modify error: " + e.getMessage(), params.getId(), null);
+			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "modify error: " + e.getMessage(), rid, null);
 		}	
 	}
 
-	@RequestMapping(value="/status/{pName}", method=RequestMethod.GET)
-	public String status(@PathVariable(value="pName") String name) {
+	@RequestMapping(value="/status/{pName}/{resId}", method=RequestMethod.GET)
+	public PluginReturn status(@PathVariable(value="pName") String name, @PathVariable(value="resId") String resId) {
+		ReservationId rid = new ReservationId(resId);
 		try {
-			l.info("STATUS call to " + name);
-			return PluginsRegistry.getInstance().status(name);
+			l.info("STATUS call to " + name + " reservation " + resId);
+			return PluginsRegistry.getInstance().status(name, rid);
 		} catch (PluginException pe) {
 			l.error("Error getting status for " + name + ": " + pe.getMessage());
-			return "Error getting status for " + name + ": " + pe.getMessage();
+			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "status error: error getting status for " + name + ": " + pe.getMessage(), 
+					rid, null);
 		} catch (Exception e) {
 			l.error("Error getting status for " + name + ": " + e.getMessage());
-			return "Error getting status for " + name + ": " + e.getMessage();
+			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "status error: error getting status for " + name + ": " + e.getMessage(), 
+					rid, null);
 		}
 	}
 

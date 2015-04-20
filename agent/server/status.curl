@@ -4,6 +4,6 @@
 url="https://localhost:8443/status/Null-Test-Plugin"
 
 
-curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass $url
+curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass $url/$1
 
 echo 

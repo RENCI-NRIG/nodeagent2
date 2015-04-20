@@ -10,6 +10,7 @@ import orca.nodeagent2.agent.config.Config;
 import orca.nodeagent2.agent.core.PluginsRegistry;
 import orca.nodeagent2.agent.server.persistence.ScheduleEntry;
 import orca.nodeagent2.agent.server.persistence.SchedulePersistence;
+import orca.nodeagent2.agentlib.PluginErrorCodes;
 import orca.nodeagent2.agentlib.PluginException;
 import orca.nodeagent2.agentlib.PluginReturn;
 import orca.nodeagent2.agentlib.ReservationId;
@@ -53,12 +54,18 @@ public class RenewExpiringThread implements Runnable {
 								new ReservationId(e.getReservationId()), future.getTime(), 
 								e.getInProperties(), e.getJoinProperties());
 
-						// merge original join properties with properties returned by renew
-						e.getJoinProperties().putAll(pr.getProperties());
+						if (pr.getStatus() == PluginErrorCodes.OK.code) {
+							// merge original join properties with properties returned by renew
+							e.getJoinProperties().putAll(pr.getProperties());
 
-						// update the database with a new schedule entry
-						l.info("Updating the database for " + e.getName() + " existing reservation " + e.getReservationId());
-						sp.saveRenewDeadline(e.getName(), future.getTime(), pr.getResId(), e.getInProperties(), e.getJoinProperties());
+							// update the database with a new schedule entry
+							l.info("Updating the database for " + e.getName() + " existing reservation " + e.getReservationId());
+							sp.saveRenewDeadline(e.getName(), future.getTime(), pr.getResId(), 
+									e.getInProperties(), e.getJoinProperties(), 0, null);
+						} else 
+							l.error("RENEW call to " + e.getName() + " reservation " + e.getReservationId() + 
+									" returned non-zero status: " + 
+									pr.getStatus() + " " + pr.getErrorMsg());
 
 						// remove old entry
 						l.debug("Removing old entry from the database");

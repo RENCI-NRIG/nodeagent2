@@ -10,6 +10,7 @@
 			<jar>/Users/ibaldin/workspace-nodeagent2/node-agent2/null-agent/target/null-agent-0.1-SNAPSHOT-jar-with-dependencies.jar</jar>
 			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
 			<schedulePeriod length="3" unit="minute" />
+			<renewAdvanceTicks>2</renewAdvanceTicks>
 			<description>Null plugin for testing</description>
 			<properties>
 				<property name="pr" value="val" />
@@ -26,5 +27,4 @@
 			</properties>
 		</plugin>
 	</plugins>
-
 </agentConfig>

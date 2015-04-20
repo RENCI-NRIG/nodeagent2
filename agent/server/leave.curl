@@ -3,11 +3,8 @@
 #url="http://localhost:8080/leave/Null-Test-Plugin"
 url="https://localhost:8443/leave/Null-Test-Plugin"
 
-curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass -X POST $url -d '{
-    "id":"'$1'",
-    "props":{
-        "property one":"some value one",
-        "property two":"some value two"
-}
+curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass -X POST $url/$1 -d '{
+  "property one":"some value one",
+  "property two":"some value two"
 }'
 echo 

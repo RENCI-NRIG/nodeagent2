@@ -59,8 +59,9 @@ public interface Plugin {
 	public PluginReturn renew(ReservationId resId, Date until, Properties inProperties, Properties joinProperties) throws PluginException;
 
 	/**
-	 * Return a status message for this plugin - free format
+	 * Return a status for the last operation on the plugin's reservation. Primarily for checking 
+	 * on renew.
 	 * @return
 	 */
-	public String status() throws PluginException;
+	public PluginReturn status(ReservationId resId) throws PluginException;
 }

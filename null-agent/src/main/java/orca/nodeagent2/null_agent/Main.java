@@ -103,9 +103,9 @@ public class Main implements Plugin {
 		return new PluginReturn(resId, retProps);
 	}
 
-	public String status() {
-		log.info("STATUS");
-		return "This is the status of the Null plugin";
+	public PluginReturn status(ReservationId resId) {
+		log.info("STATUS for " + resId);
+		return new PluginReturn(resId, null);
 	}
 
 	public void initialize(String config, Properties inProperties, ClassLoader cl) throws PluginException {

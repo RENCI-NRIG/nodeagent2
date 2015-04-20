@@ -17,6 +17,8 @@ public class ScheduleEntry {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	long id;
 	
+	private int status = 0;
+	private String errorMsg = null;
 	private String name;
 	private String reservationId;
 	private Date deadline;
@@ -33,12 +35,14 @@ public class ScheduleEntry {
 	
 	protected ScheduleEntry() {}
 	
-	public ScheduleEntry(String n, String r, Date when, Properties ip, Properties jp) {
+	public ScheduleEntry(String n, String r, Date when, Properties ip, Properties jp, int st, String em) {
 		name = n;
 		deadline = when;
 		reservationId = r;
 		inProps = ip;
 		joinProps = jp;
+		status = st;
+		errorMsg = em;
 	}
 	
 	public Date getDeadline() {
@@ -59,6 +63,22 @@ public class ScheduleEntry {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public int getStatus() {
+		return status;
+	}
+	
+	public void setStatus(int st) {
+		status = st;
+	}
+	
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+	
+	public void setErrorMsg(String em) {
+		errorMsg = em;
 	}
 	
 	@Override
