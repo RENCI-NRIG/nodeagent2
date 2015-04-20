@@ -57,7 +57,9 @@ public class SchedulePersistence {
 	 * @param deadline
 	 * @param props
 	 */
-	public synchronized void saveRenewDeadline(String name, Date future, ReservationId r, Properties inProps, Properties joinProps) throws Exception {
+	public synchronized void saveRenewDeadline(String name, Date future, ReservationId r, 
+			Properties inProps, Properties joinProps, 
+			int status, String errorMsg) throws Exception {
 		
 		// see if this plugin has a schedule period
 		if (Config.getInstance().getSchedulePeriod(name) <= 0) {
@@ -74,7 +76,7 @@ public class SchedulePersistence {
 		l.debug("inProperties: " + inProps);
 		l.debug("joinProperties: " + joinProps);
 
-		repository.save(new ScheduleEntry(name, r.getId(), cal.getTime(), inProps, joinProps));
+		repository.save(new ScheduleEntry(name, r.getId(), cal.getTime(), inProps, joinProps, status, errorMsg));
 	}
 	
 	/**

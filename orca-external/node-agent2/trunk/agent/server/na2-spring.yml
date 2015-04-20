@@ -19,10 +19,10 @@ spring:
       ddl-auto: update
 
 server:
-  port: 8443
+  port: 8080
   address:     # bind to specific address
   ssl:
-    enabled: true
+    enabled: false
     key-alias: selfsigned
     key-password: selfself
     key-store: /Users/ibaldin/workspace-nodeagent2/node-agent2/agent/server/keystore.jks

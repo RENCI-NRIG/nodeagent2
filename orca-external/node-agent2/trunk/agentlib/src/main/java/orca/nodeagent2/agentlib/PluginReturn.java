@@ -13,6 +13,11 @@ public class PluginReturn {
 	final ReservationId resId;
 	final String errorMsg;
 	
+	/**
+	 * Error-free return
+	 * @param r - reservation id
+	 * @param p - properties
+	 */
 	public PluginReturn(ReservationId r, Properties p) {
 		resId = r;
 		properties = p;
@@ -20,6 +25,12 @@ public class PluginReturn {
 		status = 0;
 	}
 	
+	/**
+	 * @param s - status
+	 * @param err - error
+	 * @param r - reservation id
+	 * @param p - properties
+	 */
 	public PluginReturn(int s, String err, ReservationId r, Properties p) {
 		resId = r;
 		status = s;

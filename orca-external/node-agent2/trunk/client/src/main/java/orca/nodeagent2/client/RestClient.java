@@ -25,6 +25,8 @@ import org.json.simple.JSONValue;
  *
  */
 public class RestClient {
+	private static final String NA2_PASS = "pass";
+	private static final String NA2_USER = "admin";
 	private static final String HTTP_REST_JOIN_URL = "http://localhost:8080/join/Null-Test-Plugin";
 	private static final String HTTP_REST_LEAVE_URL = "http://localhost:8080/leave/Null-Test-Plugin";
 	private static final String HTTP_REST_STATUS_URL = "http://localhost:8080/status/Null-Test-Plugin";
@@ -57,14 +59,14 @@ public class RestClient {
 	 * How to do POSTs (like join)
 	 * @throws Exception
 	 */
-	public void testPostJoin() throws Exception {
+	public PluginReturn testPostJoin() throws Exception {
 		DefaultHttpClient client = new DefaultHttpClient();
 
 		client.getCredentialsProvider().
 		setCredentials(
 				new AuthScope("localhost", 8080),
-				new UsernamePasswordCredentials("user", 
-						"password"));
+				new UsernamePasswordCredentials(NA2_USER, 
+						NA2_PASS));
 
 		HttpPost post = new HttpPost(HTTP_REST_JOIN_URL);
 
@@ -96,6 +98,8 @@ public class RestClient {
 		}
 		JSONObject o = (JSONObject)JSONValue.parse(sb.toString());
 		System.out.println(convert(o));
+		
+		return convert(o);
 
 	}
 
@@ -103,34 +107,28 @@ public class RestClient {
 	 * How to do POSTs (like leave/modify)
 	 * @throws Exception
 	 */
-	public void testPostLeave() throws Exception {
+	public PluginReturn testPostLeave(ReservationId reservationId) throws Exception {
 		DefaultHttpClient client = new DefaultHttpClient();
 
 		client.getCredentialsProvider().
 		setCredentials(
 				new AuthScope("localhost", 8080),
-				new UsernamePasswordCredentials("user", 
-						"password"));
+				new UsernamePasswordCredentials(NA2_USER, 
+						NA2_PASS));
 
-		HttpPost post = new HttpPost(HTTP_REST_LEAVE_URL);
+		HttpPost post = new HttpPost(HTTP_REST_LEAVE_URL + "/" + reservationId);
 
 		//List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>(1);
 		//nameValuePairs.add(new BasicNameValuePair("name", "value")); //you can as many name value pair as you want in the list.
-
-		JSONObject params = new JSONObject();
-
-		params.put("id", "some-id-of-reservation");
 
 		JSONObject props = new JSONObject();
 
 		props.put("property one", "some value one");
 		props.put("property two", "some value two");
 
-		params.put("props", props);
+		System.out.println(props.toString());
 
-		System.out.println(params.toString());
-
-		StringEntity se = new StringEntity(params.toString());
+		StringEntity se = new StringEntity(props.toString());
 		se.setContentType("application/json");
 
 		post.setEntity(se);
@@ -145,22 +143,24 @@ public class RestClient {
 		}
 		JSONObject o = (JSONObject)JSONValue.parse(sb.toString());
 		System.out.println(convert(o));
+		
+		return convert(o);
 	}
 
 	/**
 	 * How to do GETs (status)
 	 * @throws Exception
 	 */
-	public void testStatus() throws Exception {
+	public void testStatus(ReservationId reservationId) throws Exception {
 		DefaultHttpClient client = new DefaultHttpClient();
 
 		client.getCredentialsProvider().
 		setCredentials(
 				new AuthScope("localhost", 8080),
-				new UsernamePasswordCredentials("user", 
-						"password"));
+				new UsernamePasswordCredentials(NA2_USER, 
+						NA2_PASS));
 
-		HttpGet get = new HttpGet(HTTP_REST_STATUS_URL);
+		HttpGet get = new HttpGet(HTTP_REST_STATUS_URL + "/" + reservationId);
 
 		HttpResponse response = client.execute(get);
 		
@@ -185,8 +185,8 @@ public class RestClient {
 		client.getCredentialsProvider().
 		setCredentials(
 				new AuthScope("localhost", 8080),
-				new UsernamePasswordCredentials("user", 
-						"password"));
+				new UsernamePasswordCredentials(NA2_USER, 
+						NA2_PASS));
 
 		HttpGet get = new HttpGet(HTTP_REST_PLUGINS_URL);
 
@@ -209,9 +209,9 @@ public class RestClient {
 		RestClient rc = new RestClient();
 
 		System.out.println("JOIN");
-		rc.testPostJoin();
+		PluginReturn prJoin = rc.testPostJoin();
 		System.out.println("LEAVE");
-		rc.testPostLeave();
+		rc.testPostLeave(prJoin.getResId());
 		System.out.println("PLUGINS");
 		rc.testPlugins();
 	}

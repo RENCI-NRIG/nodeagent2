@@ -97,11 +97,11 @@ public class PluginsRegistry {
 		return plugins.get(pluginName).renew(resId, until, inProperties, joinProperties);
 	}
 	
-	public String status(String pluginName) throws Exception, PluginException {
+	public PluginReturn status(String pluginName, ReservationId resId) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in status call to plugin " + pluginName + ": plugin not found");
 		
-		return plugins.get(pluginName).status();
+		return plugins.get(pluginName).status(resId);
 	}
 	
 	public String getDescription(String pluginName) throws Exception {
