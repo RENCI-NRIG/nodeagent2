@@ -69,39 +69,39 @@ public class PluginsRegistry {
 		pluginConfigs.put(pt.getName(), pt);
 	}
 	
-	public PluginReturn join(String pluginName, Date until, Properties inProperties) throws Exception, PluginException {
+	public PluginReturn join(String pluginName, Date until, Properties callerProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in join call to plugin " + pluginName + ": plugin not found");
 		
-		return plugins.get(pluginName).join(until, inProperties);
+		return plugins.get(pluginName).join(until, callerProperties);
 	}
 	
-	public PluginReturn leave(String pluginName, ReservationId resId, Properties inProperties) throws Exception, PluginException {
+	public PluginReturn leave(String pluginName, ReservationId resId, Properties callerProperties, Properties schedProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in leave call to plugin " + pluginName + ": plugin not found");
 		
-		return plugins.get(pluginName).leave(resId, inProperties);
+		return plugins.get(pluginName).leave(resId, callerProperties, schedProperties);
 	}
 	
-	public PluginReturn modify(String pluginName, ReservationId resId, Properties inProperties) throws Exception, PluginException {
+	public PluginReturn modify(String pluginName, ReservationId resId, Properties callerProperties, Properties schedProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in modify call to plugin " + pluginName + ": plugin not found");
 		
-		return plugins.get(pluginName).modify(resId, inProperties);
+		return plugins.get(pluginName).modify(resId, callerProperties, schedProperties);
 	}
 	
-	public PluginReturn renew(String pluginName, ReservationId resId, Date until, Properties inProperties, Properties joinProperties) throws Exception, PluginException {
+	public PluginReturn renew(String pluginName, ReservationId resId, Date until, Properties joinProperties, Properties schedProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in renew call to plugin " + pluginName + ": plugin not found");
 		
-		return plugins.get(pluginName).renew(resId, until, inProperties, joinProperties);
+		return plugins.get(pluginName).renew(resId, until, joinProperties, schedProperties);
 	}
 	
-	public PluginReturn status(String pluginName, ReservationId resId) throws Exception, PluginException {
+	public PluginReturn status(String pluginName, ReservationId resId, Properties schedProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in status call to plugin " + pluginName + ": plugin not found");
 		
-		return plugins.get(pluginName).status(resId);
+		return plugins.get(pluginName).status(resId, schedProperties);
 	}
 	
 	public String getDescription(String pluginName) throws Exception {

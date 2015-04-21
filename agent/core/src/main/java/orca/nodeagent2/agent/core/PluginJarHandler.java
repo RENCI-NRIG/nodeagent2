@@ -69,9 +69,9 @@ public class PluginJarHandler extends JarHandler {
 		}
 	}
 
-	public PluginReturn join(Date until, Properties inProperties) throws PluginException {
+	public PluginReturn join(Date until, Properties callerProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.JOIN.getName()).invoke(instance, until, inProperties);
+			return (PluginReturn)pluginMethod.get(PluginMethod.JOIN.getName()).invoke(instance, until, callerProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke join method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -81,9 +81,9 @@ public class PluginJarHandler extends JarHandler {
 		}
 	}
 
-	public PluginReturn leave(ReservationId resId, Properties inProperties) throws PluginException {
+	public PluginReturn leave(ReservationId resId, Properties callerProperties, Properties schedProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.LEAVE.getName()).invoke(instance, resId, inProperties);
+			return (PluginReturn)pluginMethod.get(PluginMethod.LEAVE.getName()).invoke(instance, resId, callerProperties, schedProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke leave method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -93,9 +93,9 @@ public class PluginJarHandler extends JarHandler {
 		}
 	}
 
-	public PluginReturn modify(ReservationId resId, Properties inProperties) throws PluginException {
+	public PluginReturn modify(ReservationId resId, Properties callerProperties, Properties schedProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.MODIFY.getName()).invoke(instance, resId, inProperties);
+			return (PluginReturn)pluginMethod.get(PluginMethod.MODIFY.getName()).invoke(instance, resId, callerProperties, schedProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke modify method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -105,9 +105,9 @@ public class PluginJarHandler extends JarHandler {
 		}
 	}
 
-	public PluginReturn renew(ReservationId resId, Date until, Properties inProperties, Properties joinProperties) throws PluginException {
+	public PluginReturn renew(ReservationId resId, Date until, Properties joinProperties, Properties schedProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.RENEW.getName()).invoke(instance, resId, until, inProperties, joinProperties);
+			return (PluginReturn)pluginMethod.get(PluginMethod.RENEW.getName()).invoke(instance, resId, until, joinProperties, schedProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke renew method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -117,9 +117,9 @@ public class PluginJarHandler extends JarHandler {
 		}
 	}
 
-	public PluginReturn status(ReservationId resId) throws PluginException {
+	public PluginReturn status(ReservationId resId, Properties schedProperties) throws PluginException {
 		try {
-			return (PluginReturn)pluginMethod.get(PluginMethod.STATUS.getName()).invoke(instance, resId);
+			return (PluginReturn)pluginMethod.get(PluginMethod.STATUS.getName()).invoke(instance, resId, schedProperties);
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke status method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
 		} catch (IllegalArgumentException e) {
@@ -129,9 +129,9 @@ public class PluginJarHandler extends JarHandler {
 		}
 	}
 
-	public void initialize(String fName, Properties inProperties) throws PluginException {
+	public void initialize(String fName, Properties configProperties) throws PluginException {
 		try {
-			pluginMethod.get(PluginMethod.INITIALIZE.getName()).invoke(instance, fName, inProperties, PluginJarHandler.class.getClassLoader());
+			pluginMethod.get(PluginMethod.INITIALIZE.getName()).invoke(instance, fName, configProperties, PluginJarHandler.class.getClassLoader());
 			return;
 		} catch (IllegalAccessException e) {
 			throw new PluginException("Unable to invoke status method in " + pluginClass.getName() + " due to IllegalAccessException: " + e);
