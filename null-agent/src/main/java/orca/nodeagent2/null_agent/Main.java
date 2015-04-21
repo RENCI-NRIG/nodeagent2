@@ -57,9 +57,9 @@ public class Main implements Plugin {
 		}
 	}
 	
-	public PluginReturn join(Date until, Properties inProperties) {
+	public PluginReturn join(Date until, Properties callerProperties) {
 		
-		log.info("JOIN until " + until + " with " + inProperties);
+		log.info("JOIN until " + until + " with " + callerProperties);
 
 		Gson gson = new Gson();
 		gson.toJson(1);           
@@ -76,8 +76,8 @@ public class Main implements Plugin {
 		return new PluginReturn(new ReservationId(rstr.nextString()), retProps);
 	}
 
-	public PluginReturn leave(ReservationId resId, Properties inProperties) {
-		log.info("LEAVE for " + resId + " with " + inProperties);
+	public PluginReturn leave(ReservationId resId, Properties callerProperties, Properties schedProperties) {
+		log.info("LEAVE for " + resId + " with " + callerProperties + " and " + schedProperties);
 		Properties retProps = new Properties();
 		retProps.put("key11", "val11");
 		retProps.put("key21", "val21");
@@ -85,8 +85,8 @@ public class Main implements Plugin {
 		return new PluginReturn(resId, retProps);
 	}
 
-	public PluginReturn modify(ReservationId resId, Properties inProperties) {
-		log.info("MODIFY for " + resId + " with " + inProperties);
+	public PluginReturn modify(ReservationId resId, Properties callerProperties, Properties schedProperties) {
+		log.info("MODIFY for " + resId + " with " + callerProperties + " and ");
 		Properties retProps = new Properties();
 		retProps.put("key12", "val12");
 		retProps.put("key22", "val22");
@@ -94,8 +94,8 @@ public class Main implements Plugin {
 		return new PluginReturn(resId, retProps);
 	}
 
-	public PluginReturn renew(ReservationId resId, Date until, Properties inProperties, Properties joinProperties) {
-		log.info("RENEW  for " + resId + " until " + until + " with " + inProperties + " and " + joinProperties);
+	public PluginReturn renew(ReservationId resId, Date until, Properties joinProperties, Properties schedProperties) {
+		log.info("RENEW  for " + resId + " until " + until + " with " + joinProperties + " and " + schedProperties);
 		Properties retProps = new Properties();
 		retProps.put("key13", "val13");
 		retProps.put("key23", "val23");
@@ -103,12 +103,12 @@ public class Main implements Plugin {
 		return new PluginReturn(resId, retProps);
 	}
 
-	public PluginReturn status(ReservationId resId) {
-		log.info("STATUS for " + resId);
-		return new PluginReturn(resId, null);
+	public PluginReturn status(ReservationId resId, Properties schedProperties) {
+		log.info("STATUS for " + resId + " with " + schedProperties);
+		return new PluginReturn(resId, schedProperties);
 	}
 
-	public void initialize(String config, Properties inProperties, ClassLoader cl) throws PluginException {
+	public void initialize(String config, Properties configProperties, ClassLoader cl) throws PluginException {
 		coreLoader = cl;
 		try {
 			// this is how you get hold of the logger
@@ -117,7 +117,7 @@ public class Main implements Plugin {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		log.info("Initializing plugin " + inProperties);
+		log.info("Initializing plugin " + configProperties);
 	}
 
 }

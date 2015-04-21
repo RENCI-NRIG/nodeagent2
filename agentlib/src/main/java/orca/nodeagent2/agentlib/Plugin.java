@@ -19,49 +19,55 @@ public interface Plugin {
 	 * Initialize the behavior of the plugin based on a combination of config file and configuration properties
 	 * (either can be null)
 	 * @parm config - config file name
-	 * @param inProperties - config properties
+	 * @param configProperties - properties from config file
 	 * @param cl - main class loader
 	 * @throws PluginException
 	 */
-	public void initialize(String config, Properties inProperties, ClassLoader cl) throws PluginException;
+	public void initialize(String config, Properties configProperties, ClassLoader cl) throws PluginException;
 	
 	/**
 	 * Provision a new resource with properties specified in the map.
 	 * @param until - until when, configured in the plugin 
-	 * @param inPropeties
+	 * @param callerPropeties - provided by the caller (ORCA)
 	 * @return properties, status and reservation id 
 	 */
-	public PluginReturn join(Date until, Properties inPropeties) throws PluginException;
+	public PluginReturn join(Date until, Properties callerPropeties) throws PluginException;
 	
 	/**
 	 * Close the reservation. The core provides storage for properties for recovery
 	 * @param resId
+	 * @param callerProperties - provided by the caller (ORCA)
+	 * @param callerProperties - provided from the schedule (otherwise null)
 	 * @return
 	 */
-	public PluginReturn leave(ReservationId resId, Properties inProperties) throws PluginException;
+	public PluginReturn leave(ReservationId resId, Properties callerProperties, Properties schedProperties) throws PluginException;
 	
 	/**
 	 * Modify the reservation
 	 * @param resId
-	 * @param inProperties
+	 * @param callerProperties - provided by the caller
+	 * @param schedProperties  - provided from the schedule (otherwise null)
 	 * @return
 	 */
-	public PluginReturn modify(ReservationId resId, Properties inProperties) throws PluginException;
+	public PluginReturn modify(ReservationId resId, Properties callerProperties, Properties schedProperties) throws PluginException;
 	
 	/**
-	 * Renew the reservation
+	 * Renew the reservation. Properties are provided from the schedule.
 	 * @param resId
 	 * @param until - the date
-	 * @param inProperties - properties passed in originally
-	 * @param joinProperties - properties returned by join operation
+	 * @param inProperties - properties passed in by the caller to join 
+	 * @param joinProperties - properties returned by the schedule (or null)
 	 * @return
 	 */
-	public PluginReturn renew(ReservationId resId, Date until, Properties inProperties, Properties joinProperties) throws PluginException;
+	public PluginReturn renew(ReservationId resId, Date until, Properties joinProperties, 
+			Properties schedProperties) throws PluginException;
 
 	/**
 	 * Return a status for the last operation on the plugin's reservation. Primarily for checking 
-	 * on renew.
+	 * on renew. Properties are provided from the schedule, otherwise null is supplied.
+	 * @param resId
+	 * @param schedProperties - properties returned by the schedule (or null)
 	 * @return
 	 */
-	public PluginReturn status(ReservationId resId) throws PluginException;
+	public PluginReturn status(ReservationId resId, Properties schedProperties) throws PluginException;
 }
