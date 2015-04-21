@@ -25,6 +25,8 @@ import org.json.simple.JSONValue;
  *
  */
 public class RestClient {
+	private static final int REST_PORT = 8080;
+	private static final String REST_HOST = "localhost";
 	private static final String NA2_PASS = "pass";
 	private static final String NA2_USER = "admin";
 	private static final String HTTP_REST_JOIN_URL = "http://localhost:8080/join/Null-Test-Plugin";
@@ -64,7 +66,7 @@ public class RestClient {
 
 		client.getCredentialsProvider().
 		setCredentials(
-				new AuthScope("localhost", 8080),
+				new AuthScope(REST_HOST, 8080),
 				new UsernamePasswordCredentials(NA2_USER, 
 						NA2_PASS));
 
@@ -112,7 +114,7 @@ public class RestClient {
 
 		client.getCredentialsProvider().
 		setCredentials(
-				new AuthScope("localhost", 8080),
+				new AuthScope(REST_HOST, REST_PORT),
 				new UsernamePasswordCredentials(NA2_USER, 
 						NA2_PASS));
 
@@ -156,7 +158,7 @@ public class RestClient {
 
 		client.getCredentialsProvider().
 		setCredentials(
-				new AuthScope("localhost", 8080),
+				new AuthScope(REST_HOST, 8080),
 				new UsernamePasswordCredentials(NA2_USER, 
 						NA2_PASS));
 
@@ -184,7 +186,7 @@ public class RestClient {
 
 		client.getCredentialsProvider().
 		setCredentials(
-				new AuthScope("localhost", 8080),
+				new AuthScope(REST_HOST, 8080),
 				new UsernamePasswordCredentials(NA2_USER, 
 						NA2_PASS));
 
