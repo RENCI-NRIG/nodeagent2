@@ -101,7 +101,7 @@ public class StatusController {
 	public DBBean schedule(@PathVariable(value="pName") String name, @PathVariable(value="resId") String resId) {
 		try {
 			l.info("DB schedule request for " + name);
-			return new DBBean(sp.findEntries(name, resId));
+			return new DBBean(Arrays.asList(sp.findEntry(name, resId)));
 		} catch (Exception e) {
 			l.error("Unable to populate db bean " + e);
 			return null;

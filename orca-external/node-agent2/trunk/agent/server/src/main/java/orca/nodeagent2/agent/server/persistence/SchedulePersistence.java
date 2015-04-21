@@ -31,12 +31,12 @@ public class SchedulePersistence {
 
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private ScheduledFuture<?> tickHandle = null;
-	
+
 	@Autowired
 	IScheduleRepository repository;
-	
+
 	Log l = LogFactory.getLog("schedulePersistence");
-	
+
 	public SchedulePersistence() {
 		// start periodic thread
 		try {
@@ -48,7 +48,7 @@ public class SchedulePersistence {
 			l.error("Unable to start periodic expiry check thread! : " + e);
 		}
 	}
-	
+
 	/**
 	 * Save the renew deadline for a plugin with properties. Subtract the advance tick
 	 * prior to saving
@@ -60,13 +60,13 @@ public class SchedulePersistence {
 	public synchronized void saveRenewDeadline(String name, Date future, ReservationId r, 
 			Properties inProps, Properties joinProps, 
 			int status, String errorMsg) throws Exception {
-		
+
 		// see if this plugin has a schedule period
 		if (Config.getInstance().getSchedulePeriod(name) <= 0) {
 			l.info("Plugin " + name + " has schedule period of 0, skipping saving deadline for " + r);
 			return;
 		}
-		
+
 		// get now time
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(future);
@@ -78,7 +78,7 @@ public class SchedulePersistence {
 
 		repository.save(new ScheduleEntry(name, r.getId(), cal.getTime(), inProps, joinProps, status, errorMsg));
 	}
-	
+
 	/**
 	 * Find all expired entries in db
 	 * @return
@@ -87,7 +87,7 @@ public class SchedulePersistence {
 		l.info("Searching for expired entries in db");
 		return repository.findByDeadlineBefore(new Date());
 	}
-	
+
 	/**
 	 * Return all entries for a particular plugin
 	 * @param name
@@ -99,18 +99,24 @@ public class SchedulePersistence {
 		List<ScheduleEntry> matches = repository.findByName(name);
 		return matches;
 	}
-	
-	public synchronized List<ScheduleEntry> findEntries(String name, String resId) {
+
+	public synchronized ScheduleEntry findEntry(String name, String resId) {
 		l.info("Searching for entries for " + name + " and reservation " + resId);
 		List<ScheduleEntry> matches = repository.findByNameAndReservationId(name, resId);
-		return matches;
+		if (matches.size() > 0)
+			return matches.get(0);
+		return null;
 	}
-	
-	public synchronized void removeEntry(String name, ReservationId resId) {
+
+	public synchronized ScheduleEntry removeEntry(String name, ReservationId resId) {
 		List<ScheduleEntry> matches = repository.findByNameAndReservationId(name, resId.getId());
-		removeEntries(matches);
+		if (matches.size() > 0) {
+			removeEntries(matches);
+			return matches.get(0);
+		}
+		return null;
 	}
-	
+
 	/**
 	 * Removes the currently stored deadlines for all reservations for a  plugin (if present)
 	 * @param name
@@ -124,7 +130,7 @@ public class SchedulePersistence {
 			repository.delete(e);
 		}
 	}
-	
+
 	/**
 	 * Remove specified entries
 	 * @param ee
@@ -135,7 +141,7 @@ public class SchedulePersistence {
 			repository.delete(e);
 		}
 	}
-	
+
 	public synchronized List<ScheduleEntry> getAll() throws PersistenceException {
 		l.info("Getting a list from DB");
 		Iterable<ScheduleEntry> e = repository.findAll();
@@ -146,5 +152,5 @@ public class SchedulePersistence {
 		}
 		return entries;
 	}
-	
+
 }

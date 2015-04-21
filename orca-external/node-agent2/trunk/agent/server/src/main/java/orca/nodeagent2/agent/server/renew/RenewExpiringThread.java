@@ -52,16 +52,16 @@ public class RenewExpiringThread implements Runnable {
 						// invoke renew
 						PluginReturn pr = PluginsRegistry.getInstance().renew(e.getName(), 
 								new ReservationId(e.getReservationId()), future.getTime(), 
-								e.getInProperties(), e.getJoinProperties());
+								e.getJoinProperties(), e.getSchedProperties());
 
 						if (pr.getStatus() == PluginErrorCodes.OK.code) {
 							// merge original join properties with properties returned by renew
-							e.getJoinProperties().putAll(pr.getProperties());
+							e.getSchedProperties().putAll(pr.getProperties());
 
 							// update the database with a new schedule entry
 							l.info("Updating the database for " + e.getName() + " existing reservation " + e.getReservationId());
 							sp.saveRenewDeadline(e.getName(), future.getTime(), pr.getResId(), 
-									e.getInProperties(), e.getJoinProperties(), 0, null);
+									e.getJoinProperties(), e.getSchedProperties(), 0, null);
 						} else 
 							l.error("RENEW call to " + e.getName() + " reservation " + e.getReservationId() + 
 									" returned non-zero status: " + 

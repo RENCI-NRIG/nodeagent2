@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import orca.nodeagent2.agent.config.Config;
 import orca.nodeagent2.agent.core.PluginsRegistry;
+import orca.nodeagent2.agent.server.persistence.ScheduleEntry;
 import orca.nodeagent2.agent.server.persistence.SchedulePersistence;
 import orca.nodeagent2.agentlib.PluginErrorCodes;
 import orca.nodeagent2.agentlib.PluginException;
@@ -80,9 +81,9 @@ public class PluginController {
 			l.debug("  with properties " + props);
 			
 			l.info("Removing from the database");
-			sp.removeEntry(name, rid);
-			
-			PluginReturn pr = PluginsRegistry.getInstance().leave(name, rid, props);
+			ScheduleEntry se = sp.removeEntry(name, rid);
+			PluginReturn pr = PluginsRegistry.getInstance().leave(name, rid, props, 
+					(se != null ? se.getSchedProperties() : null));
 			l.info("LEAVE call to " + name + " for " + rid + " returned " + pr.getStatus() + " " + pr.getErrorMsg());
 			return pr;
 		} catch (PluginException pe) {
@@ -101,7 +102,9 @@ public class PluginController {
 		try {
 			l.info("MODIFY call to " + name + " for " + rid);
 			l.debug("  with properties " + props);
-			PluginReturn pr = PluginsRegistry.getInstance().modify(name, rid, props);
+			ScheduleEntry se = sp.findEntry(name, resId);
+			PluginReturn pr = PluginsRegistry.getInstance().modify(name, rid, props, 
+					(se != null ? se.getSchedProperties() : null));
 			l.info("MODIFY call to " + name + " for " + rid + " returned " + pr.getStatus() + " " + pr.getErrorMsg());
 			return pr;
 		} catch (PluginException pe) {
@@ -118,7 +121,9 @@ public class PluginController {
 		ReservationId rid = new ReservationId(resId);
 		try {
 			l.info("STATUS call to " + name + " reservation " + resId);
-			return PluginsRegistry.getInstance().status(name, rid);
+			ScheduleEntry se = sp.findEntry(name, resId);
+			return PluginsRegistry.getInstance().status(name, rid,
+					(se != null ? se.getSchedProperties() : null));
 		} catch (PluginException pe) {
 			l.error("Error getting status for " + name + ": " + pe.getMessage());
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "status error: error getting status for " + name + ": " + pe.getMessage(), 
