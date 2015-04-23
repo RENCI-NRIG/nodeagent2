@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>orca</groupId>
 	<artifactId>node-agent2</artifactId>
@@ -10,8 +11,8 @@
 		<module>agentlib</module>
 		<module>agent</module>
 		<module>null-agent</module>
-    <module>client</module>
-  </modules>
+		<module>client</module>
+	</modules>
 
 	<ciManagement>
 		<system>hudson</system>
@@ -69,25 +70,6 @@
 		</repository>
 	</repositories>
 
-
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>${orca.snap.repository.id}</id>
-			<name>Orca Project Maven Snapshot Repository</name>
-			<url>${orca.snap.repository.url}</url>
-		</snapshotRepository>
-		<repository>
-			<id>${orca.repository.id}</id>
-			<name>Orca Project Maven Release Repository</name>
-			<url>${orca.repository.url}</url>
-		</repository>
-		<site>
-			<id>${orca.website.id}</id>
-			<url>${orca.website.url}</url>
-		</site>
-	</distributionManagement>
-
 	<scm>
 		<connection>scm:svn:https://geni-orca.renci.org/svn/orca/trunk</connection>
 		<developerConnection>scm:svn:https://geni-orca.renci.org/svn/orca/trunk</developerConnection>
@@ -99,6 +81,18 @@
 		<url>https://geni-orca.renci.org/trac</url>
 	</issueManagement>
 
+	<distributionManagement>
+		<snapshotRepository>
+			<id>geni-orca-snapshot</id>
+			<name>Orca Project Maven Snapshot Repository</name>
+			<url>http://ci-dev.renci.org/nexus/content/repositories/geni-orca-snapshot/</url>
+		</snapshotRepository>
+		<repository>
+			<id>geni-orca-libs</id>
+			<name>Orca Project Maven Release Repository</name>
+			<url>http://ci-dev.renci.org/nexus/content/repositories/geni-orca-libs</url>
+		</repository>
+	</distributionManagement>
 
 	<dependencyManagement>
 		<dependencies>

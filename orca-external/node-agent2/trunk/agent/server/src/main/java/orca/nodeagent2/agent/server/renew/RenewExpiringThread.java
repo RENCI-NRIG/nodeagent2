@@ -71,7 +71,6 @@ public class RenewExpiringThread implements Runnable {
 						l.debug("Removing old entry from the database");
 						sp.removeEntries(Arrays.asList(e));
 						
-						l.info("exiting");
 					} catch (PluginException pe) {
 						l.error("Unable to renew plugin " + e.getName() + " reservation " + e.getReservationId());
 					} catch (Exception ee) {
