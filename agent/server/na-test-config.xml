@@ -6,7 +6,7 @@
 
 	<tick length="10" unit="second"/>
 	<plugins>
-		<plugin name="Null-Test-Plugin">
+		<plugin name="oscars">
 			<jar>/Users/ibaldin/workspace-nodeagent2/node-agent2/null-agent/target/null-agent-0.1-SNAPSHOT-jar-with-dependencies.jar</jar>
 			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
 			<schedulePeriod length="3" unit="minute" />
