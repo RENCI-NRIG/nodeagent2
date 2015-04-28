@@ -47,7 +47,6 @@ class ParentLastClassLoader extends ClassLoader {
 		@Override
 		public Class<?> findClass(String name) throws ClassNotFoundException
 		{
-			System.out.println("LOOKING IN CHILD " +name );
 			try {
 				Class<?> loaded = super.findLoadedClass(name);
 	            if ( loaded != null )
@@ -78,12 +77,10 @@ class ParentLastClassLoader extends ClassLoader {
 	@Override
 	protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 		try {
-			System.out.println("LOADING CLASS " + name);
 			// first we try to find a class inside the child classloader
 			return childClassLoader.findClass(name);
 		} catch( ClassNotFoundException e ) {
 			// didn't find it, try the parent
-			System.out.println("LOOKING IN PARENT " + name); 
 			return super.loadClass(name, resolve);
 		}
 	}
