@@ -108,11 +108,10 @@ public class Main implements Plugin {
 		return new PluginReturn(resId, schedProperties);
 	}
 
-	public void initialize(String config, Properties configProperties, ClassLoader cl) throws PluginException {
-		coreLoader = cl;
+	public void initialize(String config, Properties configProperties) throws PluginException {
 		try {
 			// this is how you get hold of the logger
-			log = Util.getLog(cl, "null-plugin");
+			log = Util.getLog("null-plugin");
 			rstr = new RandomString(10);
 		} catch (Exception e) {
 			e.printStackTrace();

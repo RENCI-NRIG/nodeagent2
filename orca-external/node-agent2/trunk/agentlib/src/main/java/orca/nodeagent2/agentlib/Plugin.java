@@ -20,10 +20,9 @@ public interface Plugin {
 	 * (either can be null)
 	 * @parm config - config file name
 	 * @param configProperties - properties from config file
-	 * @param cl - main class loader
 	 * @throws PluginException
 	 */
-	public void initialize(String config, Properties configProperties, ClassLoader cl) throws PluginException;
+	public void initialize(String config, Properties configProperties) throws PluginException;
 	
 	/**
 	 * Provision a new resource with properties specified in the map.

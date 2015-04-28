@@ -24,12 +24,13 @@ public class Util {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Log getLog(ClassLoader cl, String n) throws Exception {
+	public static Log getLog(String n) throws Exception {
 		if (logs.containsKey(n))
 			return logs.get(n);
 		try {
 			@SuppressWarnings("unchecked")
-			Class<LogFactory> lf = (Class<LogFactory>)cl.loadClass(LOG_FACTORY_CLASS);
+			//Class<LogFactory> lf = (Class<LogFactory>)cl.loadClass(LOG_FACTORY_CLASS);
+			Class<LogFactory> lf = (Class<LogFactory>)Util.class.getClassLoader().loadClass(LOG_FACTORY_CLASS);
 			
 			Method gl = lf.getMethod(LOG_FACTORY_GET_LOG, String.class);
 			

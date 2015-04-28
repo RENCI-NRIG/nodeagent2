@@ -4,9 +4,9 @@
 	xsi:schemaLocation="http://geni-orca.renci.org/xml/node-agent2/AgentConfig http://geni-orca.renci.org/xml/node-agent2/AgentConfig.xsd"
 	password="pass">
 
-	<tick length="10" unit="second"/>
+	<tick length="1" unit="minute"/>
 	<plugins>
-		<plugin name="oscars">
+		<plugin name="null-plugin">
 			<jar>/Users/ibaldin/workspace-nodeagent2/node-agent2/null-agent/target/null-agent-0.1-SNAPSHOT-jar-with-dependencies.jar</jar>
 			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
 			<schedulePeriod length="3" unit="minute" />
@@ -17,13 +17,20 @@
 				<property name="pr1" value="val1" />
 			</properties>
 		</plugin>
-		<plugin name="Some-Test-Plugin">
-			<jar>/Users/ibaldin/workspace-nodeagent2/node-agent2/null-agent/target/null-agent-0.1-SNAPSHOT.jar</jar>
-			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
-			<schedulePeriod length="60" unit="second" />
+		<plugin name="oscars">
+			<!--
+			<jar>/Users/ibaldin/workspace-oscars/na2-oscars-lib/target/na2-oscars-lib-0.6SNAPSHOT.jar</jar>
+			-->
+	
+			<jar>/Users/ibaldin/workspace-oscars/na2-oscars-v06/target/oscars-0.6-SNAPSHOT-jar-with-dependencies.jar</jar>
+			<mainClass>orca.nodeagent2.oscarsv06.Main</mainClass>
+			<schedulePeriod length="5" unit="minute" />
 			<properties>
-				<property name="pr" value="val" />
-				<property name="pr1" value="val1" />
+				<property name="oscars.keystore" value="/Users/ibaldin/workspace-oscars/orca-oscars-0.6/scripts/oscars-orca3.jks" />
+				<property name="oscars.truststore" value="/Users/ibaldin/workspace-oscars/orca-oscars-0.6/scripts/oscars-orca3.jks" />
+				<property name="oscars.alias" value="orca" />
+				<property name="oscars.password" value="VeryTough55!" />
+				<property name="oscars.description" value="ORCA-NA2-circuit" />
 			</properties>
 		</plugin>
 	</plugins>
