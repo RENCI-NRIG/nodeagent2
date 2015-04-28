@@ -1,8 +1,10 @@
 package orca.nodeagent2.agent.server;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.security.Permission;
 
 import orca.nodeagent2.agent.config.Config;
 import orca.nodeagent2.agent.core.PluginsRegistry;
@@ -31,7 +33,7 @@ public class ServerMain {
 			// init logging
 			String loggingConfig = ac.getEnvironment().getProperty(CONFIG_LOGGING);
 			boolean defaultConfig = true;
-
+			
 			if (loggingConfig != null) {
 				File lpf = new File(loggingConfig);
 				if (lpf.exists()) { 
@@ -50,12 +52,12 @@ public class ServerMain {
 				l.info("NA2 using " + (defaultConfig ? "built-in log4j configuration" : "user-specified configuration in " + loggingConfig));
 
 				String na2Config = ac.getEnvironment().getProperty(CONFIG_NA2);
-				
+
 				if (na2Config == null) {
 					l.error("Property na2.config pointing to NA2 plugin configuration is not specified, exiting");
 					System.exit(1);
 				}
-				
+
 				try {
 					l.info("Initializing Node Agent with " + na2Config);
 					Config.initialize(na2Config);
@@ -71,15 +73,16 @@ public class ServerMain {
 			}
 		}
 	}
-	
+
 	public static void main(String[] argv) {
+
 		// start up spring
 		SpringApplication spring = new SpringApplication(ServerMain.class);
 
 		NA2Initializer na2 = new NA2Initializer();
 
 		spring.addInitializers(na2);
-		
+
 		spring.run(argv);
 
 	}

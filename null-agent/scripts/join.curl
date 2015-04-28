@@ -1,7 +1,7 @@
 #!/bin/bash 
 
-url="http://localhost:8080/join/Null-Test-Plugin"
-#url="https://localhost:8443/join/Null-Test-Plugin"
+url="http://localhost:8080/join/null-plugin"
+#url="https://localhost:8443/join/null-plugin"
 
 
 curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass -X POST $url -d '{

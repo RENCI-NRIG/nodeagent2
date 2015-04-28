@@ -41,7 +41,7 @@ public class SchedulePersistence {
 		// start periodic thread
 		try {
 			l.info("Starting periodic tick thread every " + Config.getInstance().getTickLength() + " " + Config.getInstance().getTickTimeUnit());
-			tickHandle = scheduler.scheduleAtFixedRate(new RenewExpiringThread(this), 10, 
+			tickHandle = scheduler.scheduleAtFixedRate(new RenewExpiringThread(this), 1, 
 					Config.getInstance().getTickLength(), 
 					Config.getInstance().getTickTimeUnit());
 		} catch (Exception e) {

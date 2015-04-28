@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 
 /**
  * Handle the mechanics of loading the foreign jars
@@ -18,8 +19,11 @@ public class JarHandler {
 			if (!f.exists())
 				throw new Exception("Jar file " + name + " not found");
 			String jarUrl = "jar:file:" + name + "!/";
-			URLClassLoader childCl = new URLClassLoader(new URL[]{ new URL(jarUrl)} , JarHandler.class.getClassLoader());
-			Class<?> classToLoad = (Class<?>)Class.forName (className, true, childCl);
+			//URLClassLoader childCl = new URLClassLoader(new URL[]{ new URL(jarUrl)} , Thread.currentThread().getContextClassLoader());
+			ParentLastClassLoader plc = new ParentLastClassLoader(Arrays.asList(new URL[] { new URL(jarUrl)} ));
+			//ChildFirstURLClassLoader cfc = new ChildFirstURLClassLoader(new URL[] { new URL(jarUrl)}, JarHandler.class.getClassLoader());
+			URLClassLoader childCl = new URLClassLoader(new URL[]{ new URL(jarUrl)}, null);
+			Class<?> classToLoad = (Class<?>)Class.forName (className, true, plc);
 			if (classToLoad == null) {
 				throw new Exception("Failed to load class " + className + " from jar file " + name);
 			}

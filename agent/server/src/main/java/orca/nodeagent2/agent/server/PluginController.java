@@ -53,6 +53,9 @@ public class PluginController {
 			
 			PluginReturn pr = PluginsRegistry.getInstance().join(name, future.getTime(), props);
 			
+			if (pr == null) 
+				throw new Exception("Plugin returned null");
+			
 			if (pr.getStatus() == PluginErrorCodes.OK.code) {
 				// insert the renew event into the database with initial and returned properties 
 				// the deadline is set to the execution deadline (schedule period - tick advance)
@@ -65,6 +68,7 @@ public class PluginController {
 			return pr;
 		} catch (PluginException pe) {
 			l.error("Error invoking join on " + name + ": " + pe);
+			pe.printStackTrace();
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "join error: " + pe.getMessage(), null, null);
 		} catch (Exception e) {
 			l.error("Error invoking join on " + name + ": " + e);
@@ -72,7 +76,7 @@ public class PluginController {
 		}	
 	}
 
-	@RequestMapping(value="/leave/{pName}/{resId}", method=RequestMethod.POST, consumes = { "application/json" })
+	@RequestMapping(value="/leave/{pName}/{resId:.+}", method=RequestMethod.POST, consumes = { "application/json" })
 	@ResponseBody 
 	public PluginReturn leave(@PathVariable(value="pName") String name, @PathVariable(value="resId") String resId, @RequestBody Properties props) {
 		ReservationId rid = new ReservationId(resId);
@@ -84,6 +88,10 @@ public class PluginController {
 			ScheduleEntry se = sp.removeEntry(name, rid);
 			PluginReturn pr = PluginsRegistry.getInstance().leave(name, rid, props, 
 					(se != null ? se.getSchedProperties() : null));
+			
+			if (pr == null) 
+				throw new Exception("Plugin returned null");
+			
 			l.info("LEAVE call to " + name + " for " + rid + " returned " + pr.getStatus() + " " + pr.getErrorMsg());
 			return pr;
 		} catch (PluginException pe) {
@@ -95,7 +103,7 @@ public class PluginController {
 		}	
 	}
 
-	@RequestMapping(value="/modify/{pName}/{resId}", method=RequestMethod.POST, consumes = { "application/json" })
+	@RequestMapping(value="/modify/{pName}/{resId:.+}", method=RequestMethod.POST, consumes = { "application/json" })
 	@ResponseBody
 	public PluginReturn modify(@PathVariable(value="pName") String name, @PathVariable(value="resId") String resId, @RequestBody Properties props) {
 		ReservationId rid = new ReservationId(resId);
@@ -105,6 +113,10 @@ public class PluginController {
 			ScheduleEntry se = sp.findEntry(name, resId);
 			PluginReturn pr = PluginsRegistry.getInstance().modify(name, rid, props, 
 					(se != null ? se.getSchedProperties() : null));
+			
+			if (pr == null) 
+				throw new Exception("Plugin returned null");
+			
 			l.info("MODIFY call to " + name + " for " + rid + " returned " + pr.getStatus() + " " + pr.getErrorMsg());
 			return pr;
 		} catch (PluginException pe) {
@@ -116,12 +128,13 @@ public class PluginController {
 		}	
 	}
 
-	@RequestMapping(value="/status/{pName}/{resId}", method=RequestMethod.GET)
+	@RequestMapping(value="/status/{pName}/{resId:.+}", method=RequestMethod.GET)
 	public PluginReturn status(@PathVariable(value="pName") String name, @PathVariable(value="resId") String resId) {
 		ReservationId rid = new ReservationId(resId);
 		try {
 			l.info("STATUS call to " + name + " reservation " + resId);
 			ScheduleEntry se = sp.findEntry(name, resId);
+			
 			return PluginsRegistry.getInstance().status(name, rid,
 					(se != null ? se.getSchedProperties() : null));
 		} catch (PluginException pe) {
