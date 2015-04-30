@@ -18,18 +18,15 @@
 			</properties>
 		</plugin>
 		<plugin name="oscars">
-			<!--
-			<jar>/Users/ibaldin/workspace-oscars/na2-oscars-lib/target/na2-oscars-lib-0.6SNAPSHOT.jar</jar>
-			-->
-	
-			<jar>/Users/ibaldin/workspace-oscars/na2-oscars-v06/target/oscars-0.6-SNAPSHOT-jar-with-dependencies.jar</jar>
-			<mainClass>orca.nodeagent2.oscarsv06.Main</mainClass>
-			<schedulePeriod length="5" unit="minute" />
+			<jar>/Users/ibaldin/workspace-oscars/na2-oscars-lib/target/na2-oscars-lib-0.6SNAPSHOT-executable.jar</jar>
+			<mainClass>orca.nodeagent2.oscarslib.Main</mainClass>
+			<schedulePeriod length="6" unit="minute" />
+			<renewAdvanceTicks>2</renewAdvanceTicks>
 			<properties>
-				<property name="oscars.keystore" value="/Users/ibaldin/workspace-oscars/orca-oscars-0.6/scripts/oscars-orca3.jks" />
-				<property name="oscars.truststore" value="/Users/ibaldin/workspace-oscars/orca-oscars-0.6/scripts/oscars-orca3.jks" />
-				<property name="oscars.alias" value="orca" />
-				<property name="oscars.password" value="VeryTough55!" />
+				<property name="oscars.keystore" value="/some/path/to/jks" />
+				<property name="oscars.truststore" value="/some/path/to/jks" />
+				<property name="oscars.alias" value="some-alias" />
+				<property name="oscars.password" value="some-password" />
 				<property name="oscars.description" value="ORCA-NA2-circuit" />
 			</properties>
 		</plugin>
