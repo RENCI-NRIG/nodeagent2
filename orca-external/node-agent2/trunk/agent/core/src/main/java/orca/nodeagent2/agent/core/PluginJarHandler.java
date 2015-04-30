@@ -1,7 +1,6 @@
 package orca.nodeagent2.agent.core;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,7 +38,7 @@ public class PluginJarHandler extends JarHandler {
 	public PluginJarHandler(String jarName, String className) throws Exception {
 		
 		pluginClass = (Class<Plugin>)loadJar(jarName, className);
-
+		
 		Class<?>[] pluginInterfaces = pluginClass.getInterfaces();
 		boolean implementsPlugin = false;
 		for (Class<?> intf: pluginInterfaces) {
@@ -71,51 +70,99 @@ public class PluginJarHandler extends JarHandler {
 	}
 
 	public PluginReturn join(Date until, Properties callerProperties) throws PluginException {
+		ClassLoader cl = null;
 		try {
+			cl = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(getClassLoader());
 			return instance.join(until, callerProperties);
 		} catch (IllegalArgumentException e) {
 			throw new PluginException("Unable to invoke join method in " + pluginClass.getName() + " due to IllegalArgumentException: " + e);
-		} 
+		} catch (Exception ee) {
+			throw new PluginException("Unable to invoke join method in " + pluginClass.getName() + " due to Exception: " + ee);
+		} finally {
+			if (cl != null)
+				Thread.currentThread().setContextClassLoader(cl);
+		}
 	}
 
 	public PluginReturn leave(ReservationId resId, Properties callerProperties, Properties schedProperties) throws PluginException {
+		ClassLoader cl = null;
 		try {
+			cl = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(getClassLoader());
 			return instance.leave(resId, callerProperties, schedProperties);
 		} catch (IllegalArgumentException e) {
 			throw new PluginException("Unable to invoke leave method in " + pluginClass.getName() + " due to IllegalArgumentException: " + e);
-		} 
+		} catch (Exception ee) {
+			throw new PluginException("Unable to invoke leave method in " + pluginClass.getName() + " due to Exception: " + ee);
+		} finally {
+			if (cl != null)
+				Thread.currentThread().setContextClassLoader(cl);
+		}
 	}
 
 	public PluginReturn modify(ReservationId resId, Properties callerProperties, Properties schedProperties) throws PluginException {
+		ClassLoader cl = null;
 		try {
+			cl = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(getClassLoader());
 			return instance.modify(resId, callerProperties, schedProperties);
 		} catch (IllegalArgumentException e) {
 			throw new PluginException("Unable to invoke modify method in " + pluginClass.getName() + " due to IllegalArgumentException: " + e);
-		} 
+		} catch (Exception ee) {
+			throw new PluginException("Unable to invoke modify method in " + pluginClass.getName() + " due to Exception: " + ee);
+		} finally {
+			if (cl != null)
+				Thread.currentThread().setContextClassLoader(cl);
+		}
 	}
 
 	public PluginReturn renew(ReservationId resId, Date until, Properties joinProperties, Properties schedProperties) throws PluginException {
+		ClassLoader cl = null;
 		try {
+			cl = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(getClassLoader());
 			return instance.renew(resId, until, joinProperties, schedProperties);
 		} catch (IllegalArgumentException e) {
 			throw new PluginException("Unable to invoke renew method in " + pluginClass.getName() + " due to IllegalArgumentException: " + e);
-		} 
+		} catch (Exception ee) {
+			throw new PluginException("Unable to invoke renew method in " + pluginClass.getName() + " due to Exception: " + ee);
+		} finally {
+			if (cl != null)
+				Thread.currentThread().setContextClassLoader(cl);
+		}
 	}
 
 	public PluginReturn status(ReservationId resId, Properties schedProperties) throws PluginException {
+		ClassLoader cl = null;
 		try {
+			cl = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(getClassLoader());
 			return instance.status(resId, schedProperties);
 		} catch (IllegalArgumentException e) {
 			throw new PluginException("Unable to invoke status method in " + pluginClass.getName() + " due to IllegalArgumentException: " + e);
-		} 
+		} catch (Exception ee) {
+			throw new PluginException("Unable to invoke status method in " + pluginClass.getName() + " due to Exception: " + ee);
+		} finally {
+			if (cl != null)
+				Thread.currentThread().setContextClassLoader(cl);
+		}
 	}
 
 	public void initialize(String fName, Properties configProperties) throws PluginException {
+		ClassLoader cl = null;
 		try {
+			cl = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(getClassLoader());
 			instance.initialize(fName, configProperties);
 			return;
 		} catch (IllegalArgumentException e) {
 			throw new PluginException("Unable to invoke init method in " + pluginClass.getName() + " due to IllegalArgumentException: " + e);
-		} 
+		} catch (Exception ee) {
+			throw new PluginException("Unable to invoke init method in " + pluginClass.getName() + " due to Exception: " + ee);
+		} finally {
+			if (cl != null)
+				Thread.currentThread().setContextClassLoader(cl);
+		}
 	}
 }
