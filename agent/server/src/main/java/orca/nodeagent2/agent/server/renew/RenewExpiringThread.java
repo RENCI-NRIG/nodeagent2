@@ -66,15 +66,15 @@ public class RenewExpiringThread implements Runnable {
 							l.error("RENEW call to " + e.getName() + " reservation " + e.getReservationId() + 
 									" returned non-zero status: " + 
 									pr.getStatus() + " " + pr.getErrorMsg());
-
-						// remove old entry
-						l.debug("Removing old entry from the database");
-						sp.removeEntries(Arrays.asList(e));
 						
 					} catch (PluginException pe) {
-						l.error("Unable to renew plugin " + e.getName() + " reservation " + e.getReservationId());
+						l.error("Unable to renew plugin " + e.getName() + " reservation " + e.getReservationId() + " due to " + pe.getMessage());
 					} catch (Exception ee) {
-						l.error("Unable to renew plugin " + e.getName() + " reservation " + e.getReservationId());
+						l.error("Unable to renew plugin " + e.getName() + " reservation " + e.getReservationId() + " due to " + ee.getMessage());
+					} finally {
+						// remove old entry
+						l.debug("Removing old entry " + e + " from the database");
+						sp.removeEntries(Arrays.asList(e));
 					}
 				}
 			});

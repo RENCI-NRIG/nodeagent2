@@ -13,14 +13,20 @@ import java.util.Arrays;
  */
 public class JarHandler {
 
-	public static Class<?> loadJar(String name, String className) throws Exception {
+	ClassLoader plc = null;
+	String name = null;
+	String className = null;
+	
+	public Class<?> loadJar(String n, String c) throws Exception {
+		name = n;
+		className = c;
 		try {
 			File f = new File(name);
 			if (!f.exists())
 				throw new Exception("Jar file " + name + " not found");
 			String jarUrl = "jar:file:" + name + "!/";
 			//URLClassLoader childCl = new URLClassLoader(new URL[]{ new URL(jarUrl)} , Thread.currentThread().getContextClassLoader());
-			ParentLastClassLoader plc = new ParentLastClassLoader(Arrays.asList(new URL[] { new URL(jarUrl)} ));
+			plc = new ParentLastClassLoader(Arrays.asList(new URL[] { new URL(jarUrl)} ));
 			//ChildFirstURLClassLoader cfc = new ChildFirstURLClassLoader(new URL[] { new URL(jarUrl)}, JarHandler.class.getClassLoader());
 			URLClassLoader childCl = new URLClassLoader(new URL[]{ new URL(jarUrl)}, null);
 			Class<?> classToLoad = (Class<?>)Class.forName (className, true, plc);
@@ -38,4 +44,10 @@ public class JarHandler {
 		} 
 	}
 
+	public ClassLoader getClassLoader() throws Exception {
+		if (plc == null)
+			throw new Exception("Trying to get uninitialized classloader");
+		return plc;
+	}
+	
 }
