@@ -40,8 +40,12 @@ public class RenewExpiringThread implements Runnable {
 			l.info("Spawning a thread to renew " + e.getName() + " reservation " + e.getReservationId());
 			renewThreadFactory.submit(new Thread() {
 				public void run() {
+					ReservationId resId = new ReservationId(e.getReservationId());
 					try {
 						Thread.currentThread().setName("renew" + e.getName() + "/" + e.getReservationId() + "Thread");
+						
+						// acquire the lock for this reservation
+						PluginsRegistry.getInstance().acquire(e.getName(), resId);
 						
 						// compute new expiry time as now + plugin period
 						Calendar future = Calendar.getInstance();
@@ -51,7 +55,7 @@ public class RenewExpiringThread implements Runnable {
 
 						// invoke renew
 						PluginReturn pr = PluginsRegistry.getInstance().renew(e.getName(), 
-								new ReservationId(e.getReservationId()), future.getTime(), 
+								resId, future.getTime(), 
 								e.getJoinProperties(), e.getSchedProperties());
 
 						if (pr.getStatus() == PluginErrorCodes.OK.code) {
@@ -75,6 +79,9 @@ public class RenewExpiringThread implements Runnable {
 						// remove old entry
 						l.debug("Removing old entry " + e + " from the database");
 						sp.removeEntries(Arrays.asList(e));
+						
+						// release the lock
+						PluginsRegistry.getInstance().release(e.getName(), resId);
 					}
 				}
 			});

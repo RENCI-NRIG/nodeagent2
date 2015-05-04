@@ -84,10 +84,16 @@ public class PluginController {
 			l.info("LEAVE call to " + name + " for " + rid);
 			l.debug("  with properties " + props);
 			
+			// get the lock
+			PluginsRegistry.getInstance().acquire(name, rid);
+			
 			l.info("Removing from the database");
 			ScheduleEntry se = sp.removeEntry(name, rid);
-			PluginReturn pr = PluginsRegistry.getInstance().leave(name, rid, props, 
-					(se != null ? se.getSchedProperties() : null));
+			
+			if (se == null)
+				throw new Exception("No schedule entries found in the NA2 database for " + name + " reservation " + resId);
+			
+			PluginReturn pr = PluginsRegistry.getInstance().leave(name, rid, props, se.getSchedProperties());
 			
 			if (pr == null) 
 				throw new Exception("Plugin returned null");
@@ -100,7 +106,9 @@ public class PluginController {
 		} catch (Exception e) {
 			l.error("Error invoking leave on " + name + ": " + e);
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "leave error: " + e.getMessage(), rid, null);
-		}	
+		} finally {
+			PluginsRegistry.getInstance().release(name, rid);
+		}
 	}
 
 	@RequestMapping(value="/modify/{pName}/{resId:.+}", method=RequestMethod.POST, consumes = { "application/json" })
@@ -110,9 +118,15 @@ public class PluginController {
 		try {
 			l.info("MODIFY call to " + name + " for " + rid);
 			l.debug("  with properties " + props);
+			// get the lock
+			PluginsRegistry.getInstance().acquire(name, rid);
+			
 			ScheduleEntry se = sp.findEntry(name, resId);
-			PluginReturn pr = PluginsRegistry.getInstance().modify(name, rid, props, 
-					(se != null ? se.getSchedProperties() : null));
+			
+			if (se == null)
+				throw new Exception("No schedule entries found in the NA2 database for " + name + " reservation " + resId);
+			
+			PluginReturn pr = PluginsRegistry.getInstance().modify(name, rid, props, se.getSchedProperties());
 			
 			if (pr == null) 
 				throw new Exception("Plugin returned null");
@@ -125,7 +139,9 @@ public class PluginController {
 		} catch (Exception e) {
 			l.error("Error invoking modify on " + name + ": " + e);
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "modify error: " + e.getMessage(), rid, null);
-		}	
+		} finally {
+			PluginsRegistry.getInstance().release(name, rid);
+		}
 	}
 
 	@RequestMapping(value="/status/{pName}/{resId:.+}", method=RequestMethod.GET)
@@ -134,6 +150,9 @@ public class PluginController {
 		try {
 			l.info("STATUS call to " + name + " reservation " + resId);
 			ScheduleEntry se = sp.findEntry(name, resId);
+			
+			if (se == null)
+				throw new Exception("No schedule entries found in the NA2 database for " + name + " reservation " + resId);
 			
 			return PluginsRegistry.getInstance().status(name, rid,
 					(se != null ? se.getSchedProperties() : null));

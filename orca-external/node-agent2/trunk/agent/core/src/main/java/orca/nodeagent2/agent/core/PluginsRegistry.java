@@ -91,12 +91,12 @@ public class PluginsRegistry {
 		return sem;
 	}
 	
-	private void acquire(String name, ReservationId rid) throws InterruptedException {
+	public void acquire(String name, ReservationId rid) throws InterruptedException {
 		l.debug("Acquiring semaphore on " + name + "/" + rid);
 		getSemaphore(name, rid).acquire();
 	}
 	
-	private void release(String name, ReservationId rid) {
+	public void release(String name, ReservationId rid) {
 		l.debug("Releasing semaphore on " + name + "/" + rid);
 		getSemaphore(name, rid).release();
 	}
@@ -143,13 +143,10 @@ public class PluginsRegistry {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in leave call to plugin " + pluginName + ": plugin not found");
 		try {
-			acquire(pluginName, resId);
 			return plugins.get(pluginName).leave(resId, callerProperties, schedProperties);
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			release(pluginName, resId);
-		}
+		} 
 	}
 	
 	public PluginReturn modify(String pluginName, ReservationId resId, Properties callerProperties, Properties schedProperties) throws Exception, PluginException {
@@ -157,39 +154,30 @@ public class PluginsRegistry {
 			throw new Exception("Error in modify call to plugin " + pluginName + ": plugin not found");
 		
 		try {
-			acquire(pluginName, resId);
 			return plugins.get(pluginName).modify(resId, callerProperties, schedProperties);
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			release(pluginName, resId);
-		}
+		} 
 	}
 	
 	public PluginReturn renew(String pluginName, ReservationId resId, Date until, Properties joinProperties, Properties schedProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in renew call to plugin " + pluginName + ": plugin not found");
 		try {
-			acquire(pluginName, resId);
 			return plugins.get(pluginName).renew(resId, until, joinProperties, schedProperties);
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			release(pluginName, resId);
-		}
+		} 
 	}
 	
 	public PluginReturn status(String pluginName, ReservationId resId, Properties schedProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in status call to plugin " + pluginName + ": plugin not found");
 		try {
-			acquire(pluginName, resId);
 			return plugins.get(pluginName).status(resId, schedProperties);
 		}catch (Exception e) {
 			throw e;
-		} finally {
-			release(pluginName, resId);
-		}
+		} 
 	}
 	
 	public String getDescription(String pluginName) throws Exception {
