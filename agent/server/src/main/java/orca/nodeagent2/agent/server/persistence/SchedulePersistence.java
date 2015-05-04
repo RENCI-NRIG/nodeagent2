@@ -72,6 +72,11 @@ public class SchedulePersistence {
 		cal.setTime(future);
 		// subtract the number of ticks
 		cal.add(Config.getInstance().getTickCalendarUnit(), -1 * Config.getInstance().getTickLength() * Config.getInstance().getAdvanceTicks(name));
+		
+		// subtract one additional second to avoid schedule sliding forward every time
+		// config won't allow a tick of one sec.
+		cal.add(Calendar.SECOND, -1);
+		
 		l.info("Saving  renew deadline for reservation " + r + " plugin " + name + " at " + cal.getTime());
 		l.debug("inProperties: " + inProps);
 		l.debug("joinProperties: " + joinProps);

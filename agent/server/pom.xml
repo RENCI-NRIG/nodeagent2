@@ -95,6 +95,7 @@
 						<phase>package</phase>
 						<goals>
 							<goal>assemble</goal>
+							<goal>generate-daemons</goal>
 						</goals>
 						<configuration>
 							<programs>
@@ -103,6 +104,46 @@
 									<name>nodeagent2</name>
 								</program>
 							</programs>
+							<daemons>
+								<daemon>
+									<id>na2d</id>
+									<mainClass>orca.nodeagent2.agent.server.ServerMain</mainClass>
+									<generatorConfigurations>
+										<generatorConfiguration>
+											<generator>jsw</generator>
+											<includes>
+												<include>macosx-x86-universal-32</include>
+												<include>linux-x86-64</include>
+											</includes>
+											<configuration>
+												<property>
+													<name>run.as.user.envvar</name>
+													<value>geni-orca</value>
+												</property>
+												<property>
+													<name>wrapper.logfile</name>
+													<value>/var/log/na2/na2.log</value>
+												</property>
+												<property>
+													<name>wrapper.logfile.loglevel</name>
+													<value>DEBUG</value>
+												</property>
+												<property>
+													<name>wrapper.logfile.maxsize</name>
+													<value>10M</value>
+												</property>
+												<property>
+													<name>wrapper.logfile.maxfiles</name>
+													<value>10</value>
+												</property>
+											</configuration>
+										</generatorConfiguration>
+									</generatorConfigurations>
+									<platforms>
+										<platform>jsw</platform>
+									</platforms>
+								</daemon>
+							</daemons>
 						</configuration>
 					</execution>
 				</executions>
