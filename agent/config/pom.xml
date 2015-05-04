@@ -37,7 +37,6 @@
 					<includeBindings>
 						<includeBinding>config-bindings.xjb</includeBinding>
 					</includeBindings>
-					<forceRegenerate>true</forceRegenerate>
 				</configuration>
 			</plugin>
 			<plugin>
