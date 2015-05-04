@@ -96,7 +96,7 @@ public class StatusController {
 		}
 	}
 	
-	@RequestMapping(value="/schedule/{pName}/{resId}", method=RequestMethod.GET)
+	@RequestMapping(value="/schedule/{pName}/{resId:.+}", method=RequestMethod.GET)
 	@ResponseBody
 	public DBBean schedule(@PathVariable(value="pName") String name, @PathVariable(value="resId") String resId) {
 		try {
