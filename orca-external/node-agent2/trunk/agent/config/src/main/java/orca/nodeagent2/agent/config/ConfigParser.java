@@ -53,10 +53,17 @@ public class ConfigParser extends ParserHelper {
 				}
 				Calendar plugin = Calendar.getInstance();
 				Calendar tick = (Calendar)plugin.clone();
+				Calendar tickCheck = (Calendar)plugin.clone();
+				// make sure tick is not longer than plugin period
 				plugin.add(convertToCalendarUnits(pt.getSchedulePeriod().getUnit()), pt.getSchedulePeriod().getLength());
 				tick.add(convertToCalendarUnits(root.getTick().getUnit()), root.getTick().getLength());
 				if (tick.after(plugin))
 					throw new Exception("NodeAgent tick too long for plugin " + pt.getName());
+				
+				// make sure tick longer than one second (because we subtract one second on every renew)
+				tickCheck.add(Calendar.SECOND, 1);
+				if (tickCheck.equals(tick))
+					throw new Exception("NodeAgent tick too short (1 sec)");
 			}
 
 			initialized = true;
