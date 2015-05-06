@@ -64,7 +64,7 @@ public class RenewExpiringThread implements Runnable {
 
 							// update the database with a new schedule entry
 							l.info("Updating the database for " + e.getName() + " existing reservation " + e.getReservationId());
-							sp.saveRenewDeadline(e.getName(), future.getTime(), pr.getResId(), 
+							sp.saveRenewDeadline(e.getName(), future.getTime(), resId, 
 									e.getJoinProperties(), e.getSchedProperties(), 0, null);
 						} else 
 							l.error("RENEW call to " + e.getName() + " reservation " + e.getReservationId() + 
