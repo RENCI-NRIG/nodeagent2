@@ -59,6 +59,11 @@ public class PluginController {
 			if (pr.getStatus() == PluginErrorCodes.OK.code) {
 				// insert the renew event into the database with initial and returned properties 
 				// the deadline is set to the execution deadline (schedule period - tick advance)
+				ScheduleEntry se = sp.findEntry(name, pr.getResId().getId());
+				
+				if (se != null)
+					throw new Exception("reservation with id " + pr.getResId() + " already exists!");
+
 				l.info("Updating the database for " + name + " new reservation " + pr.getResId());
 				sp.saveRenewDeadline(name, future.getTime(), pr.getResId(), props, pr.getProperties(), 0, null);
 			} else {
