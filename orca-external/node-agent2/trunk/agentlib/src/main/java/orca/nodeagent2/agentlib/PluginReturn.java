@@ -26,6 +26,7 @@ public class PluginReturn {
 	}
 	
 	/**
+	 * Return with error (see PluginErrorCodes)
 	 * @param s - status
 	 * @param err - error
 	 * @param r - reservation id

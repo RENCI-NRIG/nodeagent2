@@ -5,8 +5,8 @@ import java.util.Date;
 
 /**
  * This is the interface all plugins must conform to. The dynamic loader does its best to check
- * the compliance of loaded plugins to the interface. Access to classloader is provided to reduce
- * the need to link new classes and enable reusing classes available in the core.
+ * the compliance of loaded plugins to the interface. NA2 uses child first/parent last classloader
+ * so any jar dependencies are loaded from the plugin classpath first.
  * 
  * Plugins are expected to be largely stateless, leaving it to NA core to save state for recovery
  * purposes.
@@ -18,7 +18,7 @@ public interface Plugin {
 	/**
 	 * Initialize the behavior of the plugin based on a combination of config file and configuration properties
 	 * (either can be null)
-	 * @parm config - config file name
+	 * @param config - config file name
 	 * @param configProperties - properties from config file
 	 * @throws PluginException
 	 */
@@ -37,7 +37,7 @@ public interface Plugin {
 	 * @param resId
 	 * @param callerProperties - provided by the caller (ORCA)
 	 * @param callerProperties - provided from the schedule (otherwise null)
-	 * @return
+	 * @return properties, status and reservation id
 	 */
 	public PluginReturn leave(ReservationId resId, Properties callerProperties, Properties schedProperties) throws PluginException;
 	
@@ -46,7 +46,7 @@ public interface Plugin {
 	 * @param resId
 	 * @param callerProperties - provided by the caller
 	 * @param schedProperties  - provided from the schedule (otherwise null)
-	 * @return
+	 * @return properties, status and reservation id
 	 */
 	public PluginReturn modify(ReservationId resId, Properties callerProperties, Properties schedProperties) throws PluginException;
 	
@@ -56,7 +56,7 @@ public interface Plugin {
 	 * @param until - the date
 	 * @param inProperties - properties passed in by the caller to join 
 	 * @param joinProperties - properties returned by the schedule (or null)
-	 * @return
+	 * @return properties, status and reservation id
 	 */
 	public PluginReturn renew(ReservationId resId, Date until, Properties joinProperties, 
 			Properties schedProperties) throws PluginException;
@@ -66,7 +66,7 @@ public interface Plugin {
 	 * on renew. Properties are provided from the schedule, otherwise null is supplied.
 	 * @param resId
 	 * @param schedProperties - properties returned by the schedule (or null)
-	 * @return
+	 * @return properties, status and reservation id
 	 */
 	public PluginReturn status(ReservationId resId, Properties schedProperties) throws PluginException;
 }
