@@ -17,6 +17,7 @@
 				<property name="pr1" value="val1" />
 			</properties>
 		</plugin>
+		<!--
 		<plugin name="oscars">
 			<jar>/Users/ibaldin/workspace-oscars/na2-oscars-lib/target/na2-oscars-lib-0.6SNAPSHOT-executable.jar</jar>
 			<mainClass>orca.nodeagent2.oscarslib.Main</mainClass>
@@ -28,6 +29,19 @@
 				<property name="oscars.alias" value="some-alias" />
 				<property name="oscars.password" value="some-password" />
 				<property name="oscars.description" value="ORCA-NA2-circuit" />
+			</properties>
+		</plugin>
+		-->
+		<plugin name="execplug" >
+			<jar>/Users/ibaldin/workspace-nodeagent2/exec-plugin/target/exec-plugin-1.0-SNAPSHOT-jar-with-dependencies.jar</jar>
+			<mainClass>orca.nodeagent2.exec.Main</mainClass>
+			<schedulePeriod length="3" unit="minute" />
+			<properties>
+				<property name="exec.join" value="/Users/ibaldin/workspace-nodeagent2/exec-plugin/scripts/join.sh" />
+				<property name="exec.leave" value="/Users/ibaldin/workspace-nodeagent2/exec-plugin/scripts/leave.sh" />
+				<property name="exec.modify" value="/Users/ibaldin/workspace-nodeagent2/exec-plugin/scripts/modify.sh" />
+				<property name="exec.renew" value="/Users/ibaldin/workspace-nodeagent2/exec-plugin/scripts/renew.sh" />
+				<property name="exec.status" value="/Users/ibaldin/workspace-nodeagent2/exec-plugin/scripts/status.sh" />
 			</properties>
 		</plugin>
 	</plugins>
