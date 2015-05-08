@@ -1,0 +1,3 @@
+NodeAgent2 is a runtime that communicates with ORCA handlers via REST interface and with substrates via plugins. 
+
+For implementing plugins, use orca.nodeagent2 agentlib artifact, which contains the Plugin interface.
