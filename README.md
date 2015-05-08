@@ -42,7 +42,7 @@ Join operation is assumed to generate a unique *reservation id* string which fro
 ## Configuration
 
 Several configuration files are required for NA2:
- * Spring configuration file in YAML or as properties (like [source:orca-external/node-agent2/trunk/agent/server/na2-spring.yml this example])
+ * Spring configuration file in YAML or as properties (like [this example](agent/server/na2-spring.yml) this example)
    * NA2 is pointed at this file using environment variable SPRING_CONFIG_LOCATION like so:
 ```
 export SPRING_CONFIG_LOCATION=/path/to/config/file/na2-spring.yml
@@ -54,7 +54,7 @@ some:
     name: value
 ```
 
- * LOG4J configuration file (it is pointed to from the Spring configuration file using property logging.config). This is a properties file, something like [source:orca-external/node-agent2/trunk/agent/server/log4j-na2.properties this example].
+ * LOG4J configuration file (it is pointed to from the Spring configuration file using property logging.config). This is a properties file, something like [this example](agent/server/log4j-na2.properties).
  * NA2 configuration file - this is an XML file that describes the plugins that NA2 is aware of and their individual properties. Like [source:orca-external/node-agent2/trunk/agent/server/na-test-config.xml this example].
   * The '''name''' of the plugin in the configuration also corresponds to the REST endpoint used for this substrate instance. Notice it is legal to configure the same jar for multiple endpoints. The name must conform to this simple pattern "[a-zA-Z0-9-]+" and be at least 5 characters long.
   * You can look at the full [source:orca-external/node-agent2/trunk/agent/config/src/main/resources/orca/nodeagent2/agent/config/xsd/AgentConfig.xsd XSD schema] of the configuration file. Any changes to the schema are automatically turned into beans by the build process using JAXB. 
@@ -74,7 +74,7 @@ NA2 exposes a RESTful interface that combines mapping to plugin operations and s
  * http(s)://hostname:port/schedule/<plugin name> (GET) - returns the schedule information for the particular plugin
  * http(s)://hostname:port/schedule/<plugin name>/<reservation id> (GET) - returns the schedule information for the particular reservation of the specified plugin
 
-There are examples of using [source:orca-external/node-agent2/trunk/client/src/main/java/orca/nodeagent2/client/RestClient.java pure Java] to communicate with this API (using minimal Java dependencies) as well as examples of using [source:orca-external/na2-plugins/na2-oscars-lib/scripts/ curl] to do the same. 
+There are examples of using [pure Java](client/src/main/java/orca/nodeagent2/client/RestClient.java) to communicate with this API (using minimal Java dependencies) as well as examples of using [curl](https://github.com/RENCI-NRIG/na2-oscars-plugin/ curl) to do the same. 
 
 ## ORCA Interface
 
@@ -119,7 +119,7 @@ while can be built from source under node-agent2/agentlib/ or, alternatively, fe
 Each plugin jar must contain all of its dependencies, thus it is recommended to use Maven's 'jar-with-dependencies' plugin to generate it. For more complex scenarios you may need to use the Maven shade plugin. For an example of its use look at the [OSCARS NA2 plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin/blob/master/pom.xml).
 
 Example plugin implementations can be found in:
- * [Null-Agent](nodeagent2/null-agent) - a trivial implementation that does nothing and has minimal internal dependencies. Uses jar-with-dependencies Maven plugin.
+ * [Null-Agent](nodeagent2/tree/master/null-agent) - a trivial implementation that does nothing and has minimal internal dependencies. Uses jar-with-dependencies Maven plugin.
  * [OSCARS Plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin/blob/) - a full implementation of OSCARS API v06 plugin that relies on CXF and for this reason needs Maven shade plugin for assembling the uber jar.
  * [Exec Plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin/blob/) - a plugin that executes external programs for each of the join/leave/modify actions
 
@@ -134,7 +134,7 @@ NA2 automatically serializes renew/leave/modify/status requests *for a given res
 ## Building and Running NA2  from source 
 
  * make sure you have Java 7 and Maven 3.x
- * check out https://geni-orca.renci.org/svn/orca-external/node-agent2/trunk from SVN
+ * check out NodeAgent2 from from GitHub
  * run in top-level directory
 ```
 $ mvn clean install
