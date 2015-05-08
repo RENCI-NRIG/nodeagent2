@@ -105,7 +105,7 @@ Note that each target in the handler (join, leave or modify) must have this as t
 ## Developing new plugins 
 
 ### Dependencies 
-Developing new plugins is straightforward. Each new plugin must implement a class following the [Plugin interface] (nodeagent2/agentlib/src/main/java/orca/nodeagent2/agentlib/Plugin.java)  in the  orca.node-agent2.agentlib Maven artifact:
+Developing new plugins is straightforward. Each new plugin must implement a class following the [Plugin interface](agentlib/src/main/java/orca/nodeagent2/agentlib/Plugin.java)  in the  orca.node-agent2.agentlib Maven artifact:
 ```
 <dependency>
   <groupId>orca.node-agent2</groupId>
