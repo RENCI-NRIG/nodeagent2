@@ -9,7 +9,7 @@ NodeAgent2 was developed for two purposes:
  * Simplify working with self-scheduling substrates (like OSCARS and NSI), i.e. those that have their own scheduler that may require 'meter-feeding' so long as ORCA reservation is open. 
  * Simplify the development of new handlers based on large number of dependencies that don't work inside ORCA code.
 
-NA2 exposes a RESTful interface and allows to perform standard handler operations (join/leave/modify) using property dictionaries passed in and out of each call. In addition it has the ability to self-schedule renew operations on reservations it has created, thus allowing it to operate on e.g. OSCARS and NSI and without requiring ORCA to perform an explicit '''renew''' call via a handler. 
+NA2 exposes a RESTful interface and allows to perform standard handler operations (join/leave/modify) using property dictionaries passed in and out of each call. In addition it has the ability to self-schedule renew operations on reservations it has created, thus allowing it to operate on e.g. OSCARS and NSI and without requiring ORCA to perform an explicit *renew* call via a handler. 
 
 NA2 has persistence, thus allowing it to be shutdown and restarted without losing state. 
 
@@ -56,17 +56,17 @@ some:
 
  * LOG4J configuration file (it is pointed to from the Spring configuration file using property logging.config). This is a properties file, something like [this example](agent/server/log4j-na2.properties).
  * NA2 configuration file - this is an XML file that describes the plugins that NA2 is aware of and their individual properties. Like [source:orca-external/node-agent2/trunk/agent/server/na-test-config.xml this example].
-  * The '''name''' of the plugin in the configuration also corresponds to the REST endpoint used for this substrate instance. Notice it is legal to configure the same jar for multiple endpoints. The name must conform to this simple pattern "[a-zA-Z0-9-]+" and be at least 5 characters long.
+  * The *name* of the plugin in the configuration also corresponds to the REST endpoint used for this substrate instance. Notice it is legal to configure the same jar for multiple endpoints. The name must conform to this simple pattern "[a-zA-Z0-9-]+" and be at least 5 characters long.
   * You can look at the full [source:orca-external/node-agent2/trunk/agent/config/src/main/resources/orca/nodeagent2/agent/config/xsd/AgentConfig.xsd XSD schema] of the configuration file. Any changes to the schema are automatically turned into beans by the build process using JAXB. 
 
 ## REST interface details 
 
 NA2 exposes a RESTful interface that combines mapping to plugin operations and status queries. All parameters are passed and results are returned as JSON objects: 
 
- * http(s)://hostname:port/join/<plugin name> (POST) - maps to the '''join''' operation implemented by the jar associated with this endpoint
- * http(s)://hostname:port/leave/<plugin name>/<reservation id> (POST) - maps to the '''leave''' operation implemented by the jar associated with this endpoint
- * http(s)://hostname:port/modify/<plugin name>/<reservation id> (POST) - maps to the '''modify''' operation implemented by the jar associated with this endpoint
- * http(s)://hostname:port/status/<plugin name>/<reservation id> (GET) - maps to the '''status''' operation implemented by the jar associated with this endpoint
+ * http(s)://hostname:port/join/<plugin name> (POST) - maps to the *join* operation implemented by the jar associated with this endpoint
+ * http(s)://hostname:port/leave/<plugin name>/<reservation id> (POST) - maps to the *leave* operation implemented by the jar associated with this endpoint
+ * http(s)://hostname:port/modify/<plugin name>/<reservation id> (POST) - maps to the *modify* operation implemented by the jar associated with this endpoint
+ * http(s)://hostname:port/status/<plugin name>/<reservation id> (GET) - maps to the *status* operation implemented by the jar associated with this endpoint
  * http(s)://hostname:port/description/<plugin name> (GET) - returns the optional description provided in the configuration file
  * http(s)://hostname:port/plugins (GET) - returns configuration information about all known plugins
  * http(s)://hostname:port/plugins/<plugin name> (GET) - returns configuration information about the specific plugin
