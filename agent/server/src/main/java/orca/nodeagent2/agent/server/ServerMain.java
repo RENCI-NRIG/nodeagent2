@@ -70,7 +70,11 @@ public class ServerMain {
 					e.printStackTrace();
 					System.exit(1);
 				}
+			} else {
+				System.err.println("Logging is not configured, unable to proceed, exiting. Please check that SPRING_CONFIG_LOCATION env variable points to a valid configuration file.");
+				System.exit(0);
 			}
+			
 		}
 	}
 
@@ -80,9 +84,7 @@ public class ServerMain {
 		SpringApplication spring = new SpringApplication(ServerMain.class);
 
 		NA2Initializer na2 = new NA2Initializer();
-
 		spring.addInitializers(na2);
-
 		spring.run(argv);
 
 	}

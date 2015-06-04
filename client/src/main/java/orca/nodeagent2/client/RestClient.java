@@ -29,12 +29,12 @@ public class RestClient {
 	private static final String REST_HOST = "localhost";
 	private static final String NA2_PASS = "pass";
 	private static final String NA2_USER = "admin";
-	private static final String PLUGIN_NAME = "Null-Test-Plugin";
+	private static final String PLUGIN_NAME = "null-plugin";
 	
-	private static final String HTTP_REST_JOIN_URL = "http://localhost:REST_PORT/" + PLUGIN_NAME;
-	private static final String HTTP_REST_LEAVE_URL = "http://localhost:REST_PORT/leave/" + PLUGIN_NAME;
-	private static final String HTTP_REST_STATUS_URL = "http://localhost:REST_PORT/status/" + PLUGIN_NAME;
-	private static final String HTTP_REST_PLUGINS_URL = "http://localhost:REST_PORT/plugins/" + PLUGIN_NAME;
+	private static final String HTTP_REST_JOIN_URL = "http://localhost:" + REST_PORT+ "/join/" + PLUGIN_NAME;
+	private static final String HTTP_REST_LEAVE_URL = "http://localhost:" + REST_PORT+ "/leave/" + PLUGIN_NAME;
+	private static final String HTTP_REST_STATUS_URL = "http://localhost:" + REST_PORT+ "/status/" + PLUGIN_NAME;
+	private static final String HTTP_REST_PLUGINS_URL = "http://localhost:" + REST_PORT+ "/plugins/" + PLUGIN_NAME;
 
 	public PluginReturn convert(JSONObject o) {
 		long status = (Long)o.get("status");
@@ -42,7 +42,12 @@ public class RestClient {
 
 		try {
 			JSONObject ridEnvelope = (JSONObject)o.get("resId");
-			ReservationId rid = new ReservationId((String)ridEnvelope.get("id"));
+			
+			ReservationId rid = null;
+			if (ridEnvelope != null) {
+				String ridString = (String)ridEnvelope.get("id");
+				rid = new ReservationId(ridString);
+			}
 
 			Properties props = null;
 			if (o.get("properties") != null) {
@@ -50,7 +55,10 @@ public class RestClient {
 				props.putAll((JSONObject)o.get("properties"));
 			}
 
-			PluginReturn pr = new PluginReturn(st, (String)o.get("errorMsg"), rid, props);
+			String msg = (String)o.get("errorMsg");
+			if (msg == null)
+				msg = (String)o.get("message");
+			PluginReturn pr = new PluginReturn(st, msg, rid, props);
 			return pr;
 		} catch (Exception e) {
 			System.err.println("Unable to decode " + o + " " + e);

@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 import orca.nodeagent2.agent.config.Config;
 import orca.nodeagent2.agent.core.PluginsRegistry;
+import orca.nodeagent2.agent.server.error.DuplicateObjectError;
+import orca.nodeagent2.agent.server.error.ObjectNotFoundError;
 import orca.nodeagent2.agent.server.persistence.ScheduleEntry;
 import orca.nodeagent2.agent.server.persistence.SchedulePersistence;
 import orca.nodeagent2.agentlib.PluginErrorCodes;
@@ -54,7 +56,7 @@ public class PluginController {
 			PluginReturn pr = PluginsRegistry.getInstance().join(name, future.getTime(), props);
 			
 			if (pr == null) 
-				throw new Exception("Plugin returned null");
+				throw new InternalError("Plugin " + name + " returned null on join");
 			
 			if (pr.getStatus() == PluginErrorCodes.OK.code) {
 				// insert the renew event into the database with initial and returned properties 
@@ -62,12 +64,13 @@ public class PluginController {
 				ScheduleEntry se = sp.findEntry(name, pr.getResId().getId());
 				
 				if (se != null)
-					throw new Exception("reservation with id " + pr.getResId() + " already exists!");
+					throw new DuplicateObjectError("Plugin " + name + " reservation with id " + pr.getResId() + " already exists!");
 
 				l.info("Updating the database for " + name + " new reservation " + pr.getResId());
 				sp.saveRenewDeadline(name, future.getTime(), pr.getResId(), props, pr.getProperties(), 0, null);
 			} else {
 				l.error("JOIN returned an error " + pr.getStatus() + " " + pr.getErrorMsg());
+				throw new InternalError("JOIN returned an error " + pr.getStatus() + " " + pr.getErrorMsg());
 			}
 			
 			return pr;
@@ -75,9 +78,13 @@ public class PluginController {
 			l.error("Error invoking join on " + name + ": " + pe);
 			pe.printStackTrace();
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "join error: " + pe.getMessage(), null, null);
+		} catch (InternalError ie) {
+			throw ie;
+		} catch (DuplicateObjectError doe) {
+			throw doe;
 		} catch (Exception e) {
 			l.error("Error invoking join on " + name + ": " + e);
-			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "join error: " + e.getMessage(), null, null);
+			throw new InternalError("Error invoking join on " + name + ": " + e);
 		}	
 	}
 
@@ -96,21 +103,25 @@ public class PluginController {
 			ScheduleEntry se = sp.removeEntry(name, rid);
 			
 			if (se == null)
-				throw new Exception("No schedule entries found in the NA2 database for " + name + " reservation " + resId);
+				throw new ObjectNotFoundError("No schedule entries found in the NA2 database for " + name + " reservation " + resId);
 			
 			PluginReturn pr = PluginsRegistry.getInstance().leave(name, rid, props, se.getSchedProperties());
 			
 			if (pr == null) 
-				throw new Exception("Plugin returned null");
+				throw new InternalError("Plugin returned null");
 			
 			l.info("LEAVE call to " + name + " for " + rid + " returned " + pr.getStatus() + " " + pr.getErrorMsg());
 			return pr;
 		} catch (PluginException pe) {
 			l.error("Error invoking leave on " + name + ": " + pe);
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "leave error: " + pe.getMessage(), rid, null);
+		} catch (InternalError ie) {
+			throw ie;
+		} catch (DuplicateObjectError doe) {
+			throw doe;
 		} catch (Exception e) {
 			l.error("Error invoking leave on " + name + ": " + e);
-			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "leave error: " + e.getMessage(), rid, null);
+			throw new InternalError("Error invoking leave on " + name + ": " + e);
 		} finally {
 			PluginsRegistry.getInstance().release(name, rid);
 		}
@@ -129,21 +140,25 @@ public class PluginController {
 			ScheduleEntry se = sp.findEntry(name, resId);
 			
 			if (se == null)
-				throw new Exception("No schedule entries found in the NA2 database for " + name + " reservation " + resId);
+				throw new ObjectNotFoundError("No schedule entries found in the NA2 database for " + name + " reservation " + resId);
 			
 			PluginReturn pr = PluginsRegistry.getInstance().modify(name, rid, props, se.getSchedProperties());
 			
 			if (pr == null) 
-				throw new Exception("Plugin returned null");
+				throw new InternalError("Plugin returned null");
 			
 			l.info("MODIFY call to " + name + " for " + rid + " returned " + pr.getStatus() + " " + pr.getErrorMsg());
 			return pr;
 		} catch (PluginException pe) {
 			l.error("Error invoking modify on " + name + ": " + pe);
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "modify error: " + pe.getMessage(), rid, null);
+		} catch (InternalError ie) {
+			throw ie;
+		} catch (DuplicateObjectError doe) {
+			throw doe;
 		} catch (Exception e) {
 			l.error("Error invoking modify on " + name + ": " + e);
-			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "modify error: " + e.getMessage(), rid, null);
+			throw new InternalError("Error invoking modify on " + name + ": " + e);
 		} finally {
 			PluginsRegistry.getInstance().release(name, rid);
 		}
@@ -157,7 +172,7 @@ public class PluginController {
 			ScheduleEntry se = sp.findEntry(name, resId);
 			
 			if (se == null)
-				throw new Exception("No schedule entries found in the NA2 database for " + name + " reservation " + resId);
+				throw new ObjectNotFoundError("No schedule entries found in the NA2 database for " + name + " reservation " + resId);
 			
 			return PluginsRegistry.getInstance().status(name, rid,
 					(se != null ? se.getSchedProperties() : null));
@@ -165,10 +180,13 @@ public class PluginController {
 			l.error("Error getting status for " + name + ": " + pe.getMessage());
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "status error: error getting status for " + name + ": " + pe.getMessage(), 
 					rid, null);
+		} catch (InternalError ie) {
+			throw ie;
+		} catch (DuplicateObjectError doe) {
+			throw doe;
 		} catch (Exception e) {
 			l.error("Error getting status for " + name + ": " + e.getMessage());
-			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "status error: error getting status for " + name + ": " + e.getMessage(), 
-					rid, null);
+			throw new InternalError("Error getting status for " + name + ": " + e.getMessage());
 		}
 	}
 
@@ -184,9 +202,13 @@ public class PluginController {
 		} catch (PluginException pe) {
 			l.error("Error getting description for " + name + ": " + pe.getMessage());
 			return "Error getting description for " + name + ": " + pe.getMessage();
+		} catch (InternalError ie) {
+			throw ie;
+		} catch (DuplicateObjectError doe) {
+			throw doe;
 		} catch (Exception e) {
 			l.error("Error getting description for " + name + ": " + e.getMessage());
-			return "Error getting description for " + name + ": " + e.getMessage();
+			throw new InternalError("Error getting description for " + name + ": " + e.getMessage());
 		}
 	}
 

@@ -47,8 +47,8 @@ public class StatusController {
 				return null;
 			}
 		} catch (Exception e) {
-			l.error("Unable to populate status bean " + e);
-			return null;
+			l.error("Unable to populate status bean: " + e);
+			throw new InternalError("Unable to populate status bean: " + e);
 		}
 	}
 	
@@ -59,8 +59,8 @@ public class StatusController {
 			l.info("Status request for all plugins");
 			return new StatusBean(null, Config.getInstance().getPluginsAsList());
 		} catch (Exception e) {
-			l.error("Unable to populate status bean " + e);
-			return null;
+			l.error("Unable to populate status bean: " + e);
+			throw new InternalError("Unable to populate status bean: " + e);
 		}
 	}
 	
@@ -75,8 +75,8 @@ public class StatusController {
 			l.info("DB request ");
 			return new DBBean(sp.getAll());
 		} catch (Exception e) {
-			l.error("Unable to populate db bean " + e);
-			return null;
+			l.error("Unable to populate db bean: " + e);
+			throw new InternalError("Unable to populate db bean: " + e);
 		}
 	}
 	
@@ -91,8 +91,8 @@ public class StatusController {
 			l.info("DB schedule request for " + name);
 			return new DBBean(sp.findEntries(name));
 		} catch (Exception e) {
-			l.error("Unable to populate db bean " + e);
-			return null;
+			l.error("Unable to populate db bean: " + e);
+			throw new InternalError("Unable to populate db bean: " + e);
 		}
 	}
 	
@@ -103,8 +103,8 @@ public class StatusController {
 			l.info("DB schedule request for " + name);
 			return new DBBean(Arrays.asList(sp.findEntry(name, resId)));
 		} catch (Exception e) {
-			l.error("Unable to populate db bean " + e);
-			return null;
+			l.error("Unable to populate db bean: " + e);
+			throw new InternalError("Unable to populate db bean: " + e);
 		}
 	}
 	
@@ -115,8 +115,8 @@ public class StatusController {
 			l.info("DB expired request");
 			return new DBBean(sp.findExpiredEntries());
 		} catch (Exception e) {
-			l.error("Unable to populate db bean " + e);
-			return null;
+			l.error("Unable to populate db bean: " + e);
+			throw new InternalError("Unable to populate db bean: " + e);
 		}
 	}
 }

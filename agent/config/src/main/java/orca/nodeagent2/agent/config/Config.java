@@ -32,7 +32,7 @@ public class Config {
 	
 	public static Config getInstance() throws Exception {
 		if (instance == null)
-			throw new Exception("Config not initialized");
+			throw new Exception("Config was not initialized");
 		return instance;
 	}
 	

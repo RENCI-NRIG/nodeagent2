@@ -3,16 +3,16 @@
 
 # NA2-specific properties
 na2:
-  config: /Users/ibaldin/workspace-nodeagent2/node-agent2/agent/server/na-test-config.xml
+  config: /Users/ibaldin/workspace-nodeagent2/nodeagent2-git/agent/server/na-test-config.xml
 
 # point to log4j configuration
 logging:
-  config: /Users/ibaldin/workspace-nodeagent2/node-agent2/agent/server/log4j-na2.properties
+  config: /Users/ibaldin/workspace-nodeagent2/nodeagent2-git/agent/server/log4j-na2.properties
 
 # set the file name pattern of the database (notice it creates multiple files with common name root)
 spring:
   datasource:
-    url: jdbc:hsqldb:file:/Users/ibaldin/workspace-nodeagent2/node-agent2/agent/server/db/testdb
+    url: jdbc:hsqldb:file:/Users/ibaldin/workspace-nodeagent2/nodeagent2-git/agent/server/db/testdb
     username: sa
   jpa:
     hibernate:
