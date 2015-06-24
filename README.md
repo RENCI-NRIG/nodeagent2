@@ -19,7 +19,7 @@ NA2 is designed to operate with any number of plugins implementing the interface
 
 ## Implementation 
 
-!NodeAgent2 is implemented as a Spring Boot application with JPA/Hibernate persistence support provided through the included HSQLDB that by default is configured as a set of files, not a remote server. This is the recommended way of running !NodeAgent2 unless database scalability somehow becomes an issue. 
+NodeAgent2 is implemented as a Spring Boot application with JPA/Hibernate persistence support provided through the included HSQLDB that by default is configured as a set of files, not a remote server. This is the recommended way of running NodeAgent2 unless database scalability somehow becomes an issue. 
 
 NA2 plugin implementations are required to fulfill a minimal set of dependencies provided as orca.node-agent2.agentlib Maven artifact. 
 
@@ -55,24 +55,24 @@ some:
 ```
 
  * LOG4J configuration file (it is pointed to from the Spring configuration file using property logging.config). This is a properties file, something like [this example](agent/server/log4j-na2.properties).
- * NA2 configuration file - this is an XML file that describes the plugins that NA2 is aware of and their individual properties. Like [source:orca-external/node-agent2/trunk/agent/server/na-test-config.xml this example].
+ * NA2 configuration file - this is an XML file that describes the plugins that NA2 is aware of and their individual properties. Like [this example](agent/server/na-test-config.xml).
   * The *name* of the plugin in the configuration also corresponds to the REST endpoint used for this substrate instance. Notice it is legal to configure the same jar for multiple endpoints. The name must conform to this simple pattern "[a-zA-Z0-9-]+" and be at least 5 characters long.
-  * You can look at the full [source:orca-external/node-agent2/trunk/agent/config/src/main/resources/orca/nodeagent2/agent/config/xsd/AgentConfig.xsd XSD schema] of the configuration file. Any changes to the schema are automatically turned into beans by the build process using JAXB. 
+  * You can look at the full [schema](agent/config/src/main/resources/orca/nodeagent2/agent/config/xsd/AgentConfig.xsd) of the configuration file. Any changes to the schema are automatically turned into beans by the build process using JAXB. 
 
 ## REST interface details 
 
 NA2 exposes a RESTful interface that combines mapping to plugin operations and status queries. All parameters are passed and results are returned as JSON objects: 
 
- * http(s)://hostname:port/join/<plugin name> (POST) - maps to the *join* operation implemented by the jar associated with this endpoint
- * http(s)://hostname:port/leave/<plugin name>/<reservation id> (POST) - maps to the *leave* operation implemented by the jar associated with this endpoint
- * http(s)://hostname:port/modify/<plugin name>/<reservation id> (POST) - maps to the *modify* operation implemented by the jar associated with this endpoint
- * http(s)://hostname:port/status/<plugin name>/<reservation id> (GET) - maps to the *status* operation implemented by the jar associated with this endpoint
- * http(s)://hostname:port/description/<plugin name> (GET) - returns the optional description provided in the configuration file
+ * http(s)://hostname:port/join/[plugin name] (POST) - maps to the *join* operation implemented by the jar associated with this endpoint
+ * http(s)://hostname:port/leave/[plugin name]/[reservation id] (POST) - maps to the *leave* operation implemented by the jar associated with this endpoint
+ * http(s)://hostname:port/modify/[plugin name]/[reservation id] (POST) - maps to the *modify* operation implemented by the jar associated with this endpoint
+ * http(s)://hostname:port/status/[plugin name]/[reservation id] (GET) - maps to the *status* operation implemented by the jar associated with this endpoint
+ * http(s)://hostname:port/description/[plugin name] (GET) - returns the optional description provided in the configuration file
  * http(s)://hostname:port/plugins (GET) - returns configuration information about all known plugins
- * http(s)://hostname:port/plugins/<plugin name> (GET) - returns configuration information about the specific plugin
+ * http(s)://hostname:port/plugins/[plugin name] (GET) - returns configuration information about the specific plugin
  * http(s)://hostname:port/schedule (GET) - returns the complete schedule information stored in the database
- * http(s)://hostname:port/schedule/<plugin name> (GET) - returns the schedule information for the particular plugin
- * http(s)://hostname:port/schedule/<plugin name>/<reservation id> (GET) - returns the schedule information for the particular reservation of the specified plugin
+ * http(s)://hostname:port/schedule/[plugin name] (GET) - returns the schedule information for the particular plugin
+ * http(s)://hostname:port/schedule/[plugin name]/[reservation id] (GET) - returns the schedule information for the particular reservation of the specified plugin
 
 There are examples of using [pure Java](client/src/main/java/orca/nodeagent2/client/RestClient.java) to communicate with this API (using minimal Java dependencies) as well as examples of using [curl](https://github.com/RENCI-NRIG/na2-oscars-plugin/ curl) to do the same. 
 
@@ -119,9 +119,9 @@ while can be built from source under node-agent2/agentlib/ or, alternatively, fe
 Each plugin jar must contain all of its dependencies, thus it is recommended to use Maven's 'jar-with-dependencies' plugin to generate it. For more complex scenarios you may need to use the Maven shade plugin. For an example of its use look at the [OSCARS NA2 plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin/blob/master/pom.xml).
 
 Example plugin implementations can be found in:
- * [Null-Agent](nodeagent2/tree/master/null-agent) - a trivial implementation that does nothing and has minimal internal dependencies. Uses jar-with-dependencies Maven plugin.
- * [OSCARS Plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin/blob/) - a full implementation of OSCARS API v06 plugin that relies on CXF and for this reason needs Maven shade plugin for assembling the uber jar.
- * [Exec Plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin/blob/) - a plugin that executes external programs for each of the join/leave/modify actions
+ * [Null-Agent](null-agent/src/main/java/orca/nodeagent2/null_agent/Main.java) - a trivial implementation that does nothing and has minimal internal dependencies. Uses jar-with-dependencies Maven plugin.
+ * [OSCARS Plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin) - a full implementation of OSCARS API v06 plugin that relies on CXF and for this reason needs Maven shade plugin for assembling the uber jar.
+ * [Exec Plugin](https://github.com/RENCI-NRIG/na2-exec-plugin) - a plugin that executes external programs for each of the join/leave/modify actions
 
 ### Classloading
 
