@@ -1,0 +1,109 @@
+%global commit @@COMMIT@@
+%global shortcommit @@SHORTCOMMIT@@
+
+Summary: nodeagent2 - Son of NodeAgent
+Name: nodeagent2
+Version: 0.1
+Release: @@DATE@@git%{shortcommit}
+BuildRoot: %{_builddir}/%{name}-root
+Source0: https://github.com/RENCI-NRIG/nodeagent2/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Vendor: ExoGENI
+Packager: ExoGENI
+License: GENI Public License
+URL: https://github.com/RENCI-NRIG/nodeagent2
+
+BuildRequires:  jdk
+Requires:       jdk
+
+%define homedir /opt/nodeagent2
+%define conf_dir %{_sysconfdir}/nodeagent2
+%define log_dir %{_localstatedir}/log/nodeagent2
+%define pid_dir %{_localstatedir}/run/nodeagent2
+%define exogeni_user_id geni-orca
+%define exogeni_group_id nonrenci
+# couldn't find another way to disable the brp-java-repack-jars which was called in __os_install_post
+%define __os_install_post %{nil}
+# And this is needed to get around the generated wrapper binaries...
+%global debug_package %{nil}
+
+%description
+NodeAgent2 - The Movie II - The Sequel! ;)
+NodeAgent2 is a "shim" for interacting with resource aggregates that may
+implement reservation semantics in ways that differ from those that ORCA prefers.
+
+%prep
+%setup -q -n %{name}-%{version}-%{shortcommit}
+
+%build
+LANG=en_US.UTF-8 mvn clean install
+pushd agent/server
+LANG=en_US.UTF-8 mvn clean package
+
+%install
+# Prep the install location.
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT%{homedir}
+# Copy over the generated daemon
+cp -R agent/server/target/generated-resources/appassembler/jsw/na2d/* $RPM_BUILD_ROOT%{homedir}
+# Copy over the generated utilities and dependencies
+cp -R agent/server/target/appassembler/bin/* $RPM_BUILD_ROOT%{homedir}/bin
+cp -R agent/server/target/appassembler/repo $RPM_BUILD_ROOT%{homedir}
+# Fix up generated daemon/init script
+sed -i -e 's;su -m;su -s /bin/sh -m;' $RPM_BUILD_ROOT%{homedir}/bin/na2d
+sed -i -e 's;APP_NAME="na2d";APP_NAME="na2d"\nAPP_BASE=%{homedir}\nsource %{_sysconfdir}/sysconfig/nodeagent2;' $RPM_BUILD_ROOT%{homedir}/bin/na2d
+sed -i -e 's;# Application;source %{_sysconfdir}/sysconfig/nodeagent2\nexport SPRING_CONFIG_LOCATION\n# Application;' $RPM_BUILD_ROOT%{homedir}/bin/na2d
+sed -i -e 's;^PIDDIR="$APP_BASE/logs";PIDDIR="%{pid_dir}";' $RPM_BUILD_ROOT%{homedir}/bin/na2d
+# Modify wrapper.conf to include local overrides file, for ease of management via puppet.
+echo -e "# Finally, include overrides to things set in this file\n#include %{homedir}/conf/wrapper-overrides.conf\n" >> $RPM_BUILD_ROOT%{homedir}/conf/wrapper.conf
+# Ensure the all utilities are executable.
+chmod 755 $RPM_BUILD_ROOT%{homedir}/bin/*
+
+# Create a config directory, and sysconfig directory under that.
+mkdir -p $RPM_BUILD_ROOT%{conf_dir}
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+# Create a log directory.
+mkdir -p $RPM_BUILD_ROOT%{log_dir}
+# Create a run directory to store pid files.
+mkdir -p $RPM_BUILD_ROOT%{pid_dir}
+
+# Copy Spring config file to the right location, and environment file
+cp agent/server/na2-spring.yml $RPM_BUILD_ROOT%{conf_dir}
+cp redhat/nodeagent2.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/nodeagent2
+
+# Clean up the bin and lib directories
+rm -rf $RPM_BUILD_ROOT%{homedir}/bin/*.bat
+rm -rf $RPM_BUILD_ROOT%{homedir}/bin/wrapper-macosx-universal-32
+rm -rf $RPM_BUILD_ROOT%{homedir}/lib/libwrapper-macosx-universal-32.jnilib
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%preun
+if [ "$1" == "0" ]; then
+	/sbin/chkconfig --del na2d
+	[ -x "/etc/init.d/na2d" ] && /etc/init.d/na2d stop
+        rm -f /etc/init.d/na2d
+fi
+# Force a successful exit even if we didn't exit cleanly.
+exit 0
+
+%post
+rm -f /etc/init.d/na2d
+ln -s %{homedir}/bin/na2d /etc/init.d
+
+%files
+%defattr(-, %{exogeni_user_id}, %{exogeni_group_id})
+%attr(755, %{exogeni_user_id}, %{exogeni_group_id}) %dir %{homedir}
+%attr(755, %{exogeni_user_id}, %{exogeni_group_id}) %dir %{log_dir}
+%attr(755, %{exogeni_user_id}, %{exogeni_group_id}) %dir %{pid_dir}
+%attr(750, %{exogeni_user_id}, root) %dir %{conf_dir}
+%config(noreplace) %{conf_dir}/na2-spring.yml
+%config(noreplace) %{_sysconfdir}/sysconfig/nodeagent2
+%{homedir}/bin
+%{homedir}/conf
+%{homedir}/lib
+%{homedir}/repo
+
+%changelog
+*Wed Jun 24 2015 Victor J. Orlikowski <vjo@cs.duke.edu>
+- Initial cut at packaging nodeagent2
