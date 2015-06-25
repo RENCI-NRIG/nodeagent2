@@ -4,6 +4,6 @@ url="http://localhost:8080/schedule"
 #url="https://localhost:8443/schedule"
 
 
-curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass $url
+curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass $url | python -m json.tool
 
 echo 

@@ -7,6 +7,6 @@ url="http://localhost:8080/join/null-plugin"
 curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass -X POST $url -d '{
    "initial-property-one" : "some value one",
    "initial-property-two" : "some value two"
-}'
+}' | python -m json.tool
 
 echo 
