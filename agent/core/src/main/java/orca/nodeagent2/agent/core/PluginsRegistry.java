@@ -142,42 +142,25 @@ public class PluginsRegistry {
 	public PluginReturn leave(String pluginName, ReservationId resId, Properties callerProperties, Properties schedProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in leave call to plugin " + pluginName + ": plugin not found");
-		try {
-			return plugins.get(pluginName).leave(resId, callerProperties, schedProperties);
-		} catch (Exception e) {
-			throw e;
-		} 
+		return plugins.get(pluginName).leave(resId, callerProperties, schedProperties);
 	}
 	
 	public PluginReturn modify(String pluginName, ReservationId resId, Properties callerProperties, Properties schedProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in modify call to plugin " + pluginName + ": plugin not found");
-		
-		try {
-			return plugins.get(pluginName).modify(resId, callerProperties, schedProperties);
-		} catch (Exception e) {
-			throw e;
-		} 
+		return plugins.get(pluginName).modify(resId, callerProperties, schedProperties);
 	}
 	
 	public PluginReturn renew(String pluginName, ReservationId resId, Date until, Properties joinProperties, Properties schedProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in renew call to plugin " + pluginName + ": plugin not found");
-		try {
-			return plugins.get(pluginName).renew(resId, until, joinProperties, schedProperties);
-		} catch (Exception e) {
-			throw e;
-		} 
+		return plugins.get(pluginName).renew(resId, until, joinProperties, schedProperties);
 	}
 	
 	public PluginReturn status(String pluginName, ReservationId resId, Properties schedProperties) throws Exception, PluginException {
 		if (!plugins.containsKey(pluginName))
 			throw new Exception("Error in status call to plugin " + pluginName + ": plugin not found");
-		try {
-			return plugins.get(pluginName).status(resId, schedProperties);
-		}catch (Exception e) {
-			throw e;
-		} 
+		return plugins.get(pluginName).status(resId, schedProperties);
 	}
 	
 	public String getDescription(String pluginName) throws Exception {

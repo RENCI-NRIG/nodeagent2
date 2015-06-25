@@ -75,7 +75,7 @@ public class PluginController {
 			
 			return pr;
 		} catch (PluginException pe) {
-			l.error("Error invoking join on " + name + ": " + pe);
+			l.error("PluginError invoking join on " + name + ": " + pe);
 			pe.printStackTrace();
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "join error: " + pe.getMessage(), null, null);
 		} catch (InternalError ie) {
@@ -113,7 +113,7 @@ public class PluginController {
 			l.info("LEAVE call to " + name + " for " + rid + " returned " + pr.getStatus() + " " + pr.getErrorMsg());
 			return pr;
 		} catch (PluginException pe) {
-			l.error("Error invoking leave on " + name + ": " + pe);
+			l.error("PluginError invoking leave on " + name + ": " + pe);
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "leave error: " + pe.getMessage(), rid, null);
 		} catch (InternalError ie) {
 			throw ie;
@@ -150,7 +150,7 @@ public class PluginController {
 			l.info("MODIFY call to " + name + " for " + rid + " returned " + pr.getStatus() + " " + pr.getErrorMsg());
 			return pr;
 		} catch (PluginException pe) {
-			l.error("Error invoking modify on " + name + ": " + pe);
+			l.error("PluginError invoking modify on " + name + ": " + pe);
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "modify error: " + pe.getMessage(), rid, null);
 		} catch (InternalError ie) {
 			throw ie;
@@ -177,7 +177,7 @@ public class PluginController {
 			return PluginsRegistry.getInstance().status(name, rid,
 					(se != null ? se.getSchedProperties() : null));
 		} catch (PluginException pe) {
-			l.error("Error getting status for " + name + ": " + pe.getMessage());
+			l.error("PluginError getting status for " + name + ": " + pe.getMessage());
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "status error: error getting status for " + name + ": " + pe.getMessage(), 
 					rid, null);
 		} catch (InternalError ie) {
@@ -200,8 +200,8 @@ public class PluginController {
 			else
 				return desc;
 		} catch (PluginException pe) {
-			l.error("Error getting description for " + name + ": " + pe.getMessage());
-			return "Error getting description for " + name + ": " + pe.getMessage();
+			l.error("PluginError getting description for " + name + ": " + pe.getMessage());
+			return "PluginError getting description for " + name + ": " + pe.getMessage();
 		} catch (InternalError ie) {
 			throw ie;
 		} catch (DuplicateObjectError doe) {
