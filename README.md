@@ -74,7 +74,7 @@ NA2 exposes a RESTful interface that combines mapping to plugin operations and s
  * http(s)://hostname:port/schedule/[plugin name] (GET) - returns the schedule information for the particular plugin
  * http(s)://hostname:port/schedule/[plugin name]/[reservation id] (GET) - returns the schedule information for the particular reservation of the specified plugin
 
-There are examples of using [pure Java](client/src/main/java/orca/nodeagent2/client/RestClient.java) to communicate with this API (using minimal Java dependencies) as well as examples of using [curl](https://github.com/RENCI-NRIG/na2-oscars-plugin/ curl) to do the same. 
+There are examples of using [pure Java](client/src/main/java/orca/nodeagent2/client/RestClient.java) to communicate with this API (using minimal Java dependencies) as well as examples of using [curl](https://github.com/RENCI-NRIG/na2-oscars-plugin/tree/master/scripts) to do the same. 
 
 ## ORCA Interface
 
@@ -107,6 +107,21 @@ Note that each target in the handler (join, leave or modify) must have this as t
 ### Dependencies 
 Developing new plugins is straightforward. Each new plugin must implement a class following the [Plugin interface](agentlib/src/main/java/orca/nodeagent2/agentlib/Plugin.java)  in the  orca.node-agent2.agentlib Maven artifact:
 ```
+<repositories>
+  <repository>
+    <id>geni-orca-snapshot</id>
+    <url>http://ci-dev.renci.org/nexus/content/repositories/geni-orca-snapshot/</url>
+    <snapshots>
+      <enabled>true</enabled>
+      <updatePolicy>always</updatePolicy>
+    </snapshots>
+  </repository>
+  <repository>
+    <id>geni-orca-libs</id>
+    <url>http://ci-dev.renci.org/nexus/content/repositories/geni-orca-libs</url>
+  </repository>
+</repositories>
+...
 <dependency>
   <groupId>orca.node-agent2</groupId>
   <artifactId>agentlib</artifactId>
