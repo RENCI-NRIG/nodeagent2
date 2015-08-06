@@ -43,6 +43,7 @@ LANG=en_US.UTF-8 mvn clean package
 # Prep the install location.
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{homedir}
+mkdir -p $RPM_BUILD_ROOT%{homedir}/plugins
 # Copy over the generated daemon
 cp -R agent/server/target/generated-resources/appassembler/jsw/na2d/* $RPM_BUILD_ROOT%{homedir}
 # Copy over the generated utilities and dependencies
@@ -102,8 +103,9 @@ ln -s %{homedir}/bin/na2d /etc/init.d
 %{homedir}/bin
 %{homedir}/conf
 %{homedir}/lib
+%{homedir}/plugins
 %{homedir}/repo
 
 %changelog
-*Wed Jun 24 2015 Victor J. Orlikowski <vjo@cs.duke.edu>
-- Initial cut at packaging nodeagent2
+*Thu Aug 06 2015 Victor J. Orlikowski <vjo@cs.duke.edu>
+- Packaging nodeagent2
