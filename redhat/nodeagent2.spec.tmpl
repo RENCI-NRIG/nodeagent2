@@ -100,7 +100,9 @@ exit 0
 %attr(755, %{exogeni_user_id}, %{exogeni_group_id}) %dir %{log_dir}
 %attr(755, %{exogeni_user_id}, %{exogeni_group_id}) %dir %{pid_dir}
 %attr(750, %{exogeni_user_id}, root) %dir %{conf_dir}
-%config(noreplace) %{conf_dir}/na2-spring.yml
+%config(noreplace) %{conf_dir}/spring.yml
+%config(noreplace) %{conf_dir}/config.xml
+%config(noreplace) %{conf_dir}/log4j.properties
 %config(noreplace) %{_sysconfdir}/sysconfig/nodeagent2
 %{_initrddir}/nodeagent2
 %{homedir}/bin
