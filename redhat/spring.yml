@@ -1,0 +1,31 @@
+# NA2 example configuration (DO NOT USE TABS)
+# These properties get translated into e.g. na2.config=/some/path
+
+# NA2-specific properties
+na2:
+  config: /etc/nodeagent2/config.xml
+
+# point to log4j configuration
+logging:
+  config: /etc/nodeagent2/log4j.properties
+
+# set the file name pattern of the database (notice it creates multiple files with common name root)
+spring:
+  datasource:
+    url: jdbc:hsqldb:file:/var/lib/nodeagent2/db
+    username: sa
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8080
+  address:     # bind to specific address
+  ssl:
+    enabled: false
+    key-alias: selfsigned
+    key-password: selfself
+    key-store: /etc/nodeagent2/keystore.jks
+    key-store-password: selfself
+    trust-store: /etc/nodeagent2/keystore.jks
+    trust-store-password: selfself

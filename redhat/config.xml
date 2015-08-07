@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agentConfig xmlns="http://geni-orca.renci.org/xml/node-agent2/AgentConfig"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://geni-orca.renci.org/xml/node-agent2/AgentConfig http://geni-orca.renci.org/xml/node-agent2/AgentConfig.xsd"
+	password="pass">
+
+	<tick length="1" unit="minute"/>
+	<plugins>
+		<plugin name="null-plugin">
+			<jar>/Users/ibaldin/workspace-nodeagent2/nodeagent2-git/null-agent/target/null-agent-0.1-SNAPSHOT-jar-with-dependencies.jar</jar>
+			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
+			<schedulePeriod length="3" unit="minute" />
+			<renewAdvanceTicks>2</renewAdvanceTicks>
+			<description>Null plugin for testing</description>
+			<properties>
+				<property name="pr" value="val" />
+				<property name="pr1" value="val1" />
+			</properties>
+		</plugin>
+		<!--
+		<plugin name="oscars">
+			<jar>/Users/ibaldin/workspace-oscars/na2-oscars-lib/target/na2-oscars-lib-0.6SNAPSHOT-executable.jar</jar>
+			<mainClass>orca.nodeagent2.oscarslib.Main</mainClass>
+			<schedulePeriod length="6" unit="minute" />
+			<renewAdvanceTicks>2</renewAdvanceTicks>
+			<properties>
+				<property name="oscars.keystore" value="/some/path/to/jks" />
+				<property name="oscars.truststore" value="/some/path/to/jks" />
+				<property name="oscars.alias" value="some-alias" />
+				<property name="oscars.password" value="some-password" />
+				<property name="oscars.description" value="ORCA-NA2-circuit" />
+			</properties>
+		</plugin>
+		-->
+		<plugin name="execplug" >
+			<jar>/Users/ibaldin/workspace-nodeagent2/na2-exec-plugin/target/exec-plugin-1.0-SNAPSHOT-jar-with-dependencies.jar</jar>
+			<mainClass>orca.nodeagent2.exec.Main</mainClass>
+			<schedulePeriod length="3" unit="minute" />
+			<properties>
+				<property name="exec.join" value="/Users/ibaldin/workspace-nodeagent2/na2-exec-plugin/scripts/join.sh" />
+				<property name="exec.leave" value="/Users/ibaldin/workspace-nodeagent2/na2-exec-plugin/scripts/leave.sh" />
+				<property name="exec.modify" value="/Users/ibaldin/workspace-nodeagent2/na2-exec-plugin/scripts/modify.sh" />
+				<property name="exec.renew" value="/Users/ibaldin/workspace-nodeagent2/na2-exec-plugin/scripts/renew.sh" />
+				<property name="exec.status" value="/Users/ibaldin/workspace-nodeagent2/na2-exec-plugin/scripts/status.sh" />
+			</properties>
+		</plugin>
+	</plugins>
+</agentConfig>

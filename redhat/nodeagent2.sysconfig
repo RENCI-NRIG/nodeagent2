@@ -1,1 +1,1 @@
-SPRING_CONFIG_LOCATION=/etc/nodeagent2/na2-spring.yml
+SPRING_CONFIG_LOCATION=/etc/nodeagent2/spring.yml

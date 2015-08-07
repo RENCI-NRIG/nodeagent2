@@ -17,6 +17,7 @@ Requires:       jdk
 
 %define homedir /opt/nodeagent2
 %define conf_dir %{_sysconfdir}/nodeagent2
+%define db_dir %{_localstatedir}/lib/nodeagent2
 %define log_dir %{_localstatedir}/log/nodeagent2
 %define pid_dir %{_localstatedir}/run/nodeagent2
 %define exogeni_user_id geni-orca
@@ -51,25 +52,30 @@ cp -R agent/server/target/appassembler/bin/* $RPM_BUILD_ROOT%{homedir}/bin
 cp -R agent/server/target/appassembler/repo $RPM_BUILD_ROOT%{homedir}
 # Fix up generated daemon/init script
 sed -i -e 's;su -m;su -s /bin/sh -m;' $RPM_BUILD_ROOT%{homedir}/bin/na2d
-sed -i -e 's;APP_NAME="na2d";APP_NAME="na2d"\nAPP_BASE=%{homedir}\nsource %{_sysconfdir}/sysconfig/nodeagent2;' $RPM_BUILD_ROOT%{homedir}/bin/na2d
-sed -i -e 's;# Application;source %{_sysconfdir}/sysconfig/nodeagent2\nexport SPRING_CONFIG_LOCATION\n# Application;' $RPM_BUILD_ROOT%{homedir}/bin/na2d
+sed -i -e 's;^APP_NAME="na2d";APP_NAME="na2d"\nAPP_BASE=%{homedir};' $RPM_BUILD_ROOT%{homedir}/bin/na2d
 sed -i -e 's;^PIDDIR="$APP_BASE/logs";PIDDIR="%{pid_dir}";' $RPM_BUILD_ROOT%{homedir}/bin/na2d
 # Modify wrapper.conf to include local overrides file, for ease of management via puppet.
 echo -e "# Finally, include overrides to things set in this file\n#include %{homedir}/conf/wrapper-overrides.conf\n" >> $RPM_BUILD_ROOT%{homedir}/conf/wrapper.conf
 # Ensure the all utilities are executable.
 chmod 755 $RPM_BUILD_ROOT%{homedir}/bin/*
 
-# Create a config directory, and sysconfig directory under that.
+# Create a config directory, sysconfig directory, and initrd directory.
 mkdir -p $RPM_BUILD_ROOT%{conf_dir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+mkdir -p $RPM_BUILD_ROOT%{_initrddir}
+# Create a DB directory
+mkdir -p $RPM_BUILD_ROOT%{db_dir}
 # Create a log directory.
 mkdir -p $RPM_BUILD_ROOT%{log_dir}
 # Create a run directory to store pid files.
 mkdir -p $RPM_BUILD_ROOT%{pid_dir}
 
-# Copy Spring config file to the right location, and environment file
-cp agent/server/na2-spring.yml $RPM_BUILD_ROOT%{conf_dir}
+# Copy config files to the right location; ditto for the environment file and initrd file.
+cp redhat/spring.yml $RPM_BUILD_ROOT%{conf_dir}
+cp redhat/config.xml $RPM_BUILD_ROOT%{conf_dir}
+cp redhat/log4j.properties $RPM_BUILD_ROOT%{conf_dir}
 cp redhat/nodeagent2.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/nodeagent2
+cp redhat/nodeagent2.init $RPM_BUILD_ROOT%{_initrddir}/nodeagent2
 
 # Clean up the bin and lib directories
 rm -rf $RPM_BUILD_ROOT%{homedir}/bin/*.bat
@@ -81,30 +87,28 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun
 if [ "$1" == "0" ]; then
-	/sbin/chkconfig --del na2d
-	[ -x "/etc/init.d/na2d" ] && /etc/init.d/na2d stop
-        rm -f /etc/init.d/na2d
+	/sbin/chkconfig --del nodeagent2
+	[ -x "/etc/init.d/nodeagent2" ] && /etc/init.d/nodeagent2 stop
 fi
 # Force a successful exit even if we didn't exit cleanly.
 exit 0
 
-%post
-rm -f /etc/init.d/na2d
-ln -s %{homedir}/bin/na2d /etc/init.d
-
 %files
 %defattr(-, %{exogeni_user_id}, %{exogeni_group_id})
 %attr(755, %{exogeni_user_id}, %{exogeni_group_id}) %dir %{homedir}
+%attr(755, %{exogeni_user_id}, %{exogeni_group_id}) %dir %{db_dir}
 %attr(755, %{exogeni_user_id}, %{exogeni_group_id}) %dir %{log_dir}
 %attr(755, %{exogeni_user_id}, %{exogeni_group_id}) %dir %{pid_dir}
 %attr(750, %{exogeni_user_id}, root) %dir %{conf_dir}
 %config(noreplace) %{conf_dir}/na2-spring.yml
 %config(noreplace) %{_sysconfdir}/sysconfig/nodeagent2
+%{_initrddir}/nodeagent2
 %{homedir}/bin
 %{homedir}/conf
 %{homedir}/lib
 %{homedir}/plugins
 %{homedir}/repo
+%doc README.md
 
 %changelog
 *Thu Aug 06 2015 Victor J. Orlikowski <vjo@cs.duke.edu>

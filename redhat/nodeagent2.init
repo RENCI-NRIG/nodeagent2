@@ -1,0 +1,94 @@
+#!/bin/sh
+#
+# nodeagent2 init
+#
+# chkconfig:   - 99 01
+# description: A front-end init script for starting nodeagent2.
+
+# Required-Start: $remote_fs $network $syslog
+# Required-Stop: $remote_fs $syslog
+# Default-Stop: 0 1 6
+# Short-Description: nodeagent2 init
+# Description: A front-end init script for starting nodeagent2.
+### END INIT INFO
+
+. /etc/rc.d/init.d/functions
+
+prog=nodeagent2
+exec="/opt/nodeagent2/bin/na2d"
+
+[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+export SPRING_CONFIG_LOCATION
+
+start() {
+    [ -x $exec ] || exit 5
+    echo -n $"Starting $prog: "
+    $exec start
+    retval=$?
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    $exec stop
+    retval=$?
+    return $retval
+}
+
+restart() {
+    echo -n $"Restarting $prog: "
+    $exec restart
+    retval=$?
+    return $retval
+}
+
+clean_restart() {
+    DB_PATTERN=$(grep -a1 datasource $SPRING_CONFIG_LOCATION | grep url | sed -e 's/^.*file://')
+    DB_DIR=$(dirname $DB_PATTERN)
+    stop
+    [ ${DB_DIR} ] && [ -d ${DB_DIR} ] && rm -rf ${DB_DIR}/*
+    start
+}
+
+reload() {
+    restart
+}
+
+force_reload() {
+    clean_restart
+}
+
+status() {
+    $exec status
+}
+
+case "$1" in
+    start)
+        $1
+        ;;
+    stop)
+        $1
+        ;;
+    restart)
+        $1
+        ;;
+    clean-restart)
+        clean_restart
+        ;;
+    reload)
+        $1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    condrestart|try-restart)
+        restart
+        ;;
+    status)
+        status
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart|clean-restart|condrestart|try-restart|reload|force-reload|status}"
+        exit 2
+esac
+exit $?
