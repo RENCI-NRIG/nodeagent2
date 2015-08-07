@@ -50,7 +50,9 @@ cp -R agent/server/target/generated-resources/appassembler/jsw/na2d/* $RPM_BUILD
 # Copy over the generated utilities and dependencies
 cp -R agent/server/target/appassembler/bin/* $RPM_BUILD_ROOT%{homedir}/bin
 cp -R agent/server/target/appassembler/repo $RPM_BUILD_ROOT%{homedir}
-# Fix up generated daemon/init script
+# Copy over example null plugin
+cp -R null-agent/target/null-agent-0.1-SNAPSHOT.jar $RPM_BUILD_ROOT%{homedir}/plugins/na2-null-plugin.jar
+# Fix up generated daemon script
 sed -i -e 's;su -m;su -s /bin/sh -m;' $RPM_BUILD_ROOT%{homedir}/bin/na2d
 sed -i -e 's;^APP_NAME="na2d";APP_NAME="na2d"\nAPP_BASE=%{homedir};' $RPM_BUILD_ROOT%{homedir}/bin/na2d
 sed -i -e 's;^PIDDIR="$APP_BASE/logs";PIDDIR="%{pid_dir}";' $RPM_BUILD_ROOT%{homedir}/bin/na2d
