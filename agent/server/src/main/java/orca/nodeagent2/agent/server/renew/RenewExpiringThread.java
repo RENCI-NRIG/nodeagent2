@@ -2,7 +2,9 @@ package orca.nodeagent2.agent.server.renew;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,6 +25,8 @@ public class RenewExpiringThread implements Runnable {
 	private final Log l = LogFactory.getLog("renewExpiringThread");
 
 	private final SchedulePersistence sp;
+	
+	private static final Set<String> inRenewal = new HashSet<String>();
 
 	private static final int MAX_RENEW_SERVICE_THREADS = 10;
 	static ExecutorService renewThreadFactory = Executors.newFixedThreadPool(MAX_RENEW_SERVICE_THREADS);
@@ -31,12 +35,49 @@ public class RenewExpiringThread implements Runnable {
 		this.sp = sp;
 	}
 
+	/**
+	 * Check if reservation id is in renewal
+	 * @param id
+	 * @return
+	 */
+	private static boolean isInRenewal(String id) {
+		if (id == null)
+			return false;
+		
+		synchronized(inRenewal) {
+			if (inRenewal.contains(id))
+				return true;
+			return false;
+		}
+	}
+	
+	private static void startRenewal(String id) {
+		if (id == null)
+			return;
+		synchronized(inRenewal) {
+			inRenewal.add(id);
+		}
+	}
+	
+	private static void finishRenewal(String id) {
+		if (id == null)
+			return;
+		synchronized(inRenewal) {
+			inRenewal.remove(id);
+		}
+	}
+	
 	@Override
 	public void run() {
 		Thread.currentThread().setName("renewPeriodicThread");
 		List<ScheduleEntry> expired = sp.findExpiredEntries();
 		l.info("There are " + expired.size() + " expired entries");
 		for(final ScheduleEntry e: expired) {
+			if (isInRenewal(e.getReservationId())) {
+				l.info("Reservation " + e.getReservationId() + " of " + e.getName() + " is currently being renewed, ignoring");
+				continue;
+			}
+			startRenewal(e.getReservationId());
 			l.info("Spawning a thread to renew " + e.getName() + " reservation " + e.getReservationId());
 			renewThreadFactory.submit(new Thread() {
 				public void run() {
@@ -76,6 +117,8 @@ public class RenewExpiringThread implements Runnable {
 					} catch (Exception ee) {
 						l.error("Unable to renew plugin " + e.getName() + " reservation " + e.getReservationId() + " due to " + ee.getMessage());
 					} finally {
+						finishRenewal(e.getReservationId());
+						
 						// remove old entry
 						l.debug("Removing old entry " + e + " from the database");
 						sp.removeEntries(Arrays.asList(e));
