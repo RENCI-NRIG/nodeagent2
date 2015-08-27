@@ -1,0 +1,15 @@
+To build an RPM
+
+1) mkdir ~/nodeagent2
+2) cd ~/nodeagent2
+3)  git clone https://github.com/RENCI-NRIG/nodeagent2.git
+4) export JAVA_HOME=/usr/java/jdk1.7.0_60
+5) export PATH=/usr/java/jdk1.7.0_60/bin:/opt/jdev/maven/bin:$PATH
+6) cd nodeagent2 # You’re now entering the source you just checked out
+7) export COMMIT=`git rev-parse HEAD`; export SHORTCOMMIT=`git rev-parse --short=8 HEAD`
+8) cd redhat
+9) ./create_spec_from_tmpl.sh
+10) cd ../.. # This will take you back to the top level nodeagent2 directory
+11) mv nodeagent2 nodeagent2-0.1-${SHORTCOMMIT}
+12) tar -cvzf nodeagent2-0.1-${SHORTCOMMIT}.tar.gz nodeagent2-0.1-${SHORTCOMMIT}
+13) rpmbuild -ta nodeagent2-0.1-${SHORTCOMMIT}.tar.gz
