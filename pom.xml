@@ -71,9 +71,9 @@
 	</repositories>
 
 	<scm>
-		<connection>scm:svn:https://geni-orca.renci.org/svn/orca/trunk</connection>
-		<developerConnection>scm:svn:https://geni-orca.renci.org/svn/orca/trunk</developerConnection>
-		<url>https://geni-orca.renci.org/svn/orca/trunk</url>
+		<connection>scm:git:https://github.com/RENCI-NRIG/nodeagent2.git</connection>
+		<developerConnection>scm:git:https://github.com/RENCI-NRIG/nodeagent2.git</developerConnection>
+		<url>https://github.com/RENCI-NRIG/nodeagent2</url>
 	</scm>
 
 	<issueManagement>
