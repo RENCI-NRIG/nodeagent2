@@ -27,7 +27,7 @@ NA2 plugin implementations are required to fulfill a minimal set of dependencies
 
 Each plugin must implement this [Plugin interface](agentlib/src/main/java/orca/nodeagent2/agentlib/Plugin.java) supporting the basic join/leave/modify/renew commands. A plugin is associated with a REST endpoint corresponding to the particular substrate instance. A plugin is configured with scheduling information: the reservation duration used when the reservation is created on the first join call and all consecutive renew calls. The NA2 runs a periodic thread to check for expired reservations, executed every 'tick'. For each plugin it is possible to configure how many ticks ahead of its renew deadline the reservation should be renewed (defaulting to one tick). 
 
-After each 'join' operation, the NA2 inserts into its schedule the next deadline, a pre-configured number of ticks ahead of the actually provisioned deadline, when this reservation must be renewed (for plugins whose period is configured to be 0 this step is skipped). While the corresponding ORCA reservation remains Active, NA2 continues to renew the substrate reservation at the preconfigured period. Calling a leave on the reservation removes it from the renew schedule. The schedule is persistent. 
+After each 'join' operation, the NA2 inserts into its schedule the next deadline, a pre-configured number of ticks ahead of the actually provisioned deadline, when this reservation must be renewed (for plugins whose period is configured to be 0 this step is skipped). While the corresponding ORCA reservation remains Active, NA2 continues to renew the substrate reservation at the preconfigured period. Calling a leave on the reservation removes it from the renew schedule. The schedule is persistent, i.e. NodeAgent can be restarted without loss of state.
 
 If join operation detects an error, it is returned to ORCA, however no schedule update is performed under the assumption that a reservation that failed to join cannot be renewed. Similarly, if an error is returned by the renew call, the reservation is taken out of the schedule (no future renews are performed) and the error is logged. There is an assumption that the status command implemented by the plugin can return from the substrate the more detailed error message about the reservation if desired.
 
@@ -78,7 +78,7 @@ There are examples of using [pure Java](client/src/main/java/orca/nodeagent2/cli
 
 ## ORCA Interface
 
-ORCA now includes additional Ant tasks that implement the join/leave/modify calls on NA2 with property dictionaries passed in and out of each call. Their implementations can be found [here] (https://github.com/RENCI-NRIG/orca5/tree/master/handlers/nodeagent2/src/main/java/orca/handlers/nodeagent2). The principle of operation is simple: the handler can invoke NA2's join, leave or modify calls like this:
+ORCA now includes additional Ant tasks that implement the join/leave/modify calls on NA2 with property dictionaries passed in and out of each call. Their implementations can be found [here](https://github.com/RENCI-NRIG/orca5/tree/master/handlers/nodeagent2/src/main/java/orca/handlers/nodeagent2). The principle of operation is simple: the handler can invoke NA2's join, leave or modify calls like this:
 
 ```
 <nodeagent2.join baseUrl="${na2.url}" prefix="oscars" returnPrefix="oscars.return" password="${na2.password}" plugin="${na2.plugin}" statusProperty="code" errorMsgProperty="message" reservationIdProperty="oscars.join.reservation" />
