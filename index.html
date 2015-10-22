@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Nodeagent2 by RENCI-NRIG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Nodeagent2</h1>
+      <h2 class="project-tagline">NodeAgent2 </h2>
+      <a href="https://github.com/RENCI-NRIG/nodeagent2" class="btn">View on GitHub</a>
+      <a href="https://github.com/RENCI-NRIG/nodeagent2/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/RENCI-NRIG/nodeagent2/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="nodeagent-2" class="anchor" href="#nodeagent-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>NodeAgent 2</h1>
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>NodeAgent2 is a piece of middleware invoked by Ant handler tasks from ORCA on one side, and speaks the substrate native APIs on the other.  The invocation happens over a remotable interface, making it possible for the ORCA AM invoking the task to be on one host and the target of the tasks, where NA2 executes, on another.</p>
+
+<p>NodeAgent2 was developed for two purposes:</p>
+
+<ul>
+<li>Simplify working with self-scheduling substrates (like OSCARS and NSI), i.e. those that have their own scheduler that may require 'meter-feeding' so long as ORCA reservation is open. </li>
+<li>Simplify the development of new handlers based on large number of dependencies that don't work inside ORCA code.</li>
+</ul>
+
+<p>NA2 exposes a RESTful interface and allows to perform standard handler operations (join/leave/modify) using property dictionaries passed in and out of each call. In addition it has the ability to self-schedule renew operations on reservations it has created, thus allowing it to operate on e.g. OSCARS and NSI and without requiring ORCA to perform an explicit <em>renew</em> call via a handler. </p>
+
+<p>NA2 has persistence, thus allowing it to be shutdown and restarted without losing state. </p>
+
+<p>For securing its remote API it implements HTTP Digest authentication with a single user 'admin' and the password set via the XML configuration file. SSL/TLS server-side support is optional. The provided example Spring configuration file shows how to enable it, however it is not mandatory, especially if NA2 is run on the same host as the ORCA AM and listens only on the local interface.</p>
+
+<p>NA2 is designed to operate with any number of plugins implementing the interface to the particular substrate (join/leave/modify/renew operations). Plugins are mapped to API endpoints, such that same plugin can be mapped to multiple endpoints, if desired. Plugins are provided as self-contained jars and are configured via NA2 configuration file. </p>
+
+<h2>
+<a id="implementation" class="anchor" href="#implementation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Implementation</h2>
+
+<p>NodeAgent2 is implemented as a Spring Boot application with JPA/Hibernate persistence support provided through the included HSQLDB that by default is configured as a set of files, not a remote server. This is the recommended way of running NodeAgent2 unless database scalability somehow becomes an issue. </p>
+
+<p>NA2 plugin implementations are required to fulfill a minimal set of dependencies provided as orca.node-agent2.agentlib Maven artifact. </p>
+
+<h2>
+<a id="principle-of-operation" class="anchor" href="#principle-of-operation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Principle of operation</h2>
+
+<p>Each plugin must implement this <a href="agentlib/src/main/java/orca/nodeagent2/agentlib/Plugin.java">Plugin interface</a> supporting the basic join/leave/modify/renew commands. A plugin is associated with a REST endpoint corresponding to the particular substrate instance. A plugin is configured with scheduling information: the reservation duration used when the reservation is created on the first join call and all consecutive renew calls. The NA2 runs a periodic thread to check for expired reservations, executed every 'tick'. For each plugin it is possible to configure how many ticks ahead of its renew deadline the reservation should be renewed (defaulting to one tick). </p>
+
+<p>After each 'join' operation, the NA2 inserts into its schedule the next deadline, a pre-configured number of ticks ahead of the actually provisioned deadline, when this reservation must be renewed (for plugins whose period is configured to be 0 this step is skipped). While the corresponding ORCA reservation remains Active, NA2 continues to renew the substrate reservation at the preconfigured period. Calling a leave on the reservation removes it from the renew schedule. The schedule is persistent, i.e. NodeAgent can be restarted without loss of state.</p>
+
+<p>If join operation detects an error, it is returned to ORCA, however no schedule update is performed under the assumption that a reservation that failed to join cannot be renewed. Similarly, if an error is returned by the renew call, the reservation is taken out of the schedule (no future renews are performed) and the error is logged. There is an assumption that the status command implemented by the plugin can return from the substrate the more detailed error message about the reservation if desired.</p>
+
+<p>Each plugin call is associated with a set of properties and also returns a set of properties, which are represented as String-to-String maps. Each schedule entry saves two separate sets of properties associated with each reservation:</p>
+
+<ul>
+<li>Original properties passed with the join call (inProperties)</li>
+<li>Properties <em>returned</em> by the join call (joinProperties). </li>
+</ul>
+
+<p>Note that after each <em>renew</em> call the properties returned by this call are merged with the existing joinProperties and saved into the schedule. They are then passed on to the next renew call. This allows break/make type renew operations in substrates lacking  a native renew capability, where a new reservation must be created on each renew call to preserve the illusion of a continuous reservation. </p>
+
+<p>Join operation is assumed to generate a unique <em>reservation id</em> string which from then on is used to refer to the reservation. This reservation id is explicitly returned by the join call and is used as a parameter to modify, leave and renew calls. Reservation id cannot change during the lifetime of the reservation. Break/make renew implementations must find a way to pass a new reservation identifier as part of the properties. </p>
+
+<h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
+
+<p>Several configuration files are required for NA2:</p>
+
+<ul>
+<li>Spring configuration file in YAML or as properties (like <a href="agent/server/na2-spring.yml">this example</a> this example)
+
+<ul>
+<li>NA2 is pointed at this file using environment variable SPRING_CONFIG_LOCATION like so:</li>
+</ul>
+</li>
+</ul>
+
+<pre><code>export SPRING_CONFIG_LOCATION=/path/to/config/file/na2-spring.yml
+</code></pre>
+
+<ul>
+<li>It is possible to use a properties file instead of a YAML file. Simply change the value of the environment variable above to point to the properties file. As per Spring documentation the conversion between YAML and properties file is straightforward: a property some.property.name=value becomes YAML property</li>
+</ul>
+
+<pre><code>some:
+  property:
+    name: value
+</code></pre>
+
+<ul>
+<li>LOG4J configuration file (it is pointed to from the Spring configuration file using property logging.config). This is a properties file, something like <a href="agent/server/log4j-na2.properties">this example</a>.</li>
+<li>NA2 configuration file - this is an XML file that describes the plugins that NA2 is aware of and their individual properties. Like <a href="agent/server/na-test-config.xml">this example</a>.
+
+<ul>
+<li>The <em>name</em> of the plugin in the configuration also corresponds to the REST endpoint used for this substrate instance. Notice it is legal to configure the same jar for multiple endpoints. The name must conform to this simple pattern "[a-zA-Z0-9-]+" and be at least 5 characters long.</li>
+<li>You can look at the full <a href="agent/config/src/main/resources/orca/nodeagent2/agent/config/xsd/AgentConfig.xsd">schema</a> of the configuration file. Any changes to the schema are automatically turned into beans by the build process using JAXB. </li>
+</ul>
+</li>
+</ul>
+
+<h2>
+<a id="rest-interface-details" class="anchor" href="#rest-interface-details" aria-hidden="true"><span class="octicon octicon-link"></span></a>REST interface details</h2>
+
+<p>NA2 exposes a RESTful interface that combines mapping to plugin operations and status queries. All parameters are passed and results are returned as JSON objects: </p>
+
+<ul>
+<li>http(s)://hostname:port/join/<a href="POST">plugin name</a> - maps to the <em>join</em> operation implemented by the jar associated with this endpoint</li>
+<li>http(s)://hostname:port/leave/[plugin name]/<a href="POST">reservation id</a> - maps to the <em>leave</em> operation implemented by the jar associated with this endpoint</li>
+<li>http(s)://hostname:port/modify/[plugin name]/<a href="POST">reservation id</a> - maps to the <em>modify</em> operation implemented by the jar associated with this endpoint</li>
+<li>http(s)://hostname:port/status/[plugin name]/<a href="GET">reservation id</a> - maps to the <em>status</em> operation implemented by the jar associated with this endpoint</li>
+<li>http(s)://hostname:port/description/<a href="GET">plugin name</a> - returns the optional description provided in the configuration file</li>
+<li>http(s)://hostname:port/plugins (GET) - returns configuration information about all known plugins</li>
+<li>http(s)://hostname:port/plugins/<a href="GET">plugin name</a> - returns configuration information about the specific plugin</li>
+<li>http(s)://hostname:port/schedule (GET) - returns the complete schedule information stored in the database</li>
+<li>http(s)://hostname:port/schedule/<a href="GET">plugin name</a> - returns the schedule information for the particular plugin</li>
+<li>http(s)://hostname:port/schedule/[plugin name]/<a href="GET">reservation id</a> - returns the schedule information for the particular reservation of the specified plugin</li>
+</ul>
+
+<p>There are examples of using <a href="client/src/main/java/orca/nodeagent2/client/RestClient.java">pure Java</a> to communicate with this API (using minimal Java dependencies) as well as examples of using <a href="https://github.com/RENCI-NRIG/na2-oscars-plugin/tree/master/scripts">curl</a> to do the same. </p>
+
+<h2>
+<a id="orca-interface" class="anchor" href="#orca-interface" aria-hidden="true"><span class="octicon octicon-link"></span></a>ORCA Interface</h2>
+
+<p>ORCA now includes additional Ant tasks that implement the join/leave/modify calls on NA2 with property dictionaries passed in and out of each call. Their implementations can be found <a href="https://github.com/RENCI-NRIG/orca5/tree/master/handlers/nodeagent2/src/main/java/orca/handlers/nodeagent2">here</a>. The principle of operation is simple: the handler can invoke NA2's join, leave or modify calls like this:</p>
+
+<pre><code>&lt;nodeagent2.join baseUrl="${na2.url}" prefix="oscars" returnPrefix="oscars.return" password="${na2.password}" plugin="${na2.plugin}" statusProperty="code" errorMsgProperty="message" reservationIdProperty="oscars.join.reservation" /&gt;
+</code></pre>
+
+<p>Each task requires the same parameters:</p>
+
+<ul>
+<li>URL of the NA2</li>
+<li>plugin name (the final portion of the name of the REST endpoint above)</li>
+<li>prefix of properties that should be passed in this call (all properties starting with this prefix will be sent to the NA2 plugin). E.g. a property name 'oscars.blah' will be sent to the task. </li>
+<li>prefix or properties that will be returned. Any property 'some.property.name' will be returned as ${returnPrefix}.some.property.name </li>
+<li>name of the property which will contain the status code upon return</li>
+<li>name of the property which will contain the error message upon return</li>
+<li>name of the property which will contain the reservation id for the resource upon return</li>
+</ul>
+
+<p>Note that renew cannot be called externally - it is intended to be used internally by NA2. </p>
+
+<p>The full example of how to use them can be found in the <a href="https://github.com/RENCI-NRIG/orca5/tree/master/handlers/oscars/resources/handlers/oscars/handler.xml">OSCARS Handler</a>. </p>
+
+<p>Note that each target in the handler (join, leave or modify) must have this as the first statement of the target code:</p>
+
+<pre><code>&lt;taskdef resource="orca/handlers/nodeagent2/nodeagent2.xml" classpathref="run.classpath" loaderref="run.classpath.loader" /&gt;
+</code></pre>
+
+<h2>
+<a id="developing-new-plugins" class="anchor" href="#developing-new-plugins" aria-hidden="true"><span class="octicon octicon-link"></span></a>Developing new plugins</h2>
+
+<h3>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h3>
+
+<p>Developing new plugins is straightforward. Each new plugin must implement a class following the <a href="agentlib/src/main/java/orca/nodeagent2/agentlib/Plugin.java">Plugin interface</a>  in the  orca.node-agent2.agentlib Maven artifact:</p>
+
+<pre><code>&lt;repositories&gt;
+  &lt;repository&gt;
+    &lt;id&gt;geni-orca-snapshot&lt;/id&gt;
+    &lt;url&gt;http://ci-dev.renci.org/nexus/content/repositories/geni-orca-snapshot/&lt;/url&gt;
+    &lt;snapshots&gt;
+      &lt;enabled&gt;true&lt;/enabled&gt;
+      &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+    &lt;/snapshots&gt;
+  &lt;/repository&gt;
+  &lt;repository&gt;
+    &lt;id&gt;geni-orca-libs&lt;/id&gt;
+    &lt;url&gt;http://ci-dev.renci.org/nexus/content/repositories/geni-orca-libs&lt;/url&gt;
+  &lt;/repository&gt;
+&lt;/repositories&gt;
+...
+&lt;dependency&gt;
+  &lt;groupId&gt;orca.node-agent2&lt;/groupId&gt;
+  &lt;artifactId&gt;agentlib&lt;/artifactId&gt;
+  &lt;version&gt;${na2.version}&lt;/version&gt;
+  &lt;type&gt;pom&lt;/type&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>while can be built from source under node-agent2/agentlib/ or, alternatively, fetched from <a href="http://ci-dev.renci.org/nexus/content/repositories/geni-orca-snapshot%20repository">NRIG Nexus</a>. 
+Each plugin jar must contain all of its dependencies, thus it is recommended to use Maven's 'jar-with-dependencies' plugin to generate it. For more complex scenarios you may need to use the Maven shade plugin. For an example of its use look at the <a href="https://github.com/RENCI-NRIG/na2-oscars-plugin/blob/master/pom.xml">OSCARS NA2 plugin</a>.</p>
+
+<p>Example plugin implementations can be found in:</p>
+
+<ul>
+<li>
+<a href="null-agent/src/main/java/orca/nodeagent2/null_agent/Main.java">Null-Agent</a> - a trivial implementation that does nothing and has minimal internal dependencies. Uses jar-with-dependencies Maven plugin.</li>
+<li>
+<a href="https://github.com/RENCI-NRIG/na2-oscars-plugin">OSCARS Plugin</a> - a full implementation of OSCARS API v06 plugin that relies on CXF and for this reason needs Maven shade plugin for assembling the uber jar.</li>
+<li>
+<a href="https://github.com/RENCI-NRIG/na2-exec-plugin">Exec Plugin</a> - a plugin that executes external programs for each of the join/leave/modify actions</li>
+</ul>
+
+<h3>
+<a id="classloading" class="anchor" href="#classloading" aria-hidden="true"><span class="octicon octicon-link"></span></a>Classloading</h3>
+
+<p>NA2 implements a special <a href="nodeagent2/agent/core/src/main/java/orca/nodeagent2/agent/core/ChildFirstURLClassLoader.java">ParentLast classloader</a> , which forces code running in the plugin to consult its own classpath before defaulting to the NA2 classloader path, thus any plugin class dependencies specified will be linked from the jars in the plugin instead of classes on the main NA2 classpath. </p>
+
+<h3>
+<a id="locking" class="anchor" href="#locking" aria-hidden="true"><span class="octicon octicon-link"></span></a>Locking</h3>
+
+<p>NA2 automatically serializes renew/leave/modify/status requests <em>for a given reservation</em> i.e. if a reservation is being renewed and a leave call comes, the renew will complete before leave is invoked). Other types of locking are left to the implementors of the plugins. For example, the OSCARS plugin calls are internally fully synchronized due to the limitations of OSCARS service.</p>
+
+<h2>
+<a id="building-and-running-na2--from-source" class="anchor" href="#building-and-running-na2--from-source" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building and Running NA2  from source</h2>
+
+<ul>
+<li>make sure you have Java 7 and Maven 3.x</li>
+<li>check out NodeAgent2 from from GitHub</li>
+<li>run in top-level directory</li>
+</ul>
+
+<pre><code>$ mvn clean install
+</code></pre>
+
+<ul>
+<li>then descend into agent/server</li>
+<li>run</li>
+</ul>
+
+<pre><code>$ mvn clean package
+</code></pre>
+
+<ul>
+<li>make sure the configuration files are present and SPRING_CONFIG_LOCATION environment variable points at the Spring configuration file</li>
+<li>run the NA2</li>
+</ul>
+
+<pre><code>$ sh target/appassembler/bin/nodeagent2
+</code></pre>
+
+<ul>
+<li>any plugin is typically built using</li>
+</ul>
+
+<pre><code>$ mvn clean package
+</code></pre>
+
+<h2>
+<a id="packaging-notes" class="anchor" href="#packaging-notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Packaging notes</h2>
+
+<p>The current implementation makes no assumptions about the preferred locations of the configuration files and the database. Everything starts with pointing the executable at the Spring configuration file using the SPRING_CONFIG_LOCATION environment variable. The NA2 server executable is packaged as a Maven appassembler package under /agent/server/target/appassembler. The daemon is under agent/server/target/generated-resources/appassembler/jsw/na2d/.</p>
+
+<p>For clean restart, remove the database configured in the configuration file (all files and directories starting with the common name given in the spring.datasource.url property). This wipes out the schedule database and the agent will recreate it fresh when next restarted. </p>
+
+<p>There are no assumptions made about the locations of the plugin jars. Their fully-qualified locations are expected to be specified in the NA2 configuration file. Since there can be multiple independently developed plugins running under a single NA2, it is preferred to package plugins as individual RPMs consisting of a jar file in a pre-defined location (e.g. /etc/na2/plugins). </p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/RENCI-NRIG/nodeagent2">Nodeagent2</a> is maintained by <a href="https://github.com/RENCI-NRIG">RENCI-NRIG</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
