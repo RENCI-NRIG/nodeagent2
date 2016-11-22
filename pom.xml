@@ -71,8 +71,8 @@
 	</repositories>
 
 	<scm>
-		<connection>scm:git:git://github.com/RENCI-NRIG/nodeagent2.git</connection>
-		<developerConnection>scm:git:git://github.com/RENCI-NRIG/nodeagent2.git</developerConnection>
+		<connection>scm:git:git@github.com:RENCI-NRIG/nodeagent2.git</connection>
+		<developerConnection>scm:git:git@github.com:RENCI-NRIG/nodeagent2.git</developerConnection>
 		<url>https://github.com/RENCI-NRIG/nodeagent2</url>
 		<tag>HEAD</tag>
 	</scm>
