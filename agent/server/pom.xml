@@ -2,12 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>orca.node-agent2</groupId>
+		<groupId>org.renci.node-agent2</groupId>
 		<artifactId>agent</artifactId>
 		<version>0.1.2-SNAPSHOT</version>
 	</parent>
-	<groupId>orca.node-agent2.agent</groupId>
-	<artifactId>server</artifactId>
+	<artifactId>agent-server</artifactId>
 	<name>server</name>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -28,13 +27,13 @@
 			<artifactId>commons-codec</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>orca.node-agent2.agent</groupId>
-			<artifactId>config</artifactId>
+			<groupId>org.renci.node-agent2</groupId>
+			<artifactId>agent-config</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>orca.node-agent2.agent</groupId>
-			<artifactId>core</artifactId>
+			<groupId>org.renci.node-agent2</groupId>
+			<artifactId>agent-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
