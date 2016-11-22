@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>orca</groupId>
 	<artifactId>node-agent2</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<packaging>pom</packaging>
 	<name>node-agent2</name>
 	<modules>
@@ -73,7 +73,8 @@
 		<connection>scm:git:https://github.com/RENCI-NRIG/nodeagent2.git</connection>
 		<developerConnection>scm:git:https://github.com/RENCI-NRIG/nodeagent2.git</developerConnection>
 		<url>https://github.com/RENCI-NRIG/nodeagent2</url>
-	</scm>
+	  <tag>node-agent2-0.1.0</tag>
+  </scm>
 
 	<issueManagement>
 		<system>trac</system>
