@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>orca.node-agent2</groupId>
 		<artifactId>agent</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.1</version>
 	</parent>
 	<groupId>orca.node-agent2.agent</groupId>
 	<artifactId>server</artifactId>
