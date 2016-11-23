@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.renci.node-agent2</groupId>
 	<artifactId>node-agent2</artifactId>
@@ -26,10 +27,33 @@
 		</license>
 	</licenses>
 
+	<description>
+	NodeAgent2 is a piece of middleware invoked by Ant handler tasks from ORCA on one side,
+	 and speaks the substrate native APIs on the other.
+	 The invocation happens over a remotable interface,
+	 making it possible for the ORCA AM invoking the task to be on one host and the target of the tasks,
+	 where NA2 executes, on another.
+	</description>
+
+	<url>https://github.com/RENCI-NRIG/nodeagent2</url>
+
 	<organization>
 		<name>RENCI</name>
 		<url>http://www.renci.org</url>
 	</organization>
+
+	<developers>
+		<developer>
+			<id>ibaldin</id>
+			<name>Ilya Baldin</name>
+			<email>ibaldin@renci.org</email>
+		</developer>
+		<developer>
+			<id>vjorlikowski</id>
+			<name>Victor Orlikowki</name>
+			<email>vjo@duke.edu</email>
+		</developer>
+	</developers>
 
 	<properties>
 		<orca.tools.build.version>1.0</orca.tools.build.version>
@@ -180,6 +204,10 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.5.3</version>
 				<configuration>
+					<!-- The configuration for the Maven release plugin should include disabling
+						the release profile that is part of the Maven Super POM, since we are using
+						our own profile, and specify the deploy goal together with the activation
+						of our release profile -->
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<useReleaseProfile>false</useReleaseProfile>
 					<releaseProfiles>release</releaseProfiles>
@@ -191,7 +219,7 @@
 
 	<profiles>
 		<profile>
-			<id>releases</id>
+			<id>release</id>
 			<build>
 				<plugins>
 					<plugin>
