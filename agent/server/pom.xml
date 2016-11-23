@@ -97,14 +97,14 @@
 						<configuration>
 							<programs>
 								<program>
-									<mainClass>orca.nodeagent2.agent.server.ServerMain</mainClass>
+									<mainClass>org.renci.nodeagent2.agent.server.ServerMain</mainClass>
 									<name>nodeagent2</name>
 								</program>
 							</programs>
 							<daemons>
 								<daemon>
 									<id>na2d</id>
-									<mainClass>orca.nodeagent2.agent.server.ServerMain</mainClass>
+									<mainClass>org.renci.nodeagent2.agent.server.ServerMain</mainClass>
 									<generatorConfigurations>
 										<generatorConfiguration>
 											<generator>jsw</generator>

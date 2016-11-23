@@ -1,12 +1,12 @@
-package orca.nodeagent2.client;
+package org.renci.nodeagent2.client;
 
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import orca.nodeagent2.agentlib.PluginReturn;
-import orca.nodeagent2.agentlib.Properties;
-import orca.nodeagent2.agentlib.ReservationId;
+import org.renci.nodeagent2.agentlib.PluginReturn;
+import org.renci.nodeagent2.agentlib.Properties;
+import org.renci.nodeagent2.agentlib.ReservationId;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;

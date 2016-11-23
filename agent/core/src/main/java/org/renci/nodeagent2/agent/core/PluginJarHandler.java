@@ -1,4 +1,4 @@
-package orca.nodeagent2.agent.core;
+package org.renci.nodeagent2.agent.core;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -6,11 +6,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import orca.nodeagent2.agentlib.Plugin;
-import orca.nodeagent2.agentlib.PluginException;
-import orca.nodeagent2.agentlib.PluginReturn;
-import orca.nodeagent2.agentlib.Properties;
-import orca.nodeagent2.agentlib.ReservationId;
+import org.renci.nodeagent2.agentlib.Plugin;
+import org.renci.nodeagent2.agentlib.PluginException;
+import org.renci.nodeagent2.agentlib.PluginReturn;
+import org.renci.nodeagent2.agentlib.Properties;
+import org.renci.nodeagent2.agentlib.ReservationId;
 
 public class PluginJarHandler extends JarHandler {
 	protected Class<Plugin> pluginClass;

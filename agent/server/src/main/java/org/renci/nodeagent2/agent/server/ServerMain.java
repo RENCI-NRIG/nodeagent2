@@ -1,4 +1,4 @@
-package orca.nodeagent2.agent.server;
+package org.renci.nodeagent2.agent.server;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -6,8 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.security.Permission;
 
-import orca.nodeagent2.agent.config.Config;
-import orca.nodeagent2.agent.core.PluginsRegistry;
+import org.renci.nodeagent2.agent.config.Config;
+import org.renci.nodeagent2.agent.core.PluginsRegistry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

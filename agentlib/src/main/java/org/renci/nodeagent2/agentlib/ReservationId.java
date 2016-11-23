@@ -1,4 +1,4 @@
-package orca.nodeagent2.agentlib;
+package org.renci.nodeagent2.agentlib;
 
 /**
  * simple bean to store the plugin reservation id

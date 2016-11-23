@@ -1,8 +1,8 @@
-package orca.nodeagent2.agent.server;
+package org.renci.nodeagent2.agent.server;
 
 import java.util.List;
 
-import orca.nodeagent2.agent.config.xsd.PluginType;
+import org.renci.nodeagent2.agent.config.xsd.PluginType;
 
 public class StatusBean {
 	

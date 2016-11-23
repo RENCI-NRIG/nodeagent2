@@ -1,4 +1,4 @@
-package orca.nodeagent2.agent.core;
+package org.renci.nodeagent2.agent.core;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.Semaphore;
 
-import orca.nodeagent2.agent.config.Config;
-import orca.nodeagent2.agent.config.xsd.PluginType;
-import orca.nodeagent2.agent.config.xsd.PropertiesType;
-import orca.nodeagent2.agent.config.xsd.PropertyType;
-import orca.nodeagent2.agentlib.PluginException;
-import orca.nodeagent2.agentlib.PluginReturn;
-import orca.nodeagent2.agentlib.Properties;
-import orca.nodeagent2.agentlib.ReservationId;
+import org.renci.nodeagent2.agent.config.Config;
+import org.renci.nodeagent2.agent.config.xsd.PluginType;
+import org.renci.nodeagent2.agent.config.xsd.PropertiesType;
+import org.renci.nodeagent2.agent.config.xsd.PropertyType;
+import org.renci.nodeagent2.agentlib.PluginException;
+import org.renci.nodeagent2.agentlib.PluginReturn;
+import org.renci.nodeagent2.agentlib.Properties;
+import org.renci.nodeagent2.agentlib.ReservationId;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

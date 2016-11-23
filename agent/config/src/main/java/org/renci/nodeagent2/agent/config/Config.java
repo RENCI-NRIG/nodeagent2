@@ -1,12 +1,12 @@
-package orca.nodeagent2.agent.config;
+package org.renci.nodeagent2.agent.config;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import orca.nodeagent2.agent.config.xsd.PluginType;
-import orca.nodeagent2.agent.config.xsd.UnitChoice;
+import org.renci.nodeagent2.agent.config.xsd.PluginType;
+import org.renci.nodeagent2.agent.config.xsd.UnitChoice;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

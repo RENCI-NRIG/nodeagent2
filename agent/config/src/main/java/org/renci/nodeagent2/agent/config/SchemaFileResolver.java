@@ -1,4 +1,4 @@
-package orca.nodeagent2.agent.config;
+package org.renci.nodeagent2.agent.config;
 
 import org.apache.commons.logging.Log;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;

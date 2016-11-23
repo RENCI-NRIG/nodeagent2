@@ -1,8 +1,8 @@
-package orca.nodeagent2.agent.server;
+package org.renci.nodeagent2.agent.server;
 
 import java.util.List;
 
-import orca.nodeagent2.agent.server.persistence.ScheduleEntry;
+import org.renci.nodeagent2.agent.server.persistence.ScheduleEntry;
 
 public class DBBean {
 

@@ -1,6 +1,6 @@
-package orca.nodeagent2.agent.server;
+package org.renci.nodeagent2.agent.server;
 
-import orca.nodeagent2.agent.config.Config;
+import org.renci.nodeagent2.agent.config.Config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

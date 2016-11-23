@@ -1,4 +1,4 @@
-package orca.nodeagent2.agent.server.persistence;
+package org.renci.nodeagent2.agent.server.persistence;
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
-import orca.nodeagent2.agentlib.Properties;
+import org.renci.nodeagent2.agentlib.Properties;
 
 @Entity
 public class ScheduleEntry {

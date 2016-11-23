@@ -1,4 +1,4 @@
-package orca.nodeagent2.agent.config;
+package org.renci.nodeagent2.agent.config;
 
 import java.io.File;
 import java.util.Calendar;
@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-import orca.nodeagent2.agent.config.xsd.AgentConfigType;
-import orca.nodeagent2.agent.config.xsd.PluginType;
-import orca.nodeagent2.agent.config.xsd.PluginsType;
-import orca.nodeagent2.agent.config.xsd.UnitChoice;
+import org.renci.nodeagent2.agent.config.xsd.AgentConfigType;
+import org.renci.nodeagent2.agent.config.xsd.PluginType;
+import org.renci.nodeagent2.agent.config.xsd.PluginsType;
+import org.renci.nodeagent2.agent.config.xsd.UnitChoice;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,7 +25,7 @@ public class ConfigParser extends ParserHelper {
 	AgentConfigType root = null;
 	Map<String, PluginType> plugins = new HashMap<String, PluginType>();
 
-	protected static final String PKG_LIST = "orca.nodeagent2.agent.config.xsd";
+	protected static final String PKG_LIST = "org.renci.nodeagent2.agent.config.xsd";
 	protected static final String[] SCHEMA_LIST = { "AgentConfig.xsd" };
 
 	public ConfigParser(String fname) throws Exception {

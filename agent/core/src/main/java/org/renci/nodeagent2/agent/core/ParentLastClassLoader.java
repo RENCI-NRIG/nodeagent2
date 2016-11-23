@@ -1,4 +1,4 @@
-package orca.nodeagent2.agent.core;
+package org.renci.nodeagent2.agent.core;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -42,7 +42,7 @@ class ParentLastClassLoader extends ClassLoader {
 			this.realParent = realParent;
 		}
 
-		String[] checkParent = { "org.slf4j", "orca.nodeagent2.agentlib", "org.apache.commons.logging" };
+		String[] checkParent = { "org.slf4j", "org.renci.nodeagent2.agentlib", "org.apache.commons.logging" };
 		
 		@Override
 		public Class<?> findClass(String name) throws ClassNotFoundException

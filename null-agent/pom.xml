@@ -36,7 +36,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
+							<mainClass>org.renci.nodeagent2.null_agent.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
