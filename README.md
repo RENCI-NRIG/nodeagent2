@@ -140,7 +140,7 @@ Example plugin implementations can be found in:
 
 ### Classloading
 
-NA2 implements a special [ParentLast classloader] (nodeagent2/agent/core/src/main/java/org/renci/nodeagent2/agent/core/ChildFirstURLClassLoader.java) , which forces code running in the plugin to consult its own classpath before defaulting to the NA2 classloader path, thus any plugin class dependencies specified will be linked from the jars in the plugin instead of classes on the main NA2 classpath. 
+NA2 implements a special [ParentLast classloader] (agent/core/src/main/java/org/renci/nodeagent2/agent/core/ChildFirstURLClassLoader.java) , which forces code running in the plugin to consult its own classpath before defaulting to the NA2 classloader path, thus any plugin class dependencies specified will be linked from the jars in the plugin instead of classes on the main NA2 classpath. 
 
 ### Locking
 
