@@ -134,7 +134,7 @@ while can be built from source under node-agent2/agentlib/ or, alternatively, fe
 Each plugin jar must contain all of its dependencies, thus it is recommended to use Maven's 'jar-with-dependencies' plugin to generate it. For more complex scenarios you may need to use the Maven shade plugin. For an example of its use look at the [OSCARS NA2 plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin/blob/master/pom.xml).
 
 Example plugin implementations can be found in:
- * [Null-Agent](null-agent/src/main/java/orca/nodeagent2/null_agent/Main.java) - a trivial implementation that does nothing and has minimal internal dependencies. Uses jar-with-dependencies Maven plugin.
+ * [Null-Agent](null-agent/src/main/java/org/renci/nodeagent2/null_agent/Main.java) - a trivial implementation that does nothing and has minimal internal dependencies. Uses jar-with-dependencies Maven plugin.
  * [OSCARS Plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin) - a full implementation of OSCARS API v06 plugin that relies on CXF and for this reason needs Maven shade plugin for assembling the uber jar.
  * [Exec Plugin](https://github.com/RENCI-NRIG/na2-exec-plugin) - a plugin that executes external programs for each of the join/leave/modify actions
 
