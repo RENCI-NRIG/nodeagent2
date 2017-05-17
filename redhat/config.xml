@@ -8,7 +8,7 @@
 	<plugins>
 		<plugin name="null-plugin">
 			<jar>/opt/nodeagent2/plugins/na2-null-plugin.jar</jar>
-			<mainClass>orca.nodeagent2.null_agent.Main</mainClass>
+			<mainClass>org.renci.nodeagent2.null_agent.Main</mainClass>
 			<schedulePeriod length="3" unit="minute" />
 			<renewAdvanceTicks>2</renewAdvanceTicks>
 			<description>Null plugin for testing</description>
@@ -20,7 +20,7 @@
 		<!--
 		<plugin name="oscars">
 			<jar>/opt/nodeagent2/plugins/na2-oscars-plugin.jar</jar>
-			<mainClass>orca.nodeagent2.oscarslib.Main</mainClass>
+			<mainClass>org.renci.nodeagent2.oscarslib.Main</mainClass>
 			<schedulePeriod length="6" unit="minute" />
 			<renewAdvanceTicks>2</renewAdvanceTicks>
 			<properties>
@@ -35,7 +35,7 @@
                 <!--
 		<plugin name="execplug" >
 			<jar>/opt/nodeagent2/plugins/na2-exec-plugin.jar</jar>
-			<mainClass>orca.nodeagent2.exec.Main</mainClass>
+			<mainClass>org.renci.nodeagent2.exec.Main</mainClass>
 			<schedulePeriod length="3" unit="minute" />
 			<properties>
 				<property name="exec.join" value="/some/path/to/join.sh" />

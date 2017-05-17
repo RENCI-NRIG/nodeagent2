@@ -25,7 +25,7 @@ NA2 plugin implementations are required to fulfill a minimal set of dependencies
 
 ## Principle of operation 
 
-Each plugin must implement this [Plugin interface](agentlib/src/main/java/orca/nodeagent2/agentlib/Plugin.java) supporting the basic join/leave/modify/renew commands. A plugin is associated with a REST endpoint corresponding to the particular substrate instance. A plugin is configured with scheduling information: the reservation duration used when the reservation is created on the first join call and all consecutive renew calls. The NA2 runs a periodic thread to check for expired reservations, executed every 'tick'. For each plugin it is possible to configure how many ticks ahead of its renew deadline the reservation should be renewed (defaulting to one tick). 
+Each plugin must implement this [Plugin interface](agentlib/src/main/java/org/renci/nodeagent2/agentlib/Plugin.java) supporting the basic join/leave/modify/renew commands. A plugin is associated with a REST endpoint corresponding to the particular substrate instance. A plugin is configured with scheduling information: the reservation duration used when the reservation is created on the first join call and all consecutive renew calls. The NA2 runs a periodic thread to check for expired reservations, executed every 'tick'. For each plugin it is possible to configure how many ticks ahead of its renew deadline the reservation should be renewed (defaulting to one tick). 
 
 After each 'join' operation, the NA2 inserts into its schedule the next deadline, a pre-configured number of ticks ahead of the actually provisioned deadline, when this reservation must be renewed (for plugins whose period is configured to be 0 this step is skipped). While the corresponding ORCA reservation remains Active, NA2 continues to renew the substrate reservation at the preconfigured period. Calling a leave on the reservation removes it from the renew schedule. The schedule is persistent, i.e. NodeAgent can be restarted without loss of state.
 
@@ -57,7 +57,7 @@ some:
  * LOG4J configuration file (it is pointed to from the Spring configuration file using property logging.config). This is a properties file, something like [this example](agent/server/log4j-na2.properties).
  * NA2 configuration file - this is an XML file that describes the plugins that NA2 is aware of and their individual properties. Like [this example](agent/server/na-test-config.xml).
   * The *name* of the plugin in the configuration also corresponds to the REST endpoint used for this substrate instance. Notice it is legal to configure the same jar for multiple endpoints. The name must conform to this simple pattern "[a-zA-Z0-9-]+" and be at least 5 characters long.
-  * You can look at the full [schema](agent/config/src/main/resources/orca/nodeagent2/agent/config/xsd/AgentConfig.xsd) of the configuration file. Any changes to the schema are automatically turned into beans by the build process using JAXB. 
+  * You can look at the full [schema](agent/config/src/main/resources/org/renci/nodeagent2/agent/config/xsd/AgentConfig.xsd) of the configuration file. Any changes to the schema are automatically turned into beans by the build process using JAXB. 
 
 ## REST interface details 
 
@@ -74,7 +74,7 @@ NA2 exposes a RESTful interface that combines mapping to plugin operations and s
  * http(s)://hostname:port/schedule/[plugin name] (GET) - returns the schedule information for the particular plugin
  * http(s)://hostname:port/schedule/[plugin name]/[reservation id] (GET) - returns the schedule information for the particular reservation of the specified plugin
 
-There are examples of using [pure Java](client/src/main/java/orca/nodeagent2/client/RestClient.java) to communicate with this API (using minimal Java dependencies) as well as examples of using [curl](https://github.com/RENCI-NRIG/na2-oscars-plugin/tree/master/scripts) to do the same. 
+There are examples of using [pure Java](client/src/main/java/org/renci/nodeagent2/client/RestClient.java) to communicate with this API (using minimal Java dependencies) as well as examples of using [curl](https://github.com/RENCI-NRIG/na2-oscars-plugin/tree/master/scripts) to do the same. 
 
 ## ORCA Interface
 
@@ -105,7 +105,7 @@ Note that each target in the handler (join, leave or modify) must have this as t
 ## Developing new plugins 
 
 ### Dependencies 
-Developing new plugins is straightforward. Each new plugin must implement a class following the [Plugin interface](agentlib/src/main/java/orca/nodeagent2/agentlib/Plugin.java)  in the  orca.node-agent2.agentlib Maven artifact:
+Developing new plugins is straightforward. Each new plugin must implement a class following the [Plugin interface](agentlib/src/main/java/org/renci/nodeagent2/agentlib/Plugin.java)  in the  orca.node-agent2.agentlib Maven artifact:
 ```
 <repositories>
   <repository>
@@ -134,13 +134,13 @@ while can be built from source under node-agent2/agentlib/ or, alternatively, fe
 Each plugin jar must contain all of its dependencies, thus it is recommended to use Maven's 'jar-with-dependencies' plugin to generate it. For more complex scenarios you may need to use the Maven shade plugin. For an example of its use look at the [OSCARS NA2 plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin/blob/master/pom.xml).
 
 Example plugin implementations can be found in:
- * [Null-Agent](null-agent/src/main/java/orca/nodeagent2/null_agent/Main.java) - a trivial implementation that does nothing and has minimal internal dependencies. Uses jar-with-dependencies Maven plugin.
+ * [Null-Agent](null-agent/src/main/java/org/renci/nodeagent2/null_agent/Main.java) - a trivial implementation that does nothing and has minimal internal dependencies. Uses jar-with-dependencies Maven plugin.
  * [OSCARS Plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin) - a full implementation of OSCARS API v06 plugin that relies on CXF and for this reason needs Maven shade plugin for assembling the uber jar.
  * [Exec Plugin](https://github.com/RENCI-NRIG/na2-exec-plugin) - a plugin that executes external programs for each of the join/leave/modify actions
 
 ### Classloading
 
-NA2 implements a special [ParentLast classloader] (nodeagent2/agent/core/src/main/java/orca/nodeagent2/agent/core/ChildFirstURLClassLoader.java) , which forces code running in the plugin to consult its own classpath before defaulting to the NA2 classloader path, thus any plugin class dependencies specified will be linked from the jars in the plugin instead of classes on the main NA2 classpath. 
+NA2 implements a special [ParentLast classloader] (agent/core/src/main/java/org/renci/nodeagent2/agent/core/ChildFirstURLClassLoader.java) , which forces code running in the plugin to consult its own classpath before defaulting to the NA2 classloader path, thus any plugin class dependencies specified will be linked from the jars in the plugin instead of classes on the main NA2 classpath. 
 
 ### Locking
 
