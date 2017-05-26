@@ -27,7 +27,7 @@
 				</executions>
 				<configuration>
 					<generateDirectory>${project.basedir}/src/main/java</generateDirectory>
-					<schemaDirectory>${project.basedir}/src/main/resources/orca/nodeagent2/agent/config/xsd</schemaDirectory>
+					<schemaDirectory>${project.basedir}/src/main/resources/org/renci/nodeagent2/agent/config/xsd</schemaDirectory>
 					<schemaIncludes>
 						<param>AgentConfig.xsd</param>
 					</schemaIncludes>
