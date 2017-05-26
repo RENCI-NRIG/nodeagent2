@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.renci.node-agent2</groupId>
 		<artifactId>node-agent2</artifactId>
-		<version>0.2.0-SNAPSHOT</version>
+		<version>0.2.0</version>
 	</parent>
 	<artifactId>null-agent</artifactId>
 	<name>null-agent</name>

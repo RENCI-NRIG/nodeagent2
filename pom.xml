@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.renci.node-agent2</groupId>
 	<artifactId>node-agent2</artifactId>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.2.0</version>
 	<packaging>pom</packaging>
 	<name>node-agent2</name>
 	<modules>
@@ -96,7 +96,7 @@
 		<connection>scm:git:git@github.com:RENCI-NRIG/nodeagent2.git</connection>
 		<developerConnection>scm:git:git@github.com:RENCI-NRIG/nodeagent2.git</developerConnection>
 		<url>https://github.com/RENCI-NRIG/nodeagent2</url>
-		<tag>HEAD</tag>
+		<tag>node-agent2-0.2.0</tag>
 	</scm>
 
 	<issueManagement>
