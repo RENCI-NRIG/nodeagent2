@@ -1,0 +1,11 @@
+#!/bin/bash 
+
+#url="http://geni2.renci.org:8080/plugins"
+#pass="YouShallNotPass!"
+url="http://localhost:8080/description/null-plugin"
+pass=pass
+
+
+curl -k -g -H 'Content-Type: application/json' --digest --user admin:$pass $url/$1 
+
+echo 

@@ -1,3 +1,5 @@
+#ignore jaxb-generated
+agent/config/src/main/java/org/renci/nodeagent2/agent/config/xsd/
 target/
 pom.xml.tag
 pom.xml.releaseBackup

@@ -29,7 +29,7 @@ public class ConfigParser extends ParserHelper {
 	protected static final String[] SCHEMA_LIST = { "AgentConfig.xsd" };
 
 	public ConfigParser(String fname) throws Exception {
-		l = LogFactory.getLog("config");
+		l = LogFactory.getLog(this.getClass().getName());
 		l.debug("Initializing " + this.getClass().getCanonicalName() + " with " + fname);
 		File f = null;
 		Scanner s = null;

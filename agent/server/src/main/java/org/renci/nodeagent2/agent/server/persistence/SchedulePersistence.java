@@ -35,7 +35,7 @@ public class SchedulePersistence {
 	@Autowired
 	IScheduleRepository repository;
 
-	Log l = LogFactory.getLog("schedulePersistence");
+	Log l = LogFactory.getLog(this.getClass().getName());
 
 	public SchedulePersistence() {
 		// start periodic thread

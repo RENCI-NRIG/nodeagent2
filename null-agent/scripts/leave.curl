@@ -1,7 +1,7 @@
 #!/bin/bash 
 
-url="http://localhost:8080/leave/null-plugin"
-#url="https://localhost:8443/leave/null-plugin"
+url="http://localhost:8080/leave/null-plugin/xpzyfejgix"
+#url="https://localhost:8443/leave/null-plugin/9mxp4lr0sd"
 
 curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass -X POST $url/$1 -d '{
   "property one":"some value one",

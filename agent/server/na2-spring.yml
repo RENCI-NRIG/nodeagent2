@@ -7,7 +7,7 @@ na2:
 
 # point to log4j configuration
 logging:
-  config: /Users/ibaldin/workspace-nodeagent2/nodeagent2-git/agent/server/log4j-na2.properties
+  config: /Users/ibaldin/workspace-nodeagent2/nodeagent2-git/agent/server/log4j2-na2.properties
 
 # set the file name pattern of the database (notice it creates multiple files with common name root)
 spring:

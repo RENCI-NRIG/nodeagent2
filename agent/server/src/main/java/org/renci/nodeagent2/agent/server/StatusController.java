@@ -25,7 +25,7 @@ public class StatusController {
 	@Autowired
 	public StatusController(SchedulePersistence sp) {
 		this.sp = sp;
-		l = LogFactory.getLog("statusController");
+		l = LogFactory.getLog(this.getClass().getName());
 	}
 	
 	/**

@@ -28,7 +28,7 @@ public class PluginsRegistry {
 	protected Map<String, PluginJarHandler> plugins = new HashMap<String, PluginJarHandler>();
 	protected Map<String, PluginType> pluginConfigs = new HashMap<String, PluginType>();
 	
-	protected Log l = LogFactory.getLog("pluginsRegistry");
+	protected Log l = LogFactory.getLog(this.getClass().getName());
 
 	public static class UniqueId {
 		String name;

@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class RenewExpiringThread implements Runnable {
 
-	private final Log l = LogFactory.getLog("renewExpiringThread");
+	private final Log l = LogFactory.getLog(this.getClass().getName());
 
 	private final SchedulePersistence sp;
 	
