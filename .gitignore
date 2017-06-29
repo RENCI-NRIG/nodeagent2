@@ -23,9 +23,6 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 
 
-#ignore jaxb-generated
-agent/config/src/main/java/org/renci/nodeagent2/agent/config/xsd/
-
 ### Eclipse ###
 
 .metadata
