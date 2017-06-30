@@ -1,9 +1,11 @@
 #!/bin/bash 
 
-url="http://localhost:8080/status/null-plugin"
-#url="https://localhost:8443/status/null-plugin"
+#url="http://geni2.renci.org:8080/plugins"
+#pass="YouShallNotPass!"
+url="http://localhost:8080/plugins"
+pass=pass
 
 
-curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass $url/$1 | python -m json.tool
+curl -k -g -H 'Content-Type: application/json' --digest --user admin:$pass $url/$1 | python -m json.tool
 
 echo 

@@ -34,7 +34,7 @@ public class PluginController {
 	@Autowired
 	public PluginController(SchedulePersistence sp) {
 		this.sp = sp;
-		l = LogFactory.getLog("pluginController");
+		l = LogFactory.getLog(this.getClass().getName());
 	}
 
 	/**

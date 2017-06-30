@@ -1,9 +1,11 @@
 #!/bin/bash 
 
+#url="http://geni2.renci.org:8080/schedule"
+#pass="YouShallNotPass!"
 url="http://localhost:8080/schedule"
-#url="https://localhost:8443/schedule"
+pass=pass
 
 
-curl -k -g -H 'Content-Type: application/json' --digest --user admin:pass $url | python -m json.tool
+curl -k -g -H 'Content-Type: application/json' --digest --user admin:$pass $url | python -m json.tool
 
 echo 

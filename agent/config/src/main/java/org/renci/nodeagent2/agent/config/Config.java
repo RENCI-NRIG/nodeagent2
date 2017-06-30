@@ -20,7 +20,7 @@ public class Config {
 	public static Config instance = null;
 	
 	private Config() throws Exception {
-		l = LogFactory.getLog("config");		
+		l = LogFactory.getLog(this.getClass().getName());		
 		if (fname == null) {
 			throw new Exception("Configuration filename not specified");
 		}
