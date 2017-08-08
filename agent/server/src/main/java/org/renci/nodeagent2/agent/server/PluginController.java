@@ -76,7 +76,6 @@ public class PluginController {
 			return pr;
 		} catch (PluginException pe) {
 			l.error("PluginError invoking join on " + name + ": " + pe);
-			pe.printStackTrace();
 			return new PluginReturn(PluginErrorCodes.EXCEPTION.code, "join error: " + pe.getMessage(), null, null);
 		} catch (InternalError ie) {
 			throw ie;

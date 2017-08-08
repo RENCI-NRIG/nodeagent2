@@ -32,6 +32,23 @@
 			</properties>
 		</plugin>
 		-->
+                <plugin name="oess-plugin">
+                        <jar>../../../na2-oess-plugin/target/oess-plugin-1.0-SNAPSHOT-jar-with-dependencies.jar</jar>
+                        <mainClass>org.renci.nodeagent2.oess.Main</mainClass>
+                        <schedulePeriod length="5" unit="minute" />
+                        <description>OESS Plugin for localhost</description>
+                        <properties>
+                                <property name="oess.username" value="oess" />
+                                <property name="oess.password" value="oess" />
+                                <property name="oess.url" value="https://localhost:20443/oess" />
+                                <property name="workgroup.id" value="1" />
+                                <property name="network.type" value="openflow" />
+                                <property name="disable.ssl.check" value="true" />
+                                <property name="debug.http" value="false" />
+                                <property name="use.shortest.path" value="true" />
+                                <property name="oess.comment" value="Test Circuit" />
+                        </properties>
+                </plugin>
 		<plugin name="execplug" >
 			<jar>../../..//na2-exec-plugin/target/exec-plugin-1.0-SNAPSHOT-jar-with-dependencies.jar</jar>
 			<mainClass>org.renci.nodeagent2.exec.Main</mainClass>
@@ -44,10 +61,5 @@
 				<property name="exec.status" value="/Users/ibaldin/workspace-nodeagent2/na2-exec-plugin/scripts/status.sh" />
 			</properties>
 		</plugin>
-                <plugin name="oessplug" >
-                        <jar>../../..//na2-oess-plugin/target/oess-plugin-1.0-SNAPSHOT-jar-with-dependencies.jar</jar>
-                        <mainClass>org.renci.nodeagent2.oess.Main</mainClass>
-                        <schedulePeriod length="3" unit="minute" />
-                </plugin>
 	</plugins>
 </agentConfig>
