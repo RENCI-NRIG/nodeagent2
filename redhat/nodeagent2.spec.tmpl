@@ -1,12 +1,11 @@
 %global commit @@COMMIT@@
-%global shortcommit @@SHORTCOMMIT@@
 
 Summary: nodeagent2 - Son of NodeAgent
 Name: nodeagent2
-Version: 0.1
-Release: @@DATE@@git%{shortcommit}
+Version: @@VERSION@@
+Release: @@DATE@@
 BuildRoot: %{_builddir}/%{name}-root
-Source0: https://github.com/RENCI-NRIG/nodeagent2/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0: https://github.com/RENCI-NRIG/nodeagent2/archive/%{commit}/%{name}-%{version}-%{release}.tar.gz
 Vendor: ExoGENI
 Packager: ExoGENI
 License: Eclipse Public License
@@ -33,7 +32,7 @@ NodeAgent2 is a "shim" for interacting with resource aggregates that may
 implement reservation semantics in ways that differ from those that ORCA prefers.
 
 %prep
-%setup -q -n %{name}-%{version}-%{shortcommit}
+%setup -q -n %{name}-%{version}-%{release}
 
 %build
 LANG=en_US.UTF-8 mvn clean install
@@ -51,7 +50,7 @@ cp -R agent/server/target/generated-resources/appassembler/jsw/na2d/* $RPM_BUILD
 cp -R agent/server/target/appassembler/bin/* $RPM_BUILD_ROOT%{homedir}/bin
 cp -R agent/server/target/appassembler/repo $RPM_BUILD_ROOT%{homedir}
 # Copy over example null plugin
-cp -R null-agent/target/null-agent-*-SNAPSHOT.jar $RPM_BUILD_ROOT%{homedir}/plugins/na2-null-plugin.jar
+cp -R null-agent/target/null-agent-@@SIMPLE_VERSION@@.jar $RPM_BUILD_ROOT%{homedir}/plugins/na2-null-plugin.jar
 # Fix up generated daemon script
 sed -i -e 's;su -m;su -s /bin/sh -m;' $RPM_BUILD_ROOT%{homedir}/bin/na2d
 sed -i -e 's;^APP_NAME="na2d";APP_NAME="na2d"\nAPP_BASE=%{homedir};' $RPM_BUILD_ROOT%{homedir}/bin/na2d
