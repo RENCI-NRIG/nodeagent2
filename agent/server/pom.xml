@@ -120,7 +120,7 @@
 												</property>
 												<property>
 													<name>wrapper.logfile</name>
-													<value>/var/log/na2/na2.log</value>
+													<value>/var/log/nodeagent2/na2.log</value>
 												</property>
 												<property>
 													<name>wrapper.logfile.loglevel</name>
