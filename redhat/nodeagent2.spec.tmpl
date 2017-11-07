@@ -74,7 +74,7 @@ mkdir -p $RPM_BUILD_ROOT%{pid_dir}
 # Copy config files to the right location; ditto for the environment file and initrd file.
 cp redhat/spring.yml $RPM_BUILD_ROOT%{conf_dir}
 cp redhat/config.xml $RPM_BUILD_ROOT%{conf_dir}
-cp redhat/log4j.properties $RPM_BUILD_ROOT%{conf_dir}
+cp redhat/log4j2.properties $RPM_BUILD_ROOT%{conf_dir}
 cp redhat/nodeagent2.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/nodeagent2
 cp redhat/nodeagent2.init $RPM_BUILD_ROOT%{_initrddir}/nodeagent2
 
@@ -103,7 +103,7 @@ exit 0
 %attr(750, %{exogeni_user_id}, root) %dir %{conf_dir}
 %config(noreplace) %{conf_dir}/spring.yml
 %config(noreplace) %{conf_dir}/config.xml
-%config(noreplace) %{conf_dir}/log4j.properties
+%config(noreplace) %{conf_dir}/log4j2.properties
 %config(noreplace) %{_sysconfdir}/sysconfig/nodeagent2
 %{_initrddir}/nodeagent2
 %{homedir}/bin

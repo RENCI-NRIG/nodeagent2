@@ -7,7 +7,7 @@ na2:
 
 # point to log4j configuration
 logging:
-  config: /etc/nodeagent2/log4j.properties
+  config: /etc/nodeagent2/log4j2.properties
 
 # set the file name pattern of the database (notice it creates multiple files with common name root)
 spring:
