@@ -110,7 +110,7 @@ Developing new plugins is straightforward. Each new plugin must implement a clas
 <repositories>
   <repository>
     <id>geni-orca-snapshot</id>
-    <url>http://ci-dev.renci.org/nexus/content/repositories/geni-orca-snapshot/</url>
+    <url>https://nrig-nexus.renci.org/repository/geni-orca-snapshot/</url>
     <snapshots>
       <enabled>true</enabled>
       <updatePolicy>always</updatePolicy>
@@ -118,7 +118,7 @@ Developing new plugins is straightforward. Each new plugin must implement a clas
   </repository>
   <repository>
     <id>geni-orca-libs</id>
-    <url>http://ci-dev.renci.org/nexus/content/repositories/geni-orca-libs</url>
+    <url>https://nrig-nexus.renci.org/repository/geni-orca-libs</url>
   </repository>
 </repositories>
 ...
@@ -130,7 +130,7 @@ Developing new plugins is straightforward. Each new plugin must implement a clas
 </dependency>
 ```
 
-while can be built from source under node-agent2/agentlib/ or, alternatively, fetched from [NRIG Nexus] (http://ci-dev.renci.org/nexus/content/repositories/geni-orca-snapshot repository). 
+while can be built from source under node-agent2/agentlib/ or, alternatively, fetched from [NRIG Nexus] (https://nrig-nexus.renci.org/repository/geni-orca-snapshot repository). 
 Each plugin jar must contain all of its dependencies, thus it is recommended to use Maven's 'jar-with-dependencies' plugin to generate it. For more complex scenarios you may need to use the Maven shade plugin. For an example of its use look at the [OSCARS NA2 plugin](https://github.com/RENCI-NRIG/na2-oscars-plugin/blob/master/pom.xml).
 
 Example plugin implementations can be found in:
